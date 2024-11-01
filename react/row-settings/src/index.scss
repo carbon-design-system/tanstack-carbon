@@ -1,0 +1,40 @@
+@use '@carbon/react' with (
+  $font-path: '@ibm/plex'
+);
+@use '@carbon/styles/scss/type';
+@use '@carbon/ibm-products/css/index';
+@use './App';
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.example--link {
+  @include type.type-style('label-01');
+
+  display: flex;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.example--link__icon {
+  margin-right: 0.25rem;
+}
+
+.cds--data-table.empty-table-wrapper td,
+.cds--data-table.empty-table-wrapper tbody th,
+.cds--data-table.empty-table-wrapper tbody tr:hover td {
+  border-block-end: 0;
+}
+
+.cds--data-table tbody.empty-table-body,
+.cds--data-table tbody.empty-table-body tr:not([data-child-row]):hover,
+.cds--data-table tbody.empty-table-body tr[data-child-row]:hover > td {
+  background-color: transparent;
+}
+
+.cds--data-table td .empty-table {
+  position: absolute;
+  max-width: 265px;
+}
