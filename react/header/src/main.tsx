@@ -33,7 +33,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {renderUIShellHeader()}
     <Grid className="page-grid">
-      <Column sm={4} md={8} lg={16}>
+      <Column sm={4} md={8} lg={8}>
         <HeaderExamples />
       </Column>
     </Grid>
