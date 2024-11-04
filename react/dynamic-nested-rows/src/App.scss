@@ -1,0 +1,57 @@
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/utilities';
+@use '@carbon/styles/scss/colors';
+@use '@carbon/styles/scss/type';
+@use '@carbon/type/scss/font-family';
+
+.page-grid {
+  margin-top: 4rem;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.basic-table th,
+.cds--data-table th:last-of-type {
+  position: relative;
+}
+
+.tanstack-example {
+  padding-bottom: 2rem;
+}
+
+// Nested row
+.row-expander {
+  width: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.row-expander .row-expanded-icon {
+  transform: rotate(90deg);
+  transition: transform 200ms;
+}
+
+.row-expander .cds--inline-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-expander .cds--inline-loading .cds--inline-loading__animation {
+  margin-right: 0;
+}
+
+.row-expander .cds--inline-loading .cds--loading svg circle {
+  fill: $layer-01;
+}
+
+.expand-spacer {
+  padding-left: $spacing-09;
+}
