@@ -8,12 +8,7 @@ import {
   ColumnDef,
   flexRender,
 } from '@tanstack/react-table';
-import {
-  DataTable,
-  TableContainer,
-  Button,
-  InlineLoading,
-} from '@carbon/react';
+import { DataTable, TableContainer, Button, SkeletonText } from '@carbon/react';
 import { ChevronRight } from '@carbon/react/icons';
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
@@ -26,18 +21,17 @@ import * as packageJson from '../package.json';
 export const DynamicNestedRows = () => {
   const [data, setData] = React.useState(() => makeData(5));
   const [rowsFetchingList, setRowsFetchingList] = useState([]);
-  console.log(data);
   const columns = React.useMemo<ColumnDef<Resource>[]>(
     () => [
       {
         accessorKey: 'name',
-        header: ({ table }) => <div className="flex expand-spacer">Name</div>,
+        header: () => <div className="flex expand-spacer">Name</div>,
         cell: ({ row, getValue }) => {
           const foundManualSubRowCheck =
             typeof table?.options?.meta?.checkSubRows === 'function';
-          const foundLoadingRow = !!rowsFetchingList.find(
-            (a) => a.id === row.id
-          );
+          const foundLoadingRow = !!rowsFetchingList.filter(
+            (r) => r.id === row.id
+          ).length;
           return (
             <div
               style={{
@@ -55,16 +49,17 @@ export const DynamicNestedRows = () => {
                   <Button
                     {...{
                       onClick: async () => {
-                        // row.getToggleExpandedHandler();
                         const isRowExpanded = row.getIsExpanded();
-                        const newSubRows =
-                          await table?.options?.meta?.checkSubRows(row.id);
-                        const clonedData = [...data];
-                        const rowIndexToUpdate = clonedData.findIndex(
-                          (r) => r.id === row.original.id
-                        );
-                        clonedData[rowIndexToUpdate].subRows = newSubRows;
-                        setData(clonedData);
+                        if (!isRowExpanded) {
+                          const newSubRows =
+                            await table?.options?.meta?.checkSubRows(row.id);
+                          const clonedData = [...data];
+                          const rowIndexToUpdate = clonedData.findIndex(
+                            (r) => r.id === row.original.id
+                          );
+                          clonedData[rowIndexToUpdate].subRows = newSubRows;
+                          setData(clonedData);
+                        }
                         row.toggleExpanded(isRowExpanded ? false : true);
                       },
                       style: { cursor: 'pointer' },
@@ -75,12 +70,6 @@ export const DynamicNestedRows = () => {
                     size="sm">
                     {row.getIsExpanded() ? (
                       <ChevronRight className="row-expanded-icon" />
-                    ) : foundLoadingRow ? (
-                      <InlineLoading
-                        status="active"
-                        iconDescription=""
-                        description=""
-                      />
                     ) : (
                       <ChevronRight />
                     )}
@@ -111,7 +100,6 @@ export const DynamicNestedRows = () => {
   );
 
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
-
   const table = useReactTable({
     data,
     columns,
@@ -126,12 +114,12 @@ export const DynamicNestedRows = () => {
       checkSubRows: (rowId, subRowCount = 2) => {
         async function fetchData() {
           const row = table.getRow(rowId);
-          console.log('subRows', row.subRows, row);
-          if (row.subRows.length) return;
           setRowsFetchingList((prev) => [...prev, row]);
+          const isRowExpanded = row.getIsExpanded();
+          row.toggleExpanded(isRowExpanded ? false : true);
           // const response = await fetch('https://jsonplaceholder.typicode.com/comments');
           // const comments = await response.json();
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 5000));
           setRowsFetchingList((prev) => prev.filter((a) => a.id !== row.id));
           return makeData(subRowCount);
         }
@@ -183,19 +171,39 @@ export const DynamicNestedRows = () => {
         </TableHead>
         <TableBody>
           {table.getRowModel().rows.map((row) => {
+            const foundLoadingRow = rowsFetchingList.some(
+              (r) => r.id === row.id
+            );
             return (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
+              <React.Fragment key={row.id}>
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <TableCell key={cell.id}>
+                        {row.original?.isSkeleton ? (
+                          <SkeletonText />
+                        ) : (
+                          flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+                {row.getIsExpanded() && foundLoadingRow && (
+                  <TableRow>
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <TableCell key={cell.id}>
+                          <SkeletonText />
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                )}
+              </React.Fragment>
             );
           })}
         </TableBody>

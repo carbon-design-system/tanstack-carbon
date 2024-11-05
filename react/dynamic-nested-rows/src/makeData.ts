@@ -8,6 +8,7 @@ export type Resource = {
   other: string;
   example: string;
   subRows?: Resource[];
+  isSkeleton?: boolean;
 };
 
 const range = (len: number) => {
