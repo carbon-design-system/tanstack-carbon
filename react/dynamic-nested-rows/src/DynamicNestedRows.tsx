@@ -49,6 +49,7 @@ export const DynamicNestedRows = () => {
                   <Button
                     {...{
                       onClick: async () => {
+                        if (foundLoadingRow) return;
                         const isRowExpanded = row.getIsExpanded();
                         if (!isRowExpanded) {
                           const newSubRows =
