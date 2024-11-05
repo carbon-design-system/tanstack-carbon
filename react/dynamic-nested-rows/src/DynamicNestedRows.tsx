@@ -119,7 +119,7 @@ export const DynamicNestedRows = () => {
           row.toggleExpanded(isRowExpanded ? false : true);
           // const response = await fetch('https://jsonplaceholder.typicode.com/comments');
           // const comments = await response.json();
-          await new Promise((resolve) => setTimeout(resolve, 5000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
           setRowsFetchingList((prev) => prev.filter((a) => a.id !== row.id));
           return makeData(subRowCount);
         }
