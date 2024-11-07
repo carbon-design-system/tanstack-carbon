@@ -1,0 +1,74 @@
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/utilities';
+@use '@carbon/styles/scss/colors';
+@use '@carbon/styles/scss/type';
+@use '@carbon/type/scss/font-family';
+
+.page-grid {
+  margin-top: 4rem;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.tanstack-example {
+  padding-bottom: 2rem;
+}
+
+// Sorting
+.descending-sorting-icon {
+  transform: rotate(180deg);
+  transition: transform 200ms;
+}
+
+.sortable-button-header {
+  color: $text-primary;
+  width: 100%;
+  padding-inline: 1rem;
+  max-inline-size: none;
+
+  @include type.font-weight('semibold');
+
+  &.cds--btn--ghost:hover,
+  &.cds--btn--ghost:active {
+    color: $text-primary;
+  }
+}
+
+.sortable-example.cds--data-table th {
+  padding-inline: 0;
+}
+
+.sortable-example {
+  padding-bottom: 2rem;
+}
+
+.ai-label-is-present {
+  position: relative;
+}
+
+.ai-label-is-present .sortable-button-header svg {
+  position: absolute;
+  right: 2rem;
+}
+
+.ai-label-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  align-items: center;
+  right: 0.5rem;
+}
+
+.custom-ai-header-wrapper {
+  display: flex;
+}
+
+.cds--data-table thead th.ai-label-is-present .sortable-button-header,
+.cds--data-table thead th.ai-label-is-present.ai-column,
+td.ai-cell {
+  @include utilities.ai-table-gradient;
+}
