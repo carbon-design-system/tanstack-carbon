@@ -1,0 +1,20 @@
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/utilities';
+@use '@carbon/styles/scss/colors';
+@use '@carbon/styles/scss/type';
+@use '@carbon/type/scss/font-family';
+
+.page-grid {
+  margin-top: 4rem;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.tanstack-example {
+  padding-bottom: 2rem;
+  width: fit-content;
+}
