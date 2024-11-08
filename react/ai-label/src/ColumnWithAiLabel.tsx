@@ -68,7 +68,6 @@ export const ColumnWithAiLabel = () => {
                   typeof slug === 'function'
                     ? header.column.columnDef.meta?.slug
                     : null;
-                console.log(SlugComponent);
                 return (
                   <TableHeader
                     key={header.id}
