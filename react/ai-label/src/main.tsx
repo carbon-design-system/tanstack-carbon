@@ -13,6 +13,7 @@ import { SortableWithAiLabel } from './SortableWithAiLabel';
 import { ColumnWithAiLabel } from './ColumnWithAiLabel';
 
 import './index.scss';
+import { WithSelection } from './WithSelection';
 
 const renderUIShellHeader = () => (
   <HeaderContainer
@@ -39,6 +40,9 @@ createRoot(document.getElementById('root')!).render(
       </Column>
       <Column sm={4} md={8} lg={8}>
         <SortableWithAiLabel />
+      </Column>
+      <Column sm={4} md={8} lg={8}>
+        <WithSelection />
       </Column>
     </Grid>
   </StrictMode>

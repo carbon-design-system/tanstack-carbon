@@ -6,60 +6,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import {
-  AILabel,
-  AILabelActions,
-  AILabelContent,
-  Button,
-  DataTable,
-  IconButton,
-  TableContainer,
-} from '@carbon/react';
-import { FolderOpen, Folders, View } from '@carbon/react/icons';
+import { DataTable, TableContainer } from '@carbon/react';
 import cx from 'classnames';
+import { ExampleAiLabel } from './ExampleAiLabel';
 
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
 
 import { makeData, Resource } from './makeData';
-import { ExampleLink } from './ExampleLink';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
-
-const slug = (
-  <AILabel
-    className="ai-label-container"
-    autoAlign={false}
-    align="bottom-right"
-    size="mini">
-    <AILabelContent>
-      <div>
-        <p className="secondary">AI Explained</p>
-        <h1>84%</h1>
-        <p className="secondary bold">Confidence score</p>
-        <p className="secondary">
-          Lorem ipsum dolor sit amet, di os consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut fsil labore et dolore magna aliqua.
-        </p>
-        <hr />
-        <p className="secondary">Model type</p>
-        <p className="bold">Foundation model</p>
-      </div>
-      <AILabelActions>
-        <IconButton kind="ghost" label="View">
-          <View />
-        </IconButton>
-        <IconButton kind="ghost" label="Open Folder">
-          <FolderOpen />
-        </IconButton>
-        <IconButton kind="ghost" label="Folders">
-          <Folders />
-        </IconButton>
-        <Button>View details</Button>
-      </AILabelActions>
-    </AILabelContent>
-  </AILabel>
-);
 
 export const ColumnWithAiLabel = () => {
   const columns = React.useMemo<ColumnDef<Resource>[]>(
@@ -75,7 +29,7 @@ export const ColumnWithAiLabel = () => {
         cell: (info) => info.getValue(),
         header: () => <span>Rule</span>,
         meta: {
-          slug,
+          slug: () => <ExampleAiLabel />,
         },
       },
       {
@@ -103,33 +57,18 @@ export const ColumnWithAiLabel = () => {
   });
 
   return (
-    <TableContainer
-      title="Column, AI label"
-      className="tanstack-example"
-      description={
-        <span className="flex">
-          <ExampleLink
-            url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="Code sandbox"
-          />
-          <ExampleLink
-            url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="StackBlitz"
-          />
-        </span>
-      }>
+    <TableContainer title="Column, AI label" className="tanstack-example">
       <Table className="ai-column-example">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 const slug = header.column.columnDef.meta?.slug;
+                const SlugComponent =
+                  typeof slug === 'function'
+                    ? header.column.columnDef.meta?.slug
+                    : null;
+                console.log(SlugComponent);
                 return (
                   <TableHeader
                     key={header.id}
@@ -146,8 +85,7 @@ export const ColumnWithAiLabel = () => {
                               header.column.columnDef.header,
                               header.getContext()
                             )}
-                        {typeof slug === 'object' &&
-                          header.column.columnDef.meta?.slug}
+                        {SlugComponent && <SlugComponent />}
                       </>
                     )}
                   </TableHeader>

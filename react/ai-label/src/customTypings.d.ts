@@ -18,6 +18,7 @@ declare module '@tanstack/table-core' {
   //allows us to define custom properties for our columns
   interface ColumnMeta<TData, TValue> {
     filterVariant?: 'text' | 'select' | 'checkbox' | 'number';
-    slug?: ReactNode;
+    // slug?: ReactNode | (() => void);
+    slug?: () => JSX.Element;
   }
 }

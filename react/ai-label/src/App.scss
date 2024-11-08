@@ -69,6 +69,11 @@
 
 .cds--data-table thead th.ai-label-is-present .sortable-button-header,
 .cds--data-table thead th.ai-label-is-present.ai-column,
-td.ai-cell {
+td.ai-cell,
+tr.ai-row {
   @include utilities.ai-table-gradient;
+}
+
+.cds--data-table td.ai-cell-select {
+  padding-inline-end: 0;
 }

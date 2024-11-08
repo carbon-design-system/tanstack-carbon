@@ -6,6 +6,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
 
     /* Bundler mode */
     "moduleResolution": "node",
@@ -21,7 +22,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "types": [ "./src/customTypings.d.ts" ],
+    "types": ["./src/customTypings.d.ts"],
     "resolveJsonModule": true
   },
   "include": ["./src"]
