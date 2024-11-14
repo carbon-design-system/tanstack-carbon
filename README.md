@@ -32,7 +32,7 @@ It is important to note that core Carbon will continue to maintain the basic
 [DataTable](https://carbondesignsystem.com/components/data-table/usage)
 component.
 
-**What does this mean for your product if you are using Datagrid now?**
+## What does this mean for your product if you are using Datagrid now?
 
 Teams can continue to use the existing Datagrid component however we encourage
 teams to look at the TanStack Table coded examples which have been created in
@@ -48,7 +48,7 @@ Support for continued use of the Datagrid will be limited to sev 1 and sev 2
 bugs only and no new features in the current version (v2). In v3, these will be
 reduced to sev 1 only.
 
-**When will the transition to TanStack Table take place?**
+## When will the transition to TanStack Table take place?
 
 Carbon for IBM Products **_v2.54.0_** Release on November 20, 2024
 
@@ -70,7 +70,7 @@ Carbon for IBM Products **_v4_** - date tbd
 
 - Datagrid code will be removed entirely
 
-**What are the benefits of TanStack Table over Carbon's Datagrid?**
+## What are the benefits of TanStack Table over Carbon's Datagrid?
 
 TanStack Table is an open source headless library that allows you to bring your
 own components to build complex tables. Where Datagrid assumed control over
@@ -80,7 +80,7 @@ suite their own needs. This means the customization is in your control. It also
 offers Web Components option for products or applications that are not built
 with React.
 
-**Does my product have to stop using Datagrid now?**
+## Does my product have to stop using Datagrid now?
 
 No, the transition to start using TanStack Table can be incremental. In other
 words, Datagrid can remain in place and TanStack Table code be added as well. If
@@ -89,7 +89,7 @@ that matches that feature request. We have tested to ensure they are
 interoperable but, of course, reach out in slack #ibmproducts-pal-dev if you are
 having any problems, join our office hours, or open an issue in our GH repo.
 
-**Where can I go for help?**
+## Where can I go for help?
 
 - Slack,
   [#ibmproducts-pal-dev](https://ibm.monday.com/docs/7813966452?blockId=875b88f2-bdc8-4145-9fa9-eed010752d69)
