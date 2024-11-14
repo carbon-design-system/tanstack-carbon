@@ -92,6 +92,6 @@ having any problems, join our office hours, or open an issue in our GH repo.
 ## Where can I go for help?
 
 - Slack,
-  [#ibmproducts-pal-dev](https://ibm.monday.com/docs/7813966452?blockId=875b88f2-bdc8-4145-9fa9-eed010752d69)
-- [Carbon Developer office hours](https://ibm.monday.com/docs/7813966452?blockId=c9476290-0cd9-409f-a53d-98f6e4328a94)
-- [Open an issue](https://ibm.monday.com/docs/7813966452?blockId=6646eeea-812a-4c6b-9175-771dac1bfa5e)
+  [#ibmproducts-pal-dev](https://ibm.enterprise.slack.com/archives/C013ZTX0N6B)
+- [Carbon Developer office hours](https://ibm.biz/join-carbon-dev-ibm-products-office-hours)
+- [Open an issue](https://github.com/carbon-design-system/ibm-products/issues)
