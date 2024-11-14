@@ -23,8 +23,9 @@ For these reasons, we have decided to transition from building our own custom
 table component to using an example-based approach with TanStack Table. Datagrid
 will still exist in our library for existing teams but we are announcing the
 deprecation of the components so teams can begin to work through the transition.
-Details about how to use both Datagrid and TanStack together can be found
-[here](https://github.com/carbon-design-system/tanstack-carbon/tree/main).
+If you're looking for details about how to use both Datagrid and TanStack
+together, see
+[here](https://github.com/carbon-design-system/tanstack-carbon/tree/main/react/mix-and-match).
 Deprecation means that new features will not be added however sev 1 and sev 2
 bugs will be supported.
 
