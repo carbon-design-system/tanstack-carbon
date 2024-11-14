@@ -2,18 +2,13 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   CodeSnippet,
-  Column,
-  Grid,
   Header,
   HeaderContainer,
   HeaderName,
 } from '@carbon/react';
 
-import { SortableWithAiLabel } from './SortableWithAiLabel';
-import { ColumnWithAiLabel } from './ColumnWithAiLabel';
-
 import './index.scss';
-import { WithSelection } from './WithSelection';
+import { AiExamples } from './Example/AiExamples';
 
 const renderUIShellHeader = () => (
   <HeaderContainer
@@ -34,16 +29,6 @@ const renderUIShellHeader = () => (
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {renderUIShellHeader()}
-    <Grid className="page-grid">
-      <Column sm={4} md={8} lg={8}>
-        <ColumnWithAiLabel />
-      </Column>
-      <Column sm={4} md={8} lg={8}>
-        <SortableWithAiLabel />
-      </Column>
-      <Column sm={4} md={8} lg={8}>
-        <WithSelection />
-      </Column>
-    </Grid>
+    <AiExamples />
   </StrictMode>
 );

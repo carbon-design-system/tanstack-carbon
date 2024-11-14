@@ -22,7 +22,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "types": ["./src/customTypings.d.ts"],
+    "types": ["./src/Example/customTypings.d.ts"],
     "resolveJsonModule": true
   },
   "include": ["./src"]
