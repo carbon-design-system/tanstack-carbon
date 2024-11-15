@@ -8,7 +8,7 @@ import {
 } from '@carbon/react';
 
 import './index.scss';
-import { AiExamples } from './Example/AiExamples';
+import { Example } from './Example';
 
 const renderUIShellHeader = () => (
   <HeaderContainer
@@ -29,6 +29,6 @@ const renderUIShellHeader = () => (
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {renderUIShellHeader()}
-    <AiExamples />
+    <Example />
   </StrictMode>
 );

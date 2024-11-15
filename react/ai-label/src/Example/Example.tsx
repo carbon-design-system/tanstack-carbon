@@ -4,7 +4,7 @@ import { ColumnWithAiLabel } from './ColumnWithAiLabel';
 import { WithSelection } from './WithSelection';
 import './example.scss';
 
-export const AiExamples = () => (
+export const Example = () => (
   <Grid className="page-grid">
     <Column sm={4} md={8} lg={8}>
       <ColumnWithAiLabel />
