@@ -28,9 +28,8 @@ import {
   restrictToVerticalAxis,
 } from '@dnd-kit/modifiers';
 import { verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { ExampleLink } from './ExampleLink';
 import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
+import * as packageJson from '../../package.json';
 
 type Resource = {
   id: string;
@@ -97,24 +96,6 @@ export const CustomizeColumns = () => {
       <TableContainer
         title="Customize column order"
         className="basic-table tanstack-example"
-        description={
-          <span className="flex">
-            <ExampleLink
-              url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-                packageJson.name
-              }`}
-              icon={Launch}
-              label="Code sandbox"
-            />
-            <ExampleLink
-              url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-                packageJson.name
-              }`}
-              icon={Launch}
-              label="StackBlitz"
-            />
-          </span>
-        }
         style={{
           width: table.getCenterTotalSize(),
         }}>

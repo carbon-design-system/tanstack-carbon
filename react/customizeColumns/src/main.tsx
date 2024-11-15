@@ -2,16 +2,13 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   CodeSnippet,
-  Column,
-  Grid,
   Header,
   HeaderContainer,
   HeaderName,
 } from '@carbon/react';
 
-import { CustomizeColumns } from './CustomizeColumns';
-
 import './index.scss';
+import { Example } from './Example';
 
 const renderUIShellHeader = () => (
   <HeaderContainer
@@ -32,10 +29,6 @@ const renderUIShellHeader = () => (
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {renderUIShellHeader()}
-    <Grid className="page-grid">
-      <Column sm={4} md={8} lg={16}>
-        <CustomizeColumns />
-      </Column>
-    </Grid>
+    <Example />
   </StrictMode>
 );
