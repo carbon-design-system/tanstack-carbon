@@ -17,9 +17,6 @@ const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
 
 import { fetchData, Resource, ResourceApiResponse } from './makeData';
-import { ExampleLink } from './ExampleLink';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
 
 const fetchSize = 50;
 
@@ -148,22 +145,6 @@ export const InfiniteScroll = () => {
   return (
     <div className="virtual-example tanstack-example">
       <h4>Virtualized infinite scroll</h4>
-      <span className="flex">
-        <ExampleLink
-          url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-            packageJson.name
-          }`}
-          icon={Launch}
-          label="Code sandbox"
-        />
-        <ExampleLink
-          url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-            packageJson.name
-          }`}
-          icon={Launch}
-          label="StackBlitz"
-        />
-      </span>
       {/* {process.env.NODE_ENV === 'development' ? (
           <p className='virtual-description'>
             <strong>Notice:</strong> You are currently running React in
