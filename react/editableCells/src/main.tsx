@@ -2,14 +2,11 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   CodeSnippet,
-  Column,
-  Grid,
   Header,
   HeaderContainer,
   HeaderName,
 } from '@carbon/react';
-
-import { EditableCells } from './EditableCells';
+import { Example } from './Example';
 
 import './index.scss';
 
@@ -32,10 +29,6 @@ const renderUIShellHeader = () => (
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {renderUIShellHeader()}
-    <Grid className="page-grid">
-      <Column sm={4} md={8} lg={16}>
-        <EditableCells />
-      </Column>
-    </Grid>
+    <Example />
   </StrictMode>
 );
