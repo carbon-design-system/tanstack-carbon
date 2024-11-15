@@ -17,9 +17,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { makeData } from './makeData';
-import { ExampleLink } from './ExampleLink';
 import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
+import * as packageJson from '../../package.json';
 import { StatusIcon } from '@carbon/ibm-products';
 
 type Resource = {
@@ -104,24 +103,6 @@ export const ColumnAlignment = () => {
     <TableContainer
       title="Column alignment"
       className="basic-table tanstack-example"
-      description={
-        <span className="flex">
-          <ExampleLink
-            url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="Code sandbox"
-          />
-          <ExampleLink
-            url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="StackBlitz"
-          />
-        </span>
-      }
       style={{
         width: table.getCenterTotalSize(),
       }}>
