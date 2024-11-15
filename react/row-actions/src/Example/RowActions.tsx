@@ -1,7 +1,6 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 
 import {
-  Column,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -12,9 +11,6 @@ import { DataTable, IconButton, TableContainer } from '@carbon/react';
 import { TrashCan, Edit } from '@carbon/react/icons';
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
-import { ExampleLink } from './ExampleLink';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
 
 export const RowActions = () => {
   const onDelete = (row: Resource) => {
@@ -91,25 +87,7 @@ export const RowActions = () => {
   return (
     <TableContainer
       title="Row actions"
-      className="tanstack-example sticky-example"
-      description={
-        <span className="flex">
-          <ExampleLink
-            url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="Code sandbox"
-          />
-          <ExampleLink
-            url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="StackBlitz"
-          />
-        </span>
-      }>
+      className="tanstack-example sticky-example">
       <Table>
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (

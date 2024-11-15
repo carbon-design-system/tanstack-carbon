@@ -1,5 +1,5 @@
-import React, { useRef, useState, useLayoutEffect } from 'react';
-import { DataTable, Pagination } from '@carbon/react';
+import { useRef, useState, useLayoutEffect } from 'react';
+import { DataTable } from '@carbon/react';
 const {
   Table,
   TableBody,
@@ -15,13 +15,9 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  PaginationState,
-  getPaginationRowModel,
+  ColumnResizeMode,
 } from '@tanstack/react-table';
 import { makeData } from './makeData';
-import { ExampleLink } from './ExampleLink';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
 
 type Resource = {
   id: string;
@@ -55,23 +51,16 @@ const columns = [
   }),
 ];
 
-export const PaginationExample = () => {
-  const [data] = useState(makeData(200));
-  const [pagination, setPagination] = React.useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+export const ResizableCols = () => {
+  const [data] = useState(makeData(7));
+
+  const [columnResizeMode] = useState<ColumnResizeMode>('onChange');
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    // no need to pass pageCount or rowCount with client-side pagination as it is calculated automatically
-    state: {
-      pagination,
-    },
+    columnResizeMode,
   });
 
   const tableWrap = useRef<HTMLDivElement>();
@@ -86,26 +75,8 @@ export const PaginationExample = () => {
 
   return (
     <TableContainer
-      title="Pagination"
+      title="Resizable columns"
       className="basic-table tanstack-example"
-      description={
-        <span className="flex">
-          <ExampleLink
-            url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="Code sandbox"
-          />
-          <ExampleLink
-            url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="StackBlitz"
-          />
-        </span>
-      }
       style={{
         width: table.getCenterTotalSize(),
       }}>
@@ -125,6 +96,29 @@ export const PaginationExample = () => {
                         header.column.columnDef.header,
                         header.getContext()
                       )}
+                  <div
+                    {...{
+                      onDoubleClick: () => header.column.resetSize(),
+                      onMouseDown: header.getResizeHandler(),
+                      onTouchStart: header.getResizeHandler(),
+                      className: `resizer ${
+                        table.options.columnResizeDirection
+                      } ${header.column.getIsResizing() ? 'isResizing' : ''}`,
+                      style: {
+                        transform:
+                          columnResizeMode === 'onEnd' &&
+                          header.column.getIsResizing()
+                            ? `translateX(${
+                                (table.options.columnResizeDirection === 'rtl'
+                                  ? -1
+                                  : 1) *
+                                (table.getState().columnSizingInfo
+                                  .deltaOffset ?? 0)
+                              }px)`
+                            : '',
+                      },
+                    }}
+                  />
                 </TableHeader>
               ))}
             </TableRow>
@@ -146,22 +140,6 @@ export const PaginationExample = () => {
           ))}
         </TableBody>
       </Table>
-      <Pagination
-        page={table.getState().pagination.pageIndex + 1}
-        totalItems={data.length}
-        pagesUnknown={false}
-        pageInputDisabled={undefined}
-        pageSizeInputDisabled={undefined}
-        backwardText={'Previous page'}
-        forwardText={'Next page'}
-        pageSize={table.getState().pagination.pageSize}
-        pageSizes={[10, 20, 30, 40, 50]}
-        itemsPerPageText={'Items per page:'}
-        onChange={({ pageSize, page }) => {
-          table.setPageSize(Number(pageSize));
-          table.setPageIndex(page - 1);
-        }}
-      />
     </TableContainer>
   );
 };

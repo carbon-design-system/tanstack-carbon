@@ -14,11 +14,9 @@ import {
   TableContainer,
   useContextMenu,
 } from '@carbon/react';
+import { TrashCan } from '@carbon/react/icons';
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
-import { ExampleLink } from './ExampleLink';
-import { Launch, TrashCan } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
 
 const ContextRow = ({ row, children, updateData, data }) => {
   const el = useRef(null);
@@ -98,25 +96,7 @@ export const RowWithContextMenu = () => {
   return (
     <TableContainer
       title="Row with context menu"
-      className="tanstack-example sticky-example"
-      description={
-        <span className="flex">
-          <ExampleLink
-            url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="Code sandbox"
-          />
-          <ExampleLink
-            url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="StackBlitz"
-          />
-        </span>
-      }>
+      className="tanstack-example sticky-example">
       <Table>
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -17,9 +17,6 @@ const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
 
 import { makeData, Resource } from './makeData';
-import { ExampleLink } from './ExampleLink';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
 
 //custom sorting logic for one of our enum columns
 const sortStatusFn: SortingFn<Resource> = (rowA, rowB) => {
@@ -102,27 +99,7 @@ export const SortableColumns = () => {
   // console.log(table.getState().sorting)
 
   return (
-    <TableContainer
-      title="Column sorting"
-      className="tanstack-example"
-      description={
-        <span className="flex">
-          <ExampleLink
-            url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="Code sandbox"
-          />
-          <ExampleLink
-            url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="StackBlitz"
-          />
-        </span>
-      }>
+    <TableContainer title="Column sorting" className="tanstack-example">
       <Table className="sortable-example">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (

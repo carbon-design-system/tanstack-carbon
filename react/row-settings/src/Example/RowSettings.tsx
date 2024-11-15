@@ -38,9 +38,8 @@ import {
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { ExampleLink } from './ExampleLink';
 import { Launch, Settings } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
+import * as packageJson from '../../package.json';
 
 import { makeData, Resource } from './makeData';
 
@@ -120,26 +119,6 @@ export const RowSettings = () => {
       <TableContainer
         title="Row settings"
         className="basic-table"
-        description={
-          <span className="flex">
-            <ExampleLink
-              url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-                packageJson.name
-              }`}
-              icon={Launch}
-              label="Code sandbox"
-            />
-            <ExampleLink
-              url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-                packageJson.name
-              }`}
-              icon={Launch}
-              label="StackBlitz"
-            />
-            excludes <CodeSnippet type="inline">Example</CodeSnippet> column
-            from global filtering
-          </span>
-        }
         style={{
           width: table.getCenterTotalSize(),
         }}>

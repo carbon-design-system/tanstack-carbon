@@ -12,9 +12,6 @@ import { DataTable, IconButton, TableContainer } from '@carbon/react';
 import { TrashCan, Edit } from '@carbon/react/icons';
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
-import { ExampleLink } from './ExampleLink';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../package.json';
 
 //These are the important styles to make sticky column pinning work!
 //Apply styles like this using your CSS strategy of choice with this kind of logic to head cells, data cells, footer cells, etc.
@@ -115,24 +112,6 @@ export const StickyColumns = () => {
     <TableContainer
       title="Sticky columns"
       className="tanstack-example sticky-example"
-      description={
-        <span className="flex">
-          <ExampleLink
-            url={`${import.meta.env.VITE_CODE_SANDBOX_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="Code sandbox"
-          />
-          <ExampleLink
-            url={`${import.meta.env.VITE_STACK_BLITZ_URL_ROOT}/${
-              packageJson.name
-            }`}
-            icon={Launch}
-            label="StackBlitz"
-          />
-        </span>
-      }
       style={{
         width: 500,
       }}>
