@@ -1,5 +1,6 @@
 import { Grid, Column } from '@carbon/react';
 import { CustomizeColumns } from './CustomizeColumns';
+import './example.scss';
 
 export const Example = () => {
   return (
