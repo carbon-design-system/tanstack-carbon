@@ -1,9 +1,5 @@
-@use '@carbon/styles/scss/theme' as *;
-@use '@carbon/styles/scss/spacing' as *;
-@use '@carbon/styles/scss/utilities';
-@use '@carbon/styles/scss/colors';
-@use '@carbon/styles/scss/type';
-@use '@carbon/type/scss/font-family';
+@use '@carbon/react/scss/theme' as *;
+@use '@carbon/react/scss/spacing' as *;
 
 .page-grid {
   margin-top: 4rem;
@@ -12,45 +8,6 @@
 .flex {
   display: flex;
   align-items: center;
-}
-
-.basic-table th,
-.cds--data-table th:last-of-type {
-  position: relative;
-}
-
-.resizer {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 5px;
-  background: rgb(0 0 0 / 50%);
-  cursor: col-resize;
-  user-select: none;
-  touch-action: none;
-}
-
-.resizer.ltr {
-  right: 0;
-}
-
-.resizer.rtl {
-  left: 0;
-}
-
-.resizer.isResizing {
-  background: blue;
-  opacity: 1;
-}
-
-@media (hover: hover) {
-  .resizer {
-    opacity: 0;
-  }
-
-  *:hover > .resizer {
-    opacity: 1;
-  }
 }
 
 .tanstack-example {

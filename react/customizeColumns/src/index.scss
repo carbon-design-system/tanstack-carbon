@@ -1,9 +1,7 @@
 @use '@carbon/react' with (
   $font-path: '@ibm/plex'
 );
-@use '@carbon/styles/scss/type';
-@use '@carbon/styles/scss/spacing' as *;
-@use '@carbon/ibm-products/css/index';
+@use '@carbon/react/scss/spacing' as *;
 
 body {
   margin: 0;

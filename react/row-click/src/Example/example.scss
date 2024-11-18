@@ -1,9 +1,6 @@
-@use '@carbon/styles/scss/theme' as *;
-@use '@carbon/styles/scss/spacing' as *;
-@use '@carbon/styles/scss/utilities';
-@use '@carbon/styles/scss/colors';
-@use '@carbon/styles/scss/type';
-@use '@carbon/type/scss/font-family';
+@use '@carbon/ibm-products/css/index';
+@use '@carbon/react/scss/theme' as *;
+@use '@carbon/react/scss/spacing' as *;
 
 .page-grid {
   margin-top: 4rem;
