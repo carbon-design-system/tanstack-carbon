@@ -49,8 +49,6 @@ import { rankItem } from '@tanstack/match-sorter-utils';
 
 import { makeData } from './makeData';
 import { TagOverflow, pkg } from '@carbon/ibm-products';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 
 pkg.component.TagOverflow = true;
 
