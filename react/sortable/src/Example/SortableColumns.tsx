@@ -5,6 +5,7 @@ import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
+  SortDirection,
   SortingFn,
   SortingState,
   useReactTable,
@@ -137,7 +138,7 @@ export const SortableColumns = () => {
                         {{
                           asc: <ArrowUp />,
                           desc: <ArrowUp className="descending-sorting-icon" />,
-                        }[header.column.getIsSorted() as string] ?? null}
+                        }[header.column.getIsSorted() as SortDirection] ?? null}
                       </Button>
                     )}
                   </TableHeader>
