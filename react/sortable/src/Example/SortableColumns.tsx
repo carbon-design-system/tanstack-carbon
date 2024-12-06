@@ -128,6 +128,12 @@ export const SortableColumns = () => {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+                        {/*
+                          This syntax is slightly odd so adding some additional context,
+                          this uses index notation to choose an object property, either
+                          one of the SortDirection values will be chosen (ie `asc` or `desc`)
+                          or false, which means null will be applied here
+                         */}
                         {{
                           asc: <ArrowUp />,
                           desc: <ArrowUp className="descending-sorting-icon" />,
