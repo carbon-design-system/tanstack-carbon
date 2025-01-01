@@ -15,8 +15,8 @@ import {
   Dropdown,
   ButtonSet,
   Button,
-  Checkbox,
   NumberInput,
+  FilterableMultiSelect,
 } from '@carbon/react';
 import { Close, Filter } from '@carbon/react/icons';
 const {
@@ -112,7 +112,7 @@ const columns = [
   }),
 ];
 
-export const FilterPanel = () => {
+export const WithFilterableMultiSelect = () => {
   const [data] = useState(makeData(7));
   const [globalFilter, setGlobalFilter] = React.useState('');
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -296,7 +296,7 @@ export const FilterPanel = () => {
     <div ref={containerRef}>
       <TableContainer
         id={tableId}
-        title="Filter panel"
+        title="Filter panel with FilterableMultiSelect"
         className="basic-table tanstack-example filter-flyout-example filter-panel-example"
         style={{
           width: table.getCenterTotalSize(),
@@ -478,16 +478,6 @@ const FilterColumn = ({
     [column]
   );
 
-  const getCheckboxState = (value) => {
-    const foundFilter = localFilters.find((c) => c.id === column.id);
-    const isChecked = foundFilter
-      ? (
-          localFilters.find((c) => c.id === column.id)?.value as string[]
-        ).includes(value)
-      : false;
-    return !!isChecked;
-  };
-
   return filterVariant === 'select' ? (
     <Layer level={2}>
       <Dropdown
@@ -521,47 +511,37 @@ const FilterColumn = ({
     </Layer>
   ) : filterVariant === 'checkbox' ? (
     <Layer level={2}>
-      <p className="filter-checkbox-group-label">{column.id}</p>
-      {sortedUniqueValues.map((value: string) => (
-        <Checkbox
-          key={value}
-          id={value}
-          labelText={value}
-          checked={getCheckboxState(value)}
-          onChange={(_, { checked, id }) => {
-            const temp = [...localFilters];
-            const foundLocalFilter = temp.filter((f) => f.id === column.id);
-            const foundFilterIndex = foundLocalFilter.length
-              ? temp.findIndex((f) => f.id === foundLocalFilter[0].id)
-              : -1;
-            // This means there is only one checkbox selected
-            if (checked) {
-              if (foundFilterIndex > -1) {
-                const foundFilterValues = foundLocalFilter[0].value as [];
-                temp.splice(foundFilterIndex, 1);
-                temp.push({ id: column.id, value: [...foundFilterValues, id] });
-                setLocalFilters(temp);
-                return;
-              }
-              setLocalFilters([...temp, { id: column.id, value: [id] }]);
-              return;
+      <FilterableMultiSelect
+        id="carbon-multiselect-example-1"
+        itemToString={(item) => (item ? item : '')}
+        items={sortedUniqueValues}
+        initialSelectedItems={
+          localFilters.find((c) => c.id === column.id)?.value as string[]
+        }
+        onChange={(selected) => {
+          const selectedItem = selected.selectedItems;
+          const temp = [...localFilters];
+          const foundIndex = temp.findIndex((c) => c.id === column.id);
+          if (foundIndex > -1) {
+            if (selectedItem.length === 0) {
+              temp.splice(foundIndex, 1);
+            } else {
+              temp[foundIndex] = { id: column.id, value: selectedItem };
             }
-            if (!checked) {
-              if (foundFilterIndex > -1) {
-                const foundFilterValues = foundLocalFilter[0].value as [];
-                const newFoundFilterValues = foundFilterValues.filter(
-                  (item) => item !== id
-                );
-                temp.splice(foundFilterIndex, 1);
-                if (newFoundFilterValues && newFoundFilterValues.length) {
-                  temp.push({ id: column.id, value: newFoundFilterValues });
-                }
-                setLocalFilters(temp);
-              }
-            }
-          }}
-        />
-      ))}
+          } else {
+            temp.push({ id: column.id, value: selectedItem });
+          }
+          setLocalFilters(temp);
+        }}
+        selectionFeedback="top-after-reopen"
+        titleText={`Filter ${column.id}`}
+        placeholder="Choose a rule"
+        filterItems={(items, { inputValue }) =>
+          items.filter((item) =>
+            item.toLowerCase().includes(inputValue.toLowerCase())
+          )
+        }
+      />
     </Layer>
   ) : filterVariant === 'number' ? (
     <Layer level={2}>
