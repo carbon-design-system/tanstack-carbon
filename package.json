@@ -6,6 +6,7 @@
     "build": "lerna run build --stream",
     "clean": "rm -rf **/{node_modules,es,lib,dist}",
     "format": "prettier --cache --write '**/*.{js,md,scss,ts,tsx}' '!**/{build,es,lib,storybook,ts,umd,dist}/**'",
+    "format:diff": "prettier --list-different '**/*.{js,jsx,md,scss,ts,tsx}' '*.{js,jsx,md,scss,ts,tsx}' '!**/{build,es,lib,storybook,ts,umd}/**'",
     "lint": "npx eslint --flag unstable_config_lookup_from_file .",
     "lint:styles": "stylelint '**/*.scss' --report-needless-disables --report-invalid-scope-disables"
   },
