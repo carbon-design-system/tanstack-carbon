@@ -17,8 +17,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { makeData } from './makeData';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 import { StatusIcon } from '@carbon/ibm-products';
 
 type Resource = {

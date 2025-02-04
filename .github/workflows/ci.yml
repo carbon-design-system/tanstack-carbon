@@ -11,22 +11,16 @@ permissions:
   contents: read
 
 jobs:
-  main:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
         with:
-          fetch-depth: 0
-
-      # Cache node_modules
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+          node-version: '20.x'
           cache: 'yarn'
-      - name: Install
-        run: yarn
-
-      # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
-      - run:
-          npx nx affected -t build --base=origin/main --head=origin/${{
-          github.head_ref || github.ref_name }}
+      - name: Install dependencies
+        run: yarn install
+      - name: Run build
+        run: yarn build

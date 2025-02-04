@@ -14,8 +14,6 @@ const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
 
 import { makeData, Resource } from './makeData';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 
 export const DynamicNestedRows = () => {
   const [data, setData] = React.useState(() => makeData(5));

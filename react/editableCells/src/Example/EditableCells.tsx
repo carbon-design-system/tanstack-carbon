@@ -17,8 +17,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { makeData } from './makeData';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 import { useKeyPress } from './hooks/useKeyPress';
 
 type Resource = {
