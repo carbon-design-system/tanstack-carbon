@@ -1,4 +1,4 @@
-import { LitElement, css, html } from 'lit';
+import { LitElement, css, html, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
@@ -8,7 +8,13 @@ import {
   TableController,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
+import '@carbon/web-components/es/components/text-input/index.js';
 import { makeData } from './makeData';
+import indexStyles from './index.scss?inline';
+
+const styles = css`
+  ${unsafeCSS(indexStyles)}
+`;
 
 type Resource = {
   id: string;
@@ -52,6 +58,86 @@ const data: Resource[] = makeData(10);
 @customElement('basic-tanstack-table')
 export class MyBasicTable extends LitElement {
   private tableController = new TableController<Resource>(this);
+  private editingCell: {
+    rowId: string;
+    columnId: string;
+  } | null = null;
+  private editingValue: string = '';
+
+  private setEditingCell(rowId: string, columnId: string, value: string) {
+    this.editingCell = { rowId, columnId };
+    this.editingValue = value;
+    this.requestUpdate();
+    requestAnimationFrame(() => {
+      const input = this.shadowRoot?.querySelector(
+        'cds-text-input'
+      ) as HTMLInputElement;
+      input?.focus();
+    });
+  }
+
+  private handleInputChange(e: Event) {
+    const input = e.target as HTMLInputElement;
+    this.editingValue = input.value;
+    // this.requestUpdate();
+  }
+
+  private handleInputModeKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      console.log('done editing');
+      this.editingCell = null;
+      this.requestUpdate();
+      console.log(this.tableController.tableInstance);
+    }
+  }
+  private handleCellKeyPress(
+    e: KeyboardEvent,
+    rowId: string,
+    columnId: string,
+    value: string
+  ) {
+    switch (e.key) {
+      case 'Enter':
+        console.log('Enter');
+
+        this.setEditingCell(rowId, columnId, value);
+        break;
+      case 'Escape':
+        console.log('Escape');
+        break;
+      case 'ArrowLeft':
+        console.log('ArrowLeft');
+        break;
+      case 'ArrowRight':
+        console.log('ArrowRight');
+        break;
+      case 'ArrowUp':
+        console.log('ArrowUp');
+        break;
+      case 'ArrowDown':
+        console.log('ArrowDown');
+        break;
+    }
+  }
+
+  private handleCellClick(e: MouseEvent, rowId: string, columnId: string) {
+    this.editingCell = null;
+    console.log(console.log(rowId, columnId));
+
+    const cells = this.shadowRoot?.querySelectorAll(
+      'cds-table-cell'
+    ) as NodeListOf<HTMLElement>;
+    cells?.forEach((cell) => {
+      cell.tabIndex = -1;
+    });
+    const target = e.target as HTMLElement;
+    target.tabIndex = 0;
+    requestAnimationFrame(() => {
+      target.focus();
+    });
+    this.requestUpdate();
+    // this.setEditingCell(rowId, columnId, target.textContent || '');
+  }
 
   render() {
     const table = this.tableController.table({
@@ -72,7 +158,8 @@ export class MyBasicTable extends LitElement {
                   headerGroup.headers,
                   (header) => header.id,
                   (header) =>
-                    html` <cds-table-header-cell>
+                    html` <cds-table-header-cell
+                      style="width: ${header.getSize()}px">
                       ${header.isPlaceholder
                         ? null
                         : flexRender(
@@ -93,13 +180,41 @@ export class MyBasicTable extends LitElement {
                 ${repeat(
                   row.getVisibleCells(),
                   (cell) => cell.id,
-                  (cell) =>
-                    html` <cds-table-cell>
-                      ${flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </cds-table-cell>`
+                  (cell) => {
+                    return html`
+                      ${this.editingCell?.rowId === row.id &&
+                      this.editingCell.columnId === cell.column.id
+                        ? html`
+                            <td
+                              style="padding: 0px; display: table-cell; width: ${cell.column.getSize()}px;">
+                              <cds-text-input
+                                style="height: 47px; display: block;"
+                                size="lg"
+                                @keydown=${this.handleInputModeKeyDown}
+                                value=${this.editingValue}
+                                @input=${this.handleInputChange}
+                                }></cds-text-input>
+                            </td>
+                          `
+                        : html`<cds-table-cell
+                            id="cell__${cell.id}"
+                            style="width: ${cell.column.getSize()}px"
+                            @keydown=${(e: any) =>
+                              this.handleCellKeyPress(
+                                e,
+                                row.id,
+                                cell.column.id,
+                                cell.getValue() as string
+                              )}
+                            @click=${(e: any) =>
+                              this.handleCellClick(e, row.id, cell.column.id)}
+                            >${flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}</cds-table-cell
+                          >`}
+                    `;
+                  }
                 )}
               </cds-table-row>
             `
@@ -109,15 +224,18 @@ export class MyBasicTable extends LitElement {
     `;
   }
 
-  static styles = css`
-    :host {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 2rem;
-      display: flex;
-      place-items: center;
-    }
-  `;
+  static styles = [
+    css`
+      :host {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: flex;
+        place-items: center;
+      }
+    `,
+    styles,
+  ];
 }
 
 declare global {
