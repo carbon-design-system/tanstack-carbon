@@ -94,6 +94,7 @@ export const DynamicNestedRows = () => {
         header: () => <span>Other</span>,
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [rowsFetchingList]
   );
 

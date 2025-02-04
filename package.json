@@ -6,7 +6,7 @@
     "build": "lerna run build --stream",
     "clean": "rm -rf **/{node_modules,es,lib,dist}",
     "format": "prettier --cache --write '**/*.{js,md,scss,ts,tsx}' '!**/{build,es,lib,storybook,ts,umd,dist}/**'",
-    "lint": "nx run-many -t lint --flag unstable_ts_config",
+    "lint": "npx eslint --flag unstable_config_lookup_from_file .",
     "lint:styles": "stylelint '**/*.scss' --report-needless-disables --report-invalid-scope-disables"
   },
   "private": true,
@@ -14,19 +14,23 @@
   "devDependencies": {
     "@commitlint/cli": "^18.0.0",
     "@commitlint/config-conventional": "^18.0.0",
+    "@eslint/js": "^9.19.0",
     "@nx/js": "^19.6.4",
-    "eslint": "^9.0.0",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^15.14.0",
     "husky": "^9.0.0",
     "jiti": "^2.0.0",
     "lerna": "^8.0.0",
     "lint-staged": "^15.0.0",
-    "nx": "^19.6.4",
     "prettier": "^2.8.8",
     "prettier-config-carbon": "^0.11.0",
     "rimraf": "^5.0.0",
     "stylelint": "^16.9.0",
     "stylelint-config-carbon": "^1.19.0-rc.0",
-    "stylelint-config-standard-scss": "^13.1.0"
+    "stylelint-config-standard-scss": "^13.1.0",
+    "typescript-eslint": "^8.23.0"
   },
   "commitlint": {
     "extends": [

@@ -38,7 +38,7 @@ export function isInputDOMNode(event: KeyboardEvent): boolean {
 export function useKeyPress(
   // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
   // a string means a single key 'a' or a combination when '+' is used 'a+d'
-  // an array means different possibilites. Explainer: ['a', 'd+s'] here the
+  // an array means different possibilities. Explainer: ['a', 'd+s'] here the
   // user can use the single key 'a' or the combination 'd' + 's'
   keyCode: KeyCode | null = null,
   options: UseKeyPressOptions = {
@@ -92,6 +92,7 @@ export function useKeyPress(
         if (preventAction) {
           return false;
         }
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
@@ -110,6 +111,7 @@ export function useKeyPress(
         if (preventAction) {
           return false;
         }
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, true)) {
@@ -156,6 +158,7 @@ export function useKeyPress(
         window.removeEventListener('contextmenu', resetHandler);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyCode, setKeyPressed, keyPressed]);
 
   console.log(keyPressed);

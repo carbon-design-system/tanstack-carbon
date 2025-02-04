@@ -63,7 +63,7 @@ const columns = [
         kind: getStatusIconValue(info.renderValue()),
         iconDescription: info.renderValue(),
       };
-      // @ts-expect-error
+      // @ts-expect-error Double check getStatusIconValue(info.renderValue())
       return <StatusIcon className="center-align-cell" {...iconProps} />;
     },
   }),

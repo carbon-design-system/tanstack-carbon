@@ -210,7 +210,7 @@ export const EditableCells = () => {
     event.preventDefault();
     const key = event.code;
     const activeCellElement = getActiveCell();
-    if (!!commandLeft) {
+    if (commandLeft) {
       return;
     }
     // Don't enter switch if there is no active cell

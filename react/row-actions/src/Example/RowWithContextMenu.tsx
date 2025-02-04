@@ -43,8 +43,7 @@ const ContextRow = ({ row, children, updateData, data }) => {
       <tr key={row.id} onContextMenu={handleContextMenu} ref={el}>
         {children}
       </tr>
-      {/* @ts-ignore not sure what's going on here with `mode` prop */}
-      <Menu label="testing 123" {...menuProps}>
+      <Menu label="testing 123" {...menuProps} mode="basic">
         <MenuItem
           onClick={removeItem}
           label="Delete"
