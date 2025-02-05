@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction, useState, useRef } from 'react';
-import cx from 'classnames';
 import {
   DataTable,
   IconButton,
@@ -12,6 +11,8 @@ import {
   Button,
   Checkbox,
   NumberInput,
+  OperationalTag,
+  DismissibleTag,
 } from '@carbon/react';
 import { Filter } from '@carbon/react/icons';
 const {
@@ -43,9 +44,7 @@ import {
 import { rankItem } from '@tanstack/match-sorter-utils';
 
 import { makeData } from './makeData';
-import { TagOverflow, pkg } from '@carbon/ibm-products';
-
-pkg.component.TagOverflow = true;
+import { useIsOverflow } from './useOverflow';
 
 type Resource = {
   id: string;
@@ -110,6 +109,17 @@ export const FilterFlyout = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [localFilters, setLocalFilters] = useState<ColumnFiltersState>([]);
+  const filterSummaryRef = useRef();
+  const measureTagRef = useRef();
+  const overflowTagRef = useRef();
+  const [operationalPopover, setOperationalPopover] = useState(false);
+  const { displayCount } = useIsOverflow({
+    ref: filterSummaryRef,
+    measureRef: measureTagRef,
+    measurementOffset: 106,
+    callback: () => {},
+    overflowTag: overflowTagRef,
+  });
 
   const table = useReactTable({
     data,
@@ -219,6 +229,17 @@ export const FilterFlyout = () => {
     }
   };
 
+  const getRemainingFilters = () => {
+    const remainingNumber = buildTagFilters().length - displayCount;
+    const cloneFilters = [...buildTagFilters()];
+    const remainingFilters = cloneFilters
+      .slice(1)
+      .slice(-Math.abs(remainingNumber));
+    return remainingFilters.map((f) => (
+      <DismissibleTag key={f.label} text={f.label} onClose={f.onClose} />
+    ));
+  };
+
   const containerRef = useRef();
   const popoverRef = useRef<HTMLSpanElement>();
 
@@ -309,8 +330,56 @@ export const FilterFlyout = () => {
           </TableToolbarContent>
         </TableToolbar>
         {buildTagFilters().length ? (
-          <div className="filter--summary">
-            <TagOverflow
+          <div className="filter--summary" ref={filterSummaryRef}>
+            <div className="measure-tags" aria-hidden ref={measureTagRef}>
+              {buildTagFilters().map((t) => {
+                return (
+                  <DismissibleTag
+                    text={t.label}
+                    onClose={t.onClose}
+                    key={t.label}
+                  />
+                );
+              })}
+            </div>
+            <div className="filter--summary-tag-and-overflow-wrapper">
+              <div className="visible-tags">
+                {buildTagFilters().map((t, index) => {
+                  if (index <= displayCount - 1) {
+                    return (
+                      <DismissibleTag
+                        text={t.label}
+                        onClose={t.onClose}
+                        key={t.label}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+              {displayCount < buildTagFilters().length && (
+                <Popover
+                  open={operationalPopover}
+                  align="bottom-right"
+                  autoAlign
+                  isTabTip
+                  onRequestClose={() => setOperationalPopover((prev) => !prev)}
+                  ref={overflowTagRef}>
+                  <div>
+                    <OperationalTag
+                      text={`+${buildTagFilters().length - displayCount}`}
+                      onClick={() => setOperationalPopover((prev) => !prev)}
+                    />
+                  </div>
+                  <PopoverContent>
+                    <div className="filter-overflow-popover">
+                      {getRemainingFilters()}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
+            </div>
+            {/* <TagOverflow
               className={cx({
                 ['tag-overflow-flyout-example']: buildTagFilters().length,
               })}
@@ -318,7 +387,7 @@ export const FilterFlyout = () => {
               items={buildTagFilters()}
               containingElementRef={containerRef}
               measurementOffset={140}
-            />
+            /> */}
             <Button
               kind="ghost"
               onClick={() => {
@@ -479,7 +548,6 @@ const FilterColumn = ({
     <Layer>
       <NumberInput
         id={column.id}
-        // value={(columnFilterValue ?? 0) as number}
         value={localFilters.find((c) => c.id === column.id)?.value as number}
         hideSteppers
         label={column.id}

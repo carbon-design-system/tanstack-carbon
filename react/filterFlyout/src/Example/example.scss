@@ -67,8 +67,33 @@
 .filter--summary {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .flyout-dropdown-selected-item {
   text-transform: capitalize;
+}
+
+.measure-tags {
+  position: absolute;
+  overflow: hidden;
+  inset-block-start: -100vh;
+  inset-inline-start: -100vw;
+  max-inline-size: 100vw;
+  pointer-events: none;
+  visibility: hidden;
+  display: flex; // will force only single line overflow to be measured
+}
+
+.filter-overflow-popover {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: $background-inverse;
+  color: $text-inverse;
+}
+
+.filter--summary-tag-and-overflow-wrapper {
+  display: flex;
+  align-items: center;
 }
