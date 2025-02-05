@@ -14,6 +14,7 @@ import {
   OperationalTag,
   DismissibleTag,
 } from '@carbon/react';
+import cx from 'classnames';
 import { Filter } from '@carbon/react/icons';
 const {
   Table,
@@ -45,6 +46,7 @@ import { rankItem } from '@tanstack/match-sorter-utils';
 
 import { makeData } from './makeData';
 import { useIsOverflow } from './useOverflow';
+import { NoDataEmptyState } from '@carbon/ibm-products';
 
 type Resource = {
   id: string;
@@ -379,15 +381,6 @@ export const FilterFlyout = () => {
                 </Popover>
               )}
             </div>
-            {/* <TagOverflow
-              className={cx({
-                ['tag-overflow-flyout-example']: buildTagFilters().length,
-              })}
-              // @ts-expect-error `filter` should be boolean in tag overflow component
-              items={buildTagFilters()}
-              containingElementRef={containerRef}
-              measurementOffset={140}
-            /> */}
             <Button
               kind="ghost"
               onClick={() => {
@@ -398,7 +391,14 @@ export const FilterFlyout = () => {
             </Button>
           </div>
         ) : null}
-        <Table size="lg" useZebraStyles={false} aria-label="sample table">
+        <Table
+          size="lg"
+          useZebraStyles={false}
+          aria-label="sample table"
+          className={cx({
+            ['empty-table-wrapper']:
+              table.getFilteredRowModel().rows.length === 0,
+          })}>
           <TableHead>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -419,7 +419,23 @@ export const FilterFlyout = () => {
               </TableRow>
             ))}
           </TableHead>
-          <TableBody>
+          <TableBody
+            className={cx({
+              ['empty-table-body']:
+                table.getFilteredRowModel().rows.length === 0,
+            })}>
+            {table.getFilteredRowModel().rows.length === 0 && (
+              <TableRow>
+                <TableCell>
+                  <NoDataEmptyState
+                    title="No results found"
+                    subtitle="Try adjusting your search or filter options to find what you're looking for."
+                    illustrationDescription="Test alt text"
+                    className="empty-table"
+                  />
+                </TableCell>
+              </TableRow>
+            )}
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
