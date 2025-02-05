@@ -28,8 +28,6 @@ import {
   restrictToVerticalAxis,
 } from '@dnd-kit/modifiers';
 import { verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 
 type Resource = {
   id: string;

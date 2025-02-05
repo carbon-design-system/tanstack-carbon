@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import { CodeSnippet, DataTable } from '@carbon/react';
+import { DataTable } from '@carbon/react';
 import { NoDataEmptyState } from '@carbon/ibm-products';
 import cx from 'classnames';
 
@@ -27,8 +27,6 @@ import {
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 
 import { makeData, Resource } from './makeData';
 

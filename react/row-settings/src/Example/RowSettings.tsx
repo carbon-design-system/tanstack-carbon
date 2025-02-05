@@ -1,7 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import {
   Button,
-  CodeSnippet,
   DataTable,
   DataTableSize,
   Layer,
@@ -38,8 +37,7 @@ import {
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Launch, Settings } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
+import { Settings } from '@carbon/react/icons';
 
 import { makeData, Resource } from './makeData';
 

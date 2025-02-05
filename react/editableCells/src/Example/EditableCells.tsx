@@ -17,8 +17,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { makeData } from './makeData';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 import { useKeyPress } from './hooks/useKeyPress';
 
 type Resource = {
@@ -212,7 +210,7 @@ export const EditableCells = () => {
     event.preventDefault();
     const key = event.code;
     const activeCellElement = getActiveCell();
-    if (!!commandLeft) {
+    if (commandLeft) {
       return;
     }
     // Don't enter switch if there is no active cell

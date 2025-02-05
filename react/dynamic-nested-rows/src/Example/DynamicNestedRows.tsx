@@ -14,8 +14,6 @@ const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
 
 import { makeData, Resource } from './makeData';
-import { Launch } from '@carbon/react/icons';
-import * as packageJson from '../../package.json';
 
 export const DynamicNestedRows = () => {
   const [data, setData] = React.useState(() => makeData(5));
@@ -96,6 +94,7 @@ export const DynamicNestedRows = () => {
         header: () => <span>Other</span>,
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [rowsFetchingList]
   );
 
