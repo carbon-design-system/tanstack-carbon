@@ -223,7 +223,7 @@
   width: 100%;
   display: block;
   background-color: $border-subtle;
-  animation-name: rotate-animation;
+  animation-name: divider-line;
   animation-duration: 1ms; /* Firefox requires this to apply the animation */
   animation-direction: alternate;
   animation-timeline: scroll(block nearest);
@@ -232,7 +232,7 @@
     opacity: 0;
   }
 
-  @keyframes rotate-animation {
+  @keyframes divider-line {
     0% {
       opacity: 0;
     }
