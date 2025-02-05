@@ -13,4 +13,3 @@ export const Example = () => (
     </Column>
   </Grid>
 );
-

@@ -626,4 +626,3 @@ const FilterColumn = ({
     </Layer>
   );
 };
-
