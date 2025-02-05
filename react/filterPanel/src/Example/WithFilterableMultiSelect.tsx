@@ -17,6 +17,10 @@ import {
   Button,
   NumberInput,
   FilterableMultiSelect,
+  DismissibleTag,
+  Popover,
+  OperationalTag,
+  PopoverContent,
 } from '@carbon/react';
 import { Close, Filter } from '@carbon/react/icons';
 const {
@@ -48,9 +52,8 @@ import {
 import { rankItem } from '@tanstack/match-sorter-utils';
 
 import { makeData } from './makeData';
-import { TagOverflow, pkg } from '@carbon/ibm-products';
-
-pkg.component.TagOverflow = true;
+import { NoDataEmptyState } from '@carbon/ibm-products';
+import { useIsOverflow } from './useOverflow';
 
 type Resource = {
   id: string;
@@ -118,6 +121,18 @@ export const WithFilterableMultiSelect = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [localFilters, setLocalFilters] = useState<ColumnFiltersState>([]);
+
+  const filterSummaryRef = useRef();
+  const measureTagRef = useRef();
+  const overflowTagRef = useRef();
+  const [operationalPopover, setOperationalPopover] = useState(false);
+  const { displayCount } = useIsOverflow({
+    ref: filterSummaryRef,
+    measureRef: measureTagRef,
+    measurementOffset: 106,
+    callback: () => {},
+    overflowTag: overflowTagRef,
+  });
 
   const table = useReactTable({
     data,
@@ -239,7 +254,7 @@ export const WithFilterableMultiSelect = () => {
       if (tableContent) {
         (tableContainer as HTMLDivElement)?.style.setProperty(
           '--table-height',
-          `${(tableContent as HTMLDivElement)?.clientHeight}px`
+          `${Math.max((tableContent as HTMLDivElement)?.clientHeight, 320)}px`
         );
       }
     }
@@ -292,12 +307,28 @@ export const WithFilterableMultiSelect = () => {
     }
   };
 
+  const getRemainingFilters = () => {
+    const remainingNumber = buildTagFilters().length - displayCount;
+    const cloneFilters = [...buildTagFilters()];
+    const remainingFilters = cloneFilters
+      .slice(1)
+      .slice(-Math.abs(remainingNumber));
+    return remainingFilters.map((f) => (
+      <DismissibleTag key={f.label} text={f.label} onClose={f.onClose} />
+    ));
+  };
+
   return (
     <div ref={containerRef}>
       <TableContainer
         id={tableId}
         title="Filter panel with FilterableMultiSelect"
-        className="basic-table tanstack-example filter-flyout-example filter-panel-example"
+        className={cx(
+          'basic-table tanstack-example filter-flyout-example filter-panel-example',
+          {
+            ['empty-table']: table.getFilteredRowModel().rows.length === 0,
+          }
+        )}
         style={{
           width: table.getCenterTotalSize(),
         }}>
@@ -321,21 +352,59 @@ export const WithFilterableMultiSelect = () => {
                 setGlobalFilter(event.target.value)
               }
               placeholder="Search all columns..."
-              persistent
             />
           </TableToolbarContent>
         </TableToolbar>
         {buildTagFilters().length ? (
-          <div className="filter--summary">
-            <TagOverflow
-              className={cx({
-                ['tag-overflow-flyout-example']: buildTagFilters().length,
+          <div className="filter--summary" ref={filterSummaryRef}>
+            <div className="measure-tags" aria-hidden ref={measureTagRef}>
+              {buildTagFilters().map((t) => {
+                return (
+                  <DismissibleTag
+                    text={t.label}
+                    onClose={t.onClose}
+                    key={t.label}
+                  />
+                );
               })}
-              // @ts-expect-error `filter` should be boolean in tag overflow component
-              items={buildTagFilters()}
-              containingElementRef={containerRef}
-              measurementOffset={140}
-            />
+            </div>
+            <div className="filter--summary-tag-and-overflow-wrapper">
+              <div className="visible-tags">
+                {buildTagFilters().map((t, index) => {
+                  if (index <= displayCount - 1) {
+                    return (
+                      <DismissibleTag
+                        text={t.label}
+                        onClose={t.onClose}
+                        key={t.label}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+              {displayCount < buildTagFilters().length && (
+                <Popover
+                  open={operationalPopover}
+                  align="bottom-right"
+                  autoAlign
+                  isTabTip
+                  onRequestClose={() => setOperationalPopover((prev) => !prev)}
+                  ref={overflowTagRef}>
+                  <div>
+                    <OperationalTag
+                      text={`+${buildTagFilters().length - displayCount}`}
+                      onClick={() => setOperationalPopover((prev) => !prev)}
+                    />
+                  </div>
+                  <PopoverContent>
+                    <div className="filter-overflow-popover">
+                      {getRemainingFilters()}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              )}
+            </div>
             <Button
               kind="ghost"
               onClick={() => {
@@ -357,6 +426,7 @@ export const WithFilterableMultiSelect = () => {
                     className="filter--panel__close"
                     aria-label="Close"
                     label="Close"
+                    align="left"
                     onClick={() => {
                       setPopoverOpen(false);
                       animatePanel();
@@ -416,7 +486,14 @@ export const WithFilterableMultiSelect = () => {
             </>
           )}
         </div>
-        <Table size="lg" useZebraStyles={false} aria-label="sample table">
+        <Table
+          size="lg"
+          useZebraStyles={false}
+          aria-label="sample table"
+          className={cx({
+            ['empty-table-wrapper']:
+              table.getFilteredRowModel().rows.length === 0,
+          })}>
           <TableHead>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -437,7 +514,23 @@ export const WithFilterableMultiSelect = () => {
               </TableRow>
             ))}
           </TableHead>
-          <TableBody>
+          <TableBody
+            className={cx({
+              ['empty-table-body']:
+                table.getFilteredRowModel().rows.length === 0,
+            })}>
+            {table.getFilteredRowModel().rows.length === 0 && (
+              <TableRow>
+                <TableCell>
+                  <NoDataEmptyState
+                    title="No results found"
+                    subtitle="Try adjusting your search or filter options to find what you're looking for."
+                    illustrationDescription="Test alt text"
+                    className="empty-table"
+                  />
+                </TableCell>
+              </TableRow>
+            )}
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (

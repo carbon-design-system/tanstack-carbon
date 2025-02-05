@@ -22,6 +22,21 @@
 
 .tanstack-example {
   padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  min-height: 420px;
+}
+
+.tanstack-example .cds--toolbar-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tanstack-example .cds--data-table-content {
+  overflow-x: auto;
+}
+
+.tanstack-example.empty-table .cds--data-table-content {
+  overflow-x: unset;
 }
 
 // Flyout
@@ -65,6 +80,7 @@
 .filter--summary {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .flyout-dropdown-selected-item {
@@ -72,13 +88,16 @@
 }
 
 .panel--container {
-  min-height: var(--table-height);
+  min-height: calc(
+    var(--table-height) + 16px
+  ); // account for x scrollbar of table
+
   min-width: 320px;
   border-right: 1px solid $border-subtle;
   position: absolute;
   left: 0;
   z-index: 1;
-  background-color: $layer-02;
+  background-color: $layer-01;
   opacity: 0;
   transform: translateX(-320px);
 
@@ -103,12 +122,13 @@
   overflow-y: scroll;
   position: relative;
   width: 100%;
-  height: var(--table-height);
+  height: calc(var(--table-height) + 16px);
 
   .filter--panel__close-wrapper.cds--popover-container:not(
       .cds--popover--auto-align
     ) {
-    position: initial;
+    position: absolute;
+    right: 0;
   }
 
   .filter--panel__close-wrapper.cds--popover-caret {
@@ -122,13 +142,15 @@
   right: 0;
 }
 
-.filter--panel__triggering-icon-open {
-  background-color: $layer-02;
+.filter--panel__triggering-icon-open.cds--btn--ghost,
+.filter-panel-search-input,
+.tanstack-example .cds--table-toolbar {
+  background-color: $layer-01;
 }
 
 .filter-panel-button-set {
   position: sticky;
-  bottom: 0;
+  bottom: 0; // account for x scrollbar of table
   width: 320px;
 
   button.cds--btn {
@@ -141,13 +163,53 @@
   padding: 0 1rem;
   position: sticky;
   top: 0;
-  background-color: $layer-02;
+  background-color: $layer-01;
   border-bottom: 1px solid $border-subtle;
   border-top: 1px solid $border-subtle;
   z-index: 2;
   display: flex;
-  flex-direction: row-reverse;
   justify-content: space-between;
   align-items: center;
   min-height: $spacing-09;
+}
+
+.measure-tags {
+  position: absolute;
+  overflow: hidden;
+  inset-block-start: -100vh;
+  inset-inline-start: -100vw;
+  max-inline-size: 100vw;
+  pointer-events: none;
+  visibility: hidden;
+  display: flex; // will force only single line overflow to be measured
+}
+
+.filter-overflow-popover {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background-color: $background-inverse;
+  color: $text-inverse;
+}
+
+.filter--summary-tag-and-overflow-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.cds--data-table.empty-table-wrapper td,
+.cds--data-table.empty-table-wrapper tbody th,
+.cds--data-table.empty-table-wrapper tbody tr:hover td {
+  border-block-end: 0;
+}
+
+.cds--data-table tbody.empty-table-body,
+.cds--data-table tbody.empty-table-body tr:not([data-child-row]):hover,
+.cds--data-table tbody.empty-table-body tr[data-child-row]:hover > td {
+  background-color: transparent;
+}
+
+.cds--data-table td .empty-table {
+  position: absolute;
+  max-width: 265px;
 }
