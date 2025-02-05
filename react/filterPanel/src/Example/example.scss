@@ -42,6 +42,8 @@
 // Flyout
 .flyout--container {
   padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
 .flyout--container .flyout--container__filters {
@@ -164,7 +166,6 @@
   position: sticky;
   top: 0;
   background-color: $layer-01;
-  border-bottom: 1px solid $border-subtle;
   border-top: 1px solid $border-subtle;
   z-index: 2;
   display: flex;
@@ -212,4 +213,32 @@
 .cds--data-table td .empty-table {
   position: absolute;
   max-width: 265px;
+}
+
+.scroll-divider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  display: block;
+  background-color: $border-subtle;
+  animation-name: rotate-animation;
+  animation-duration: 1ms; /* Firefox requires this to apply the animation */
+  animation-direction: alternate;
+  animation-timeline: scroll(block nearest);
+
+  @starting-style {
+    opacity: 0;
+  }
+
+  @keyframes rotate-animation {
+    0% {
+      opacity: 0;
+    }
+
+    20% {
+      opacity: 1;
+    }
+  }
 }

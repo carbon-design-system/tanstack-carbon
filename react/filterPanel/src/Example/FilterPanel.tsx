@@ -439,6 +439,7 @@ export const FilterPanel = () => {
                     <Close />
                   </IconButton>
                   <p className="flyout--label">Filter</p>
+                  <span className="scroll-divider" />
                 </div>
                 <div className="flyout--container">
                   <div className="flyout--container__filters">
