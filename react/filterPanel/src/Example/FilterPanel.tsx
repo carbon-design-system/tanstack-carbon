@@ -350,6 +350,16 @@ export const FilterPanel = () => {
           duration: 0.25,
         }
       );
+      animate(
+        `#${tableId} .cds--pagination`,
+        {
+          width: '100%',
+          transform: 'translateX(0px)',
+        },
+        {
+          duration: 0.25,
+        }
+      );
     } else {
       animate(
         `#${tableId} .panel--container`,
@@ -363,6 +373,16 @@ export const FilterPanel = () => {
       );
       animate(
         `#${tableId} .cds--data-table-content`,
+        {
+          width: 'calc(100% - 336px)',
+          transform: 'translateX(336px)',
+        },
+        {
+          duration: 0.25,
+        }
+      );
+      animate(
+        `#${tableId} .cds--pagination`,
         {
           width: 'calc(100% - 336px)',
           transform: 'translateX(336px)',
