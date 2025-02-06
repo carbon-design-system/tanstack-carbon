@@ -91,7 +91,7 @@
 
 .panel--container {
   min-height: calc(
-    var(--table-height) + 16px
+    var(--table-height) + 40px
   ); // account for x scrollbar of table
 
   min-width: 320px;
@@ -124,7 +124,7 @@
   overflow-y: scroll;
   position: relative;
   width: 100%;
-  height: calc(var(--table-height) + 16px);
+  height: calc(var(--table-height) + 40px);
 
   .filter--panel__close-wrapper.cds--popover-container:not(
       .cds--popover--auto-align
@@ -193,12 +193,22 @@
   color: $text-inverse;
 }
 
+.tanstack-example .cds--data-table tbody.empty-table-body tr {
+  height: 14rem;
+}
+
+.tanstack-example .cds--data-table tbody.empty-table-body tr td {
+  display: flex;
+  align-items: start;
+  padding-top: 2rem;
+  border-block-end: 0;
+}
+
 .filter--summary-tag-and-overflow-wrapper {
   display: flex;
   align-items: center;
 }
 
-.cds--data-table.empty-table-wrapper td,
 .cds--data-table.empty-table-wrapper tbody th,
 .cds--data-table.empty-table-wrapper tbody tr:hover td {
   border-block-end: 0;

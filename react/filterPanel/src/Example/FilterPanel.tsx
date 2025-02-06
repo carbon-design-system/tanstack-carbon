@@ -21,8 +21,18 @@ import {
   Popover,
   OperationalTag,
   PopoverContent,
+  Pagination,
+  TableBatchActions,
+  TableBatchAction,
 } from '@carbon/react';
-import { Close, Filter } from '@carbon/react/icons';
+import {
+  Add,
+  Close,
+  Download,
+  Filter,
+  Save,
+  TrashCan,
+} from '@carbon/react/icons';
 const {
   Table,
   TableBody,
@@ -48,6 +58,8 @@ import {
   Header,
   getFacetedUniqueValues,
   ColumnFilter,
+  getPaginationRowModel,
+  PaginationState,
 } from '@tanstack/react-table';
 import { rankItem } from '@tanstack/match-sorter-utils';
 
@@ -84,6 +96,49 @@ const tableId = 'table-' + Math.random().toString(36).substring(2, 15);
 const columnHelper = createColumnHelper<Resource>();
 
 const columns = [
+  {
+    id: 'select',
+    width: 48,
+    header: ({ table }) => (
+      // TableSelectAll throws DOM nesting error, using Checkbox instead to avoid this
+      <Checkbox
+        {...{
+          checked: table.getIsAllPageRowsSelected(),
+          indeterminate: table.getIsSomePageRowsSelected(),
+          onChange: () => {
+            const isIndeterminate = table.getIsSomeRowsSelected();
+            if (!isIndeterminate) {
+              table.toggleAllPageRowsSelected(true);
+            }
+            if (table.getIsAllPageRowsSelected()) {
+              table.toggleAllRowsSelected(false);
+              return;
+            }
+            if (isIndeterminate) {
+              table.toggleAllPageRowsSelected(true);
+              return;
+            }
+          },
+          id: 'batch-checkbox',
+          labelText: 'header checkbox',
+          hideLabel: true,
+        }}
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        {...{
+          checked: row.getIsSelected(),
+          disabled: !row.getCanSelect(),
+          indeterminate: row.getIsSomeSelected(),
+          onChange: row.getToggleSelectedHandler(),
+          id: `batch-checkbox__${row.id}`,
+          labelText: 'row checkbox',
+          hideLabel: true,
+        }}
+      />
+    ),
+  },
   columnHelper.accessor((row) => row.name, {
     id: 'name',
     cell: (info) => <i>{info.getValue()}</i>,
@@ -121,6 +176,11 @@ export const FilterPanel = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [localFilters, setLocalFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const filterSummaryRef = useRef();
   const measureTagRef = useRef();
@@ -143,13 +203,20 @@ export const FilterPanel = () => {
     state: {
       globalFilter,
       columnFilters,
+      rowSelection,
+      pagination,
     },
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(), //client side filtering
+    getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: 'fuzzy', //apply fuzzy filter to the global filter (most common use case for fuzzy filter)
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    enableRowSelection: (row) => row.original.status !== 'disabled', // conditionally disable rows
+    // enableRowSelection: row => row.original.age > 18, // or enable row selection
+    onRowSelectionChange: setRowSelection,
   });
 
   interface ExtendedColFilter extends ColumnFilter {
@@ -283,6 +350,16 @@ export const FilterPanel = () => {
           duration: 0.25,
         }
       );
+      animate(
+        `#${tableId} .cds--pagination`,
+        {
+          width: '100%',
+          transform: 'translateX(0px)',
+        },
+        {
+          duration: 0.25,
+        }
+      );
     } else {
       animate(
         `#${tableId} .panel--container`,
@@ -296,6 +373,16 @@ export const FilterPanel = () => {
       );
       animate(
         `#${tableId} .cds--data-table-content`,
+        {
+          width: 'calc(100% - 336px)',
+          transform: 'translateX(336px)',
+        },
+        {
+          duration: 0.25,
+        }
+      );
+      animate(
+        `#${tableId} .cds--pagination`,
         {
           width: 'calc(100% - 336px)',
           transform: 'translateX(336px)',
@@ -318,7 +405,7 @@ export const FilterPanel = () => {
     ));
   };
 
-  console.log(table.getFilteredRowModel().rows.length === 0);
+  const shouldShowBatchActions = Object.keys(rowSelection).length > 0;
 
   return (
     <div ref={containerRef}>
@@ -335,6 +422,43 @@ export const FilterPanel = () => {
           width: table.getCenterTotalSize(),
         }}>
         <TableToolbar>
+          <TableBatchActions
+            shouldShowBatchActions={shouldShowBatchActions}
+            totalSelected={Object.keys(rowSelection).length ?? 0}
+            onCancel={() => table.resetRowSelection()}
+            onSelectAll={() => {
+              table.toggleAllRowsSelected(true);
+            }}
+            totalCount={data?.length}>
+            <TableBatchAction
+              tabIndex={shouldShowBatchActions ? 0 : -1}
+              renderIcon={TrashCan}
+              onClick={() => table.resetRowSelection()}>
+              Delete
+            </TableBatchAction>
+            <TableBatchAction
+              hasIconOnly
+              iconDescription="Add"
+              tabIndex={shouldShowBatchActions ? 0 : -1}
+              renderIcon={Add}
+              onClick={() => table.resetRowSelection()}>
+              Delete
+            </TableBatchAction>
+            <TableBatchAction
+              hasIconOnly
+              iconDescription="Save"
+              tabIndex={shouldShowBatchActions ? 0 : -1}
+              renderIcon={Save}
+              onClick={() => table.resetRowSelection()}>
+              Save
+            </TableBatchAction>
+            <TableBatchAction
+              tabIndex={shouldShowBatchActions ? 0 : -1}
+              renderIcon={Download}
+              onClick={() => table.resetRowSelection()}>
+              Download
+            </TableBatchAction>
+          </TableBatchActions>
           <TableToolbarContent>
             <Layer>
               <IconButton
@@ -553,6 +677,22 @@ export const FilterPanel = () => {
             ))}
           </TableBody>
         </Table>
+        <Pagination
+          page={table.getState().pagination.pageIndex + 1}
+          totalItems={data.length}
+          pagesUnknown={false}
+          pageInputDisabled={undefined}
+          pageSizeInputDisabled={undefined}
+          backwardText={'Previous page'}
+          forwardText={'Next page'}
+          pageSize={table.getState().pagination.pageSize}
+          pageSizes={[10, 20, 30, 40, 50]}
+          itemsPerPageText={'Items per page:'}
+          onChange={({ pageSize, page }) => {
+            table.setPageSize(Number(pageSize));
+            table.setPageIndex(page - 1);
+          }}
+        />
       </TableContainer>
     </div>
   );
