@@ -1,5 +1,5 @@
 import { LitElement, css, html, unsafeCSS } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
   createColumnHelper,
@@ -58,16 +58,11 @@ const data: Resource[] = makeData(10);
 @customElement('basic-tanstack-table')
 export class MyBasicTable extends LitElement {
   private tableController = new TableController<Resource>(this);
-  private editingCell: {
-    rowId: string;
-    columnId: string;
-  } | null = null;
-  private editingValue: string = '';
+  @state()
+  private editingCellId: string | null = null;
 
-  private setEditingCell(rowId: string, columnId: string, value: string) {
-    this.editingCell = { rowId, columnId };
-    this.editingValue = value;
-    this.requestUpdate();
+  private setEditingCell(id: string, value: string) {
+    this.editingCellId = id;
     requestAnimationFrame(() => {
       const input = this.shadowRoot?.querySelector(
         'cds-text-input'
@@ -76,66 +71,108 @@ export class MyBasicTable extends LitElement {
     });
   }
 
-  private handleInputChange(e: Event) {
-    const input = e.target as HTMLInputElement;
-    this.editingValue = input.value;
-    // this.requestUpdate();
-  }
-
-  private handleInputModeKeyDown(e: KeyboardEvent) {
-    if (e.key === 'Enter') {
-      console.log('done editing');
-      this.editingCell = null;
-      this.requestUpdate();
-      console.log(this.tableController.tableInstance);
+  private handleInputKeydown(e: KeyboardEvent) {
+    if (e.target && e.key === 'Enter') {
+      let cellId = this.editingCellId;
+      (e.target as HTMLElement).blur()
+      setTimeout(() => {
+        const cell = this.shadowRoot?.querySelector(`#cell__${cellId}`) as HTMLElement;
+        cell?.setAttribute('tabindex', '0');
+        cell?.focus();
+      });
     }
   }
-  private handleCellKeyPress(
-    e: KeyboardEvent,
-    rowId: string,
-    columnId: string,
-    value: string
-  ) {
+  private handleCellKeydown(e: KeyboardEvent, cell: any) {
+    const { id } = cell;
+    const activeCellElement = this.shadowRoot?.querySelector(
+      'cds-table-cell[tabindex="0"]'
+    ) as any;
+    const activeCellRowIndex = Array.prototype.indexOf.call(
+      activeCellElement.parentNode.children,
+      activeCellElement
+    );
+    const parentRow = activeCellElement?.closest('cds-table-row');
+    const allTableCells = this.shadowRoot?.querySelectorAll('cds-table-cell');
+
+    const setActiveCell = (newActiveCell: HTMLElement | null) => {
+      allTableCells?.forEach((cell: any) => {
+        cell.tabIndex = -1;
+      });
+      (document.activeElement as HTMLElement).blur();
+      if (newActiveCell) {
+        newActiveCell.tabIndex = 0;
+        newActiveCell.focus();
+      }
+    };
+
     switch (e.key) {
       case 'Enter':
-        console.log('Enter');
-
-        this.setEditingCell(rowId, columnId, value);
+        this.setEditingCell(id, cell.getValue());
         break;
       case 'Escape':
         console.log('Escape');
         break;
       case 'ArrowLeft':
-        console.log('ArrowLeft');
+        e.preventDefault();
+        if (activeCellElement?.previousElementSibling) {
+          const prevCell =
+            activeCellElement.previousElementSibling.closest('cds-table-cell') as any;
+          setActiveCell(prevCell);
+        }
         break;
       case 'ArrowRight':
-        console.log('ArrowRight');
+        e.preventDefault();
+        if (activeCellElement?.nextElementSibling) {
+          const nextCell = activeCellElement.nextElementSibling.closest(
+            'cds-table-cell'
+          ) as any;
+          setActiveCell(nextCell);
+        }
         break;
       case 'ArrowUp':
-        console.log('ArrowUp');
+        e.preventDefault();
+        if (parentRow?.previousElementSibling) {
+          const newParentRow = parentRow.previousElementSibling;
+          const newRowCells = newParentRow.children;
+          const upperCell = newRowCells[activeCellRowIndex]?.closest(
+            'cds-table-cell'
+          ) as any;
+          setActiveCell(upperCell);
+        }
         break;
       case 'ArrowDown':
-        console.log('ArrowDown');
+        e.preventDefault();
+        if (parentRow?.nextElementSibling) {
+          const newParentRow = parentRow.nextElementSibling;
+          const newRowCells = newParentRow.children;
+          const lowerCell = newRowCells[activeCellRowIndex]?.closest(
+            'cds-table-cell'
+          ) as any;
+          setActiveCell(lowerCell);
+        }
+        break;
+      case 'Tab':
+        allTableCells?.forEach((cell: any) => {
+          cell.tabIndex = -1;
+        });
+        (document.activeElement as HTMLElement).blur();
         break;
     }
   }
 
   private handleCellClick(e: MouseEvent, rowId: string, columnId: string) {
-    this.editingCell = null;
-    console.log(console.log(rowId, columnId));
-
+    this.editingCellId = null;
     const cells = this.shadowRoot?.querySelectorAll(
       'cds-table-cell'
     ) as NodeListOf<HTMLElement>;
     cells?.forEach((cell) => {
       cell.tabIndex = -1;
     });
-    const target = e.target as HTMLElement;
+    const target = e.target as any;
     target.tabIndex = 0;
     requestAnimationFrame(() => {
-      target.focus();
+      target.closest('cds-table-cell').focus();
     });
-    this.requestUpdate();
     // this.setEditingCell(rowId, columnId, target.textContent || '');
   }
 
@@ -182,17 +219,19 @@ export class MyBasicTable extends LitElement {
                   (cell) => cell.id,
                   (cell) => {
                     return html`
-                      ${this.editingCell?.rowId === row.id &&
-                      this.editingCell.columnId === cell.column.id
+                      ${this.editingCellId === cell.id
                         ? html`
                             <td
                               style="padding: 0px; display: table-cell; width: ${cell.column.getSize()}px;">
                               <cds-text-input
                                 style="height: 47px; display: block;"
                                 size="lg"
-                                @keydown=${this.handleInputModeKeyDown}
-                                value=${this.editingValue}
-                                @input=${this.handleInputChange}
+                                @keydown=${this.handleInputKeydown}
+                                @blur=${(e: any) => {
+                                  console.log('try to save', { "column id": cell.column.id, "row id": row.id, "value": e.target.value});
+                                  this.editingCellId = null;
+                                }}
+                                value=${cell.getValue() as string}
                                 }></cds-text-input>
                             </td>
                           `
@@ -200,12 +239,7 @@ export class MyBasicTable extends LitElement {
                             id="cell__${cell.id}"
                             style="width: ${cell.column.getSize()}px"
                             @keydown=${(e: any) =>
-                              this.handleCellKeyPress(
-                                e,
-                                row.id,
-                                cell.column.id,
-                                cell.getValue() as string
-                              )}
+                              this.handleCellKeydown(e, cell)}
                             @click=${(e: any) =>
                               this.handleCellClick(e, row.id, cell.column.id)}
                             >${flexRender(
