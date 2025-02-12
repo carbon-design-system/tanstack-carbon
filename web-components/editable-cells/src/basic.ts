@@ -61,7 +61,7 @@ export class MyBasicTable extends LitElement {
   @state()
   private editingCellId: string | null = null;
 
-  private setEditingCell(id: string, value: string) {
+  private setEditingCell(id: string) {
     this.editingCellId = id;
     requestAnimationFrame(() => {
       const input = this.shadowRoot?.querySelector(
@@ -160,7 +160,7 @@ export class MyBasicTable extends LitElement {
     }
   }
 
-  private handleCellClick(e: MouseEvent, rowId: string, columnId: string) {
+  private handleCellClick(e: MouseEvent) {
     this.editingCellId = null;
     const cells = this.shadowRoot?.querySelectorAll(
       'cds-table-cell'
