@@ -30,7 +30,7 @@ const columnHelper = createColumnHelper<Resource>();
 const columns = [
   columnHelper.accessor((row) => row.name, {
     id: 'name',
-    cell: (info) => html`<i>${info.getValue()}</i>`,
+    cell: (info) => info.getValue(),
     header: () => html`<span>Name</span>`,
   }),
   columnHelper.accessor('rule', {
@@ -48,6 +48,7 @@ const columns = [
   }),
 ];
 
+// if we want to update the globally referenced data, we can add a custom event on the table, that emits the updated data, and sync it globally with event listener
 const data: Resource[] = makeData(10);
 
 /**
@@ -97,10 +98,10 @@ export class MyBasicTable extends LitElement {
     const allTableCells = this.shadowRoot?.querySelectorAll('cds-table-cell');
 
     const setActiveCell = (newActiveCell: HTMLElement | null) => {
-      allTableCells?.forEach((cell: any) => {
+      (allTableCells as NodeListOf<HTMLElement>)?.forEach((cell: HTMLElement) => {
         cell.tabIndex = -1;
       });
-      (document.activeElement as HTMLElement).blur();
+      (document.activeElement as HTMLElement | null)?.blur();
       if (newActiveCell) {
         newActiveCell.tabIndex = 0;
         newActiveCell.focus();
@@ -109,7 +110,7 @@ export class MyBasicTable extends LitElement {
 
     switch (e.key) {
       case 'Enter':
-        this.setEditingCell(id, cell.getValue());
+        this.setEditingCell(id);
         break;
       case 'Escape':
         console.log('Escape');
@@ -179,6 +180,16 @@ export class MyBasicTable extends LitElement {
     // this.setEditingCell(rowId, columnId, target.textContent || '');
   }
 
+  private updateCell(colId: string, rowId: string, table: TableController<Resource>, value: string) {
+    const newData = [...data];
+    newData[rowId][colId] = value;
+    table.setOptions((prev: any) => ({
+      ...prev,
+      data: newData,
+    }));
+    this.editingCellId = null;
+  }
+
   render() {
     const table = this.tableController.table({
       columns,
@@ -225,21 +236,18 @@ export class MyBasicTable extends LitElement {
                       ${this.editingCellId === cell.id
                         ? html`
                             <cds-table-cell
-                              style="padding: 0px; display: table-cell; width: ${cell.column.getSize()}px;">
+                              style="padding: 0px; width: ${cell.column.getSize()}px;">
                               <cds-text-input
                                 style="height: 47px; display: block;"
                                 size="lg"
                                 @keydown=${this.handleInputKeydown}
                                 @blur=${(e: FocusEvent) => {
-                                  const newData = [...data];
-                                  newData[row.id][cell.column.id] = (
-                                    e.target as HTMLInputElement
-                                  ).value;
-                                  table.setOptions((prev) => ({
-                                    ...prev,
-                                    data: newData,
-                                  }));
-                                  this.editingCellId = null;
+                                  this.updateCell(
+                                    cell.column.id,
+                                    row.id,
+                                    table as any,
+                                    (e.target as HTMLInputElement).value
+                                  );
                                 }}
                                 value=${cell.getValue() as string}
                                 }></cds-text-input>
@@ -248,10 +256,10 @@ export class MyBasicTable extends LitElement {
                         : html`<cds-table-cell
                             id="cell__${cell.id}"
                             style="width: ${cell.column.getSize()}px"
-                            @keydown=${(e: any) =>
+                            @keydown=${(e: KeyboardEvent) =>
                               this.handleCellKeydown(e, cell)}
-                            @click=${(e: any) =>
-                              this.handleCellClick(e, row.id, cell.column.id)}
+                            @click=${(e: MouseEvent) =>
+                              this.handleCellClick(e)}
                             >${flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
