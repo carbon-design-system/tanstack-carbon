@@ -29,7 +29,7 @@ const columnHelper = createColumnHelper<Resource>();
 
 const columns = [
   columnHelper.accessor((row) => row.name, {
-    id: 'lastName',
+    id: 'name',
     cell: (info) => html`<i>${info.getValue()}</i>`,
     header: () => html`<span>Name</span>`,
   }),
@@ -74,9 +74,11 @@ export class MyBasicTable extends LitElement {
   private handleInputKeydown(e: KeyboardEvent) {
     if (e.target && e.key === 'Enter') {
       let cellId = this.editingCellId;
-      (e.target as HTMLElement).blur()
+      (e.target as HTMLElement).blur();
       setTimeout(() => {
-        const cell = this.shadowRoot?.querySelector(`#cell__${cellId}`) as HTMLElement;
+        const cell = this.shadowRoot?.querySelector(
+          `#cell__${cellId}`
+        ) as HTMLElement;
         cell?.setAttribute('tabindex', '0');
         cell?.focus();
       });
@@ -115,8 +117,9 @@ export class MyBasicTable extends LitElement {
       case 'ArrowLeft':
         e.preventDefault();
         if (activeCellElement?.previousElementSibling) {
-          const prevCell =
-            activeCellElement.previousElementSibling.closest('cds-table-cell') as any;
+          const prevCell = activeCellElement.previousElementSibling.closest(
+            'cds-table-cell'
+          ) as any;
           setActiveCell(prevCell);
         }
         break;
@@ -221,19 +224,26 @@ export class MyBasicTable extends LitElement {
                     return html`
                       ${this.editingCellId === cell.id
                         ? html`
-                            <td
+                            <cds-table-cell
                               style="padding: 0px; display: table-cell; width: ${cell.column.getSize()}px;">
                               <cds-text-input
                                 style="height: 47px; display: block;"
                                 size="lg"
                                 @keydown=${this.handleInputKeydown}
-                                @blur=${(e: any) => {
-                                  console.log('try to save', { "column id": cell.column.id, "row id": row.id, "value": e.target.value});
+                                @blur=${(e: FocusEvent) => {
+                                  const newData = [...data];
+                                  newData[row.id][cell.column.id] = (
+                                    e.target as HTMLInputElement
+                                  ).value;
+                                  table.setOptions((prev) => ({
+                                    ...prev,
+                                    data: newData,
+                                  }));
                                   this.editingCellId = null;
                                 }}
                                 value=${cell.getValue() as string}
                                 }></cds-text-input>
-                            </td>
+                            </cds-table-cell>
                           `
                         : html`<cds-table-cell
                             id="cell__${cell.id}"
