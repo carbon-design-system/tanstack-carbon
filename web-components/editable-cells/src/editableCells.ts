@@ -75,7 +75,7 @@ export class MyBasicTable extends LitElement {
 
   private handleInputKeydown(e: KeyboardEvent) {
     if (e.target && e.key === 'Enter') {
-      let cellId = this.editingCellId;
+      const cellId = this.editingCellId;
       (e.target as HTMLElement).blur();
       setTimeout(() => {
         const cell = this.shadowRoot?.querySelector(
