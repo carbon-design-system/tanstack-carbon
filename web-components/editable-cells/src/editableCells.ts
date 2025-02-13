@@ -246,7 +246,7 @@ export class MyBasicTable extends LitElement {
                                     cell.column.id,
                                     row.id,
                                     table as any,
-                                    (e.target as HTMLInputElement).value
+                                    (e.target as HTMLInputElement).value ?? cell.getValue()
                                   );
                                 }}
                                 value=${cell.getValue() as string}
