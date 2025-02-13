@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   TableController,
+  Table,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/text-input/index.js';
@@ -56,7 +57,7 @@ const data: Resource[] = makeData(10);
  *
  */
 
-@customElement('basic-tanstack-table')
+@customElement('editable-tanstack-table')
 export class MyBasicTable extends LitElement {
   private tableController = new TableController<Resource>(this);
   @state()
@@ -177,11 +178,10 @@ export class MyBasicTable extends LitElement {
     requestAnimationFrame(() => {
       target.closest('cds-table-cell').focus();
     });
-    // this.setEditingCell(rowId, columnId, target.textContent || '');
   }
 
-  private updateCell(colId: string, rowId: string, table: TableController<Resource>, value: string) {
-    const newData = [...data];
+  private updateCell(colId: string, rowId: string, table: Table<Resource>, value: string) {
+    const newData = [...data] as any;
     newData[rowId][colId] = value;
     table.setOptions((prev: any) => ({
       ...prev,
@@ -240,6 +240,7 @@ export class MyBasicTable extends LitElement {
                               <cds-text-input
                                 style="height: 47px; display: block;"
                                 size="lg"
+                                autoComplete="off"
                                 @keydown=${this.handleInputKeydown}
                                 @blur=${(e: FocusEvent) => {
                                   this.updateCell(
@@ -292,6 +293,6 @@ export class MyBasicTable extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'basic-tanstack-table': MyBasicTable;
+    'editable-tanstack-table': MyBasicTable;
   }
 }
