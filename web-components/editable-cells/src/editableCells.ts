@@ -99,9 +99,11 @@ export class MyBasicTable extends LitElement {
     const allTableCells = this.shadowRoot?.querySelectorAll('cds-table-cell');
 
     const setActiveCell = (newActiveCell: HTMLElement | null) => {
-      (allTableCells as NodeListOf<HTMLElement>)?.forEach((cell: HTMLElement) => {
-        cell.tabIndex = -1;
-      });
+      (allTableCells as NodeListOf<HTMLElement>)?.forEach(
+        (cell: HTMLElement) => {
+          cell.tabIndex = -1;
+        }
+      );
       (document.activeElement as HTMLElement | null)?.blur();
       if (newActiveCell) {
         newActiveCell.tabIndex = 0;
@@ -180,7 +182,12 @@ export class MyBasicTable extends LitElement {
     });
   }
 
-  private updateCell(colId: string, rowId: string, table: Table<Resource>, value: string) {
+  private updateCell(
+    colId: string,
+    rowId: string,
+    table: Table<Resource>,
+    value: string
+  ) {
     const newData = [...data] as any;
     newData[rowId][colId] = value;
     table.setOptions((prev: any) => ({
@@ -247,7 +254,8 @@ export class MyBasicTable extends LitElement {
                                     cell.column.id,
                                     row.id,
                                     table as any,
-                                    (e.target as HTMLInputElement).value ?? cell.getValue()
+                                    (e.target as HTMLInputElement).value ??
+                                      cell.getValue()
                                   );
                                 }}
                                 value=${cell.getValue() as string}
@@ -259,8 +267,7 @@ export class MyBasicTable extends LitElement {
                             style="width: ${cell.column.getSize()}px"
                             @keydown=${(e: KeyboardEvent) =>
                               this.handleCellKeydown(e, cell)}
-                            @click=${(e: MouseEvent) =>
-                              this.handleCellClick(e)}
+                            @click=${(e: MouseEvent) => this.handleCellClick(e)}
                             >${flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
