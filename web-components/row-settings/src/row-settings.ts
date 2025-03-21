@@ -13,9 +13,7 @@ import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/popover/index.js';
 import '@carbon/web-components/es/components/radio-button/index.js';
 import { makeData } from './makeData';
-import {
-  CDSTableToolbarSearch,
-} from '@carbon/web-components/es';
+import { CDSTableToolbarSearch } from '@carbon/web-components/es';
 
 type Resource = {
   id: string;
@@ -63,21 +61,21 @@ export class MyBasicTable extends LitElement {
   @state()
   private _globalFilter = '';
 
-  _onChange = (event: CustomEvent) =>{
+  _onChange = (event: CustomEvent) => {
     const value = event.detail.value;
     const dataTable = this.shadowRoot?.querySelector('cds-table');
     dataTable?.setAttribute('size', value);
-  }
-  _onClick = (event: Event) =>{
+  };
+  _onClick = (event: Event) => {
     event.stopPropagation();
     const popOver = this.shadowRoot?.querySelector('cds-popover');
     const path = event.composedPath();
     if (popOver && !path.includes(popOver)) {
-      popOver?.removeAttribute('open')
-    }else{
-      popOver?.toggleAttribute('open')
+      popOver?.removeAttribute('open');
+    } else {
+      popOver?.toggleAttribute('open');
     }
-  }
+  };
 
   render() {
     const table = this.tableController.table({
@@ -98,8 +96,8 @@ export class MyBasicTable extends LitElement {
     }
     interface searchFull extends CDSTableToolbarSearch, toolbarSearchDetail {}
     return html`
-    <cds-table>
-     <cds-table-header-title slot="title"
+      <cds-table>
+        <cds-table-header-title slot="title"
           >Row settings</cds-table-header-title
         >
         <cds-table-toolbar slot="toolbar">
@@ -107,12 +105,17 @@ export class MyBasicTable extends LitElement {
             <cds-table-toolbar-search
               placeholder="Search all columns..."
               @cds-search-input=${(e: searchFull) =>
-                (this._globalFilter =
-                  e.detail.value)}
-                  persistent></cds-table-toolbar-search>
+                (this._globalFilter = e.detail.value)}
+              persistent></cds-table-toolbar-search>
           </cds-table-toolbar-content>
           <cds-popover tabTip autoalign align="top-right">
-            <button aria-label="Settings" size="sm" type="button" @click="${this._onClick}">${Settings16()}</button>
+            <button
+              aria-label="Settings"
+              size="sm"
+              type="button"
+              @click="${this._onClick}">
+              ${Settings16()}
+            </button>
             <cds-popover-content>
               <div class="content-wrapper">
                 <cds-radio-button-group
@@ -122,26 +125,26 @@ export class MyBasicTable extends LitElement {
                   name="radio-button-group"
                   value="lg"
                   @cds-radio-button-group-changed="${this._onChange}">
-                    <cds-radio-button
-                      label-text="Extra small"
-                      value="xs"
-                      id="radio-extra-small"></cds-radio-button>
-                    <cds-radio-button
-                      label-text="Small"
-                      value="sm"
-                      id="radio-small"></cds-radio-button>
-                    <cds-radio-button
-                      label-text="Medium"
-                      value="md"
-                      id="radio-medium"></cds-radio-button>
-                    <cds-radio-button
-                      label-text="Large"
-                      value="lg"
-                      id="radio-large"></cds-radio-button>
-                    <cds-radio-button
-                      label-text="Extra large"
-                      value="xl"
-                      id="radio-extra-large"></cds-radio-button>
+                  <cds-radio-button
+                    label-text="Extra small"
+                    value="xs"
+                    id="radio-extra-small"></cds-radio-button>
+                  <cds-radio-button
+                    label-text="Small"
+                    value="sm"
+                    id="radio-small"></cds-radio-button>
+                  <cds-radio-button
+                    label-text="Medium"
+                    value="md"
+                    id="radio-medium"></cds-radio-button>
+                  <cds-radio-button
+                    label-text="Large"
+                    value="lg"
+                    id="radio-large"></cds-radio-button>
+                  <cds-radio-button
+                    label-text="Extra large"
+                    value="xl"
+                    id="radio-extra-large"></cds-radio-button>
                 </cds-radio-button-group>
               </div>
             </cds-popover-content>
@@ -194,7 +197,7 @@ export class MyBasicTable extends LitElement {
     `;
   }
 
-  firstUpdated(){
+  firstUpdated() {
     // const popOver = this.shadowRoot?.querySelector('cds-popover');
     window.addEventListener('click', this._onClick);
   }
