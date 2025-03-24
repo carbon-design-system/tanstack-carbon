@@ -56,9 +56,9 @@ export class ContextRow extends LitElement {
       margin-right: 0.5rem;
     }
     cds-table-row {
-        display: table-row;
-        block-size: 3rem;
-        inline-size: 100%;
+      display: table-row;
+      block-size: 3rem;
+      inline-size: 100%;
     }
   `;
 
@@ -79,7 +79,9 @@ export class ContextRow extends LitElement {
   }
 
   private removeItem() {
-    const indexToRemove = this.data.findIndex((r: any) => r.id === this.row.original.id);
+    const indexToRemove = this.data.findIndex(
+      (r: any) => r.id === this.row.original.id
+    );
     const newData = [
       ...this.data.slice(0, indexToRemove),
       ...this.data.slice(indexToRemove + 1),
@@ -90,15 +92,14 @@ export class ContextRow extends LitElement {
 
   render() {
     return html`
-        <cds-table-row @contextmenu=${this.handleContextMenu}>
+      <cds-table-row @contextmenu=${this.handleContextMenu}>
         <slot></slot>
-        </cds-table-row>
+      </cds-table-row>
       ${this.menuOpen
         ? html`
             <div
               class="context-menu"
-              style="top: ${this.menuY}px; left: ${this.menuX}px;"
-            >
+              style="top: ${this.menuY}px; left: ${this.menuX}px;">
               <div class="menu-item" @click=${this.removeItem}>
                 <span class="icon">${TrashCan16()}</span>
                 Delete
@@ -133,7 +134,6 @@ const columns = [
   }),
 ];
 
-
 /**
  * An example table using `@tanstack/lit-table` and `@carbon/web-components` DataTable.
  *
@@ -142,12 +142,12 @@ const columns = [
 @customElement('row-with-context-menu-tanstack-table')
 export class RowWithContextMenuTable extends LitElement {
   private tableController = new TableController<Resource>(this);
-  
-  @property({type: Object})
+
+  @property({ type: Object })
   data: Resource[] = makeData(10);
 
   render() {
-    const {data} = this;
+    const { data } = this;
     const table = this.tableController.table({
       columns,
       data: this.data,
@@ -187,7 +187,10 @@ export class RowWithContextMenuTable extends LitElement {
             table.getRowModel().rows,
             (row) => row.id,
             (row) => html`
-              <context-row  .row="${row}" .data="${data}" .updateData="${this._setData}">
+              <context-row
+                .row="${row}"
+                .data="${data}"
+                .updateData="${this._setData}">
                 ${repeat(
                   row.getVisibleCells(),
                   (cell) => cell.id,
@@ -208,8 +211,8 @@ export class RowWithContextMenuTable extends LitElement {
   }
   _setData = (dataRow: Resource[]) => {
     this.data = dataRow;
-  }
-  
+  };
+
   static styles = css`
     :host {
       max-width: 1280px;

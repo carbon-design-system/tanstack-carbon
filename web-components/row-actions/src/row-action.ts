@@ -155,7 +155,7 @@ export class RowActionTable extends LitElement {
       place-items: center;
     }
     cds-button svg {
-     fill: var(--cds-text-primary, #161616);
+      fill: var(--cds-text-primary, #161616);
     }
     cds-table-row:hover cds-table-cell {
       background-color: var(--cds-layer-hover);
