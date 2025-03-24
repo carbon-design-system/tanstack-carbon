@@ -1,15 +1,13 @@
 import { LitElement, css, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
-import '@carbon/web-components/es/components/button/index.js';
-import Edit16 from '@carbon/web-components/es/icons/edit/16';
 import TrashCan16 from '@carbon/web-components/es/icons/trash-can/16';
+
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
   TableController,
-  Row,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
 import { makeData } from './makeData';
@@ -22,6 +20,95 @@ type Resource = {
   other: string;
   example: string;
 };
+
+@customElement('context-row')
+export class ContextRow extends LitElement {
+  @property({ type: Object }) row: any;
+  @property({ type: Array }) data: any[] = [];
+  @property({ type: Function }) updateData!: (data: any[]) => void;
+
+  @state() private menuOpen = false;
+  @state() private menuX = 0;
+  @state() private menuY = 0;
+  static styles = css`
+    :host {
+      display: contents;
+    }
+    .context-menu {
+      position: fixed;
+      background: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      padding: 0.5rem;
+      min-width: 120px;
+    }
+    .menu-item {
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .menu-item:hover {
+      background: #f4f4f4;
+    }
+    .icon {
+      margin-right: 0.5rem;
+    }
+    cds-table-row {
+        display: table-row;
+        block-size: 3rem;
+        inline-size: 100%;
+    }
+  `;
+
+  private handleContextMenu(e: MouseEvent) {
+    e.preventDefault();
+    this.menuX = e.clientX;
+    this.menuY = e.clientY;
+    this.menuOpen = true;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!this.contains(event.target as Node)) {
+        this.menuOpen = false;
+        window.removeEventListener('click', handleOutsideClick);
+      }
+    };
+
+    window.addEventListener('click', handleOutsideClick);
+  }
+
+  private removeItem() {
+    const indexToRemove = this.data.findIndex((r: any) => r.id === this.row.original.id);
+    const newData = [
+      ...this.data.slice(0, indexToRemove),
+      ...this.data.slice(indexToRemove + 1),
+    ];
+    this.updateData(newData);
+    this.menuOpen = false;
+  }
+
+  render() {
+    return html`
+        <cds-table-row @contextmenu=${this.handleContextMenu}>
+        <slot></slot>
+        </cds-table-row>
+      ${this.menuOpen
+        ? html`
+            <div
+              class="context-menu"
+              style="top: ${this.menuY}px; left: ${this.menuX}px;"
+            >
+              <div class="menu-item" @click=${this.removeItem}>
+                <span class="icon">${TrashCan16()}</span>
+                Delete
+              </div>
+            </div>
+          `
+        : ''}
+    `;
+  }
+}
 
 const columnHelper = createColumnHelper<Resource>();
 
@@ -44,58 +131,32 @@ const columns = [
   columnHelper.accessor('example', {
     header: 'Example',
   }),
-  {
-    header: 'Actions',
-    id: 'actions',
-    cell: ({ row }: { row: Row<Resource> }) => {
-      return html`
-        <div class="flex">
-          <cds-button
-            aria-label="Delete"
-            size="sm"
-            type="button"
-            kind="ghost"
-            @click="${() => onDelete(row)}">
-            ${TrashCan16()}
-          </cds-button>
-          <cds-button
-            aria-label="Edit"
-            size="sm"
-            type="button"
-            kind="ghost"
-            @click="${() => onEdit(row)}">
-            ${Edit16()}
-          </cds-button>
-        </div>
-      `;
-    },
-  },
 ];
 
-const onDelete = (row: object) => {
-  console.log(row);
-};
-const onEdit = (row: object) => {
-  console.log(row);
-};
-
-const data: Resource[] = makeData(10);
 
 /**
  * An example table using `@tanstack/lit-table` and `@carbon/web-components` DataTable.
  *
  */
 
-@customElement('row-action-tanstack-table')
-export class RowActionTable extends LitElement {
+@customElement('row-with-context-menu-tanstack-table')
+export class RowWithContextMenuTable extends LitElement {
   private tableController = new TableController<Resource>(this);
+  
+  @property({type: Object})
+  data: Resource[] = makeData(10);
 
   render() {
+    const {data} = this;
     const table = this.tableController.table({
       columns,
-      data,
+      data: this.data,
       getCoreRowModel: getCoreRowModel(),
     });
+    table.setOptions((prev) => ({
+      ...prev,
+      data: this.data,
+    }));
 
     return html`
       <cds-table>
@@ -126,7 +187,7 @@ export class RowActionTable extends LitElement {
             table.getRowModel().rows,
             (row) => row.id,
             (row) => html`
-              <cds-table-row>
+              <context-row  .row="${row}" .data="${data}" .updateData="${this._setData}">
                 ${repeat(
                   row.getVisibleCells(),
                   (cell) => cell.id,
@@ -138,14 +199,17 @@ export class RowActionTable extends LitElement {
                       )}
                     </cds-table-cell>`
                 )}
-              </cds-table-row>
+              </context-row>
             `
           )}
         </cds-table-body>
       </cds-table>
     `;
   }
-
+  _setData = (dataRow: Resource[]) => {
+    this.data = dataRow;
+  }
+  
   static styles = css`
     :host {
       max-width: 1280px;
@@ -154,17 +218,11 @@ export class RowActionTable extends LitElement {
       display: flex;
       place-items: center;
     }
-    cds-button svg {
-     fill: var(--cds-text-primary, #161616);
-    }
-    cds-table-row:hover cds-table-cell {
-      background-color: var(--cds-layer-hover);
-    }
   `;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'row-action-tanstack-table': RowActionTable;
+    'row-with-context-menu-tanstack-table': RowWithContextMenuTable;
   }
 }
