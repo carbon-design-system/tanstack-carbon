@@ -24,8 +24,10 @@ type Resource = {
 @customElement('context-row')
 export class ContextRow extends LitElement {
   @property({ type: Object }) row: any;
-  @property({ type: Array }) data: any[] = [];
-  @property({ type: Function }) updateData!: (data: any[]) => void;
+  @property({ type: Array })
+  data: Resource[] = [];
+  @property({ type: Function })
+  updateData!: (data: any[]) => void;
 
   @state() private menuOpen = false;
   @state() private menuX = 0;
