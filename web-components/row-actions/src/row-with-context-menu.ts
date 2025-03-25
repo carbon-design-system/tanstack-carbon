@@ -162,6 +162,7 @@ export class RowWithContextMenuTable extends LitElement {
 
     return html`
       <cds-table>
+        <cds-table-header-title slot="title">Row with context menu</cds-table-header-title>
         <cds-table-head>
           ${repeat(
             table.getHeaderGroups(),

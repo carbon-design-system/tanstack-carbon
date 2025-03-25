@@ -99,7 +99,8 @@ export class RowActionTable extends LitElement {
 
     return html`
       <cds-table>
-        <cds-table-head>
+        <cds-table-header-title slot="title">Row actions</cds-table-header-title>
+          <cds-table-head>
           ${repeat(
             table.getHeaderGroups(),
             (headerGroup) => headerGroup.id,
