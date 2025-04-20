@@ -13,7 +13,10 @@ import {
   getPaginationRowModel,
   TableController,
   getFacetedUniqueValues,
+  FilterFn,
+  PaginationState,
 } from '@tanstack/lit-table';
+import { rankItem } from '@tanstack/match-sorter-utils';
 import { animate } from 'motion';
 import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/checkbox/index.js';
@@ -34,14 +37,12 @@ import Close from '@carbon/web-components/es/icons/close/16.js';
 import { makeData } from './makeData';
 import indexStyles from './index.scss?inline';
 import './filter-tagset.ts';
-import {
-  CDSPagination,
-  CDSTableToolbarSearch,
-} from '@carbon/web-components/es';
+import '@carbon-labs/wc-empty-state/es/index.js';
 
 const styles = css`
   ${unsafeCSS(indexStyles)}
 `;
+
 type Resource = {
   id: string;
   name: string;
@@ -49,6 +50,20 @@ type Resource = {
   status: string;
   other: string;
   example: string;
+};
+
+// Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value);
+
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  });
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed;
 };
 
 const columns: ColumnDef<Resource, any>[] = [
@@ -81,6 +96,7 @@ const columns: ColumnDef<Resource, any>[] = [
     id: 'rule',
     cell: (info) => info.getValue(),
     header: () => html`<span>Rule</span>`,
+    filterFn: 'arrIncludesSome',
     meta: {
       filterVariant: 'checkbox',
     },
@@ -99,6 +115,7 @@ const columns: ColumnDef<Resource, any>[] = [
   {
     accessorKey: 'example',
     header: 'Example',
+    filterFn: 'weakEquals',
     meta: {
       filterVariant: 'number',
     },
@@ -124,7 +141,14 @@ export class MyBatchTable extends LitElement {
   private localFilters: ColumnFilter[] = [];
 
   @state()
-  private popoverOpen = false;
+  private popoverOpen = true;
+
+  @state()
+  private pagination: PaginationState = {
+    pageIndex: 0,
+    pageSize: 10,
+  };
+
   private setColumnFilters = (filters: ColumnFilter[]) => {
     this.columnFilters = filters;
     this.localFilters = filters;
@@ -140,6 +164,7 @@ export class MyBatchTable extends LitElement {
           '--table-height',
           `${tableContainer.clientHeight}px`
         );
+        tableContainer.style.minHeight = `${tableContainer.clientHeight}px`;
       }
     }, 0);
   }
@@ -152,10 +177,8 @@ export class MyBatchTable extends LitElement {
       flyoutTrigger.focus();
     }
   };
+
   private animatePanel = () => {
-    const tableContainer = this.shadowRoot?.querySelector(
-      '.table-container'
-    ) as HTMLElement;
     const panelContainer = this.shadowRoot?.querySelector('.panel--container');
     const tableContent = this.shadowRoot?.querySelector(
       '.cds--data-table-content'
@@ -178,7 +201,6 @@ export class MyBatchTable extends LitElement {
           duration: 0.25,
         }
       );
-      // .cds--data-table-content
       animate(
         tableContent,
         {
@@ -237,11 +259,14 @@ export class MyBatchTable extends LitElement {
     const table = this.tableController.table({
       columns,
       data,
-      filterFns: {},
+      filterFns: {
+        fuzzy: fuzzyFilter,
+      },
       state: {
         rowSelection: this._rowSelection,
         globalFilter: this._globalFilter,
         columnFilters: this.columnFilters,
+        pagination: this.pagination,
       },
       enableRowSelection: true,
       enableGlobalFilter: true,
@@ -256,7 +281,7 @@ export class MyBatchTable extends LitElement {
       getFilteredRowModel: getFilteredRowModel(),
       getFacetedUniqueValues: getFacetedUniqueValues(),
       getPaginationRowModel: getPaginationRowModel(),
-      debugTable: true,
+      // debugTable: true,
     });
 
     interface ExtendedColFilter extends ColumnFilter {
@@ -295,7 +320,7 @@ export class MyBatchTable extends LitElement {
                     this.localFilters = tempLocal;
                   } else {
                     this.localFilters = [
-                      ...tempLocal,
+                      ...(tempLocal as any),
                       {
                         id: checkboxParentColumnData?.id,
                         value: newGroupValues,
@@ -309,7 +334,7 @@ export class MyBatchTable extends LitElement {
                     this.columnFilters = tempColumnFilters;
                   } else {
                     this.columnFilters = [
-                      ...tempColumnFilters,
+                      ...(tempColumnFilters as any),
                       {
                         id: checkboxParentColumnData?.id,
                         value: newGroupValues,
@@ -345,7 +370,7 @@ export class MyBatchTable extends LitElement {
             return tagData;
           };
           if (Array.isArray(c.value)) {
-            return c.value.map((val: any) => buildTag(val, c));
+            return c.value.map((val) => buildTag(val, c));
           }
           return buildTag(c);
         }
@@ -354,7 +379,6 @@ export class MyBatchTable extends LitElement {
     };
 
     const tagFilters = buildTagFilters();
-    console.log(tagFilters);
 
     return html`
       <div
@@ -412,7 +436,7 @@ export class MyBatchTable extends LitElement {
                     <cds-button
                       kind="secondary"
                       @click=${() => {
-                        // table.resetColumnFilters();
+                        table.resetColumnFilters();
                         this.columnFilters = [];
                         this.popoverOpen = !this.popoverOpen;
                         this.returnFocusToFlyoutTrigger();
@@ -424,7 +448,6 @@ export class MyBatchTable extends LitElement {
                     <cds-button
                       kind="primary"
                       @click=${() => {
-                        console.log('localFilters', this.localFilters);
                         this.setColumnFilters(this.localFilters);
                         this.popoverOpen = !this.popoverOpen;
                         this.returnFocusToFlyoutTrigger();
@@ -490,17 +513,21 @@ export class MyBatchTable extends LitElement {
               </cds-table-toolbar-search>
             </cds-table-toolbar-content>
             ${tagFilters.length > 0
-              ? html`<tag-set
-                  style="background: var(--cds-background, #ffffff);"
-                  .tags=${tagFilters}
-                  @clear-filters=${() => {
-                    // table.resetColumnFilters();
-                    this.columnFilters = [];
-                    // this.popoverOpen = !this.popoverOpen;
-                    // this.returnFocusToFlyoutTrigger();
-                    this.localFilters = [];
-                    // this.animatePanel();
-                  }}></tag-set>`
+              ? html`
+                  <tag-set .tagsData=${tagFilters}>
+                    <cds-button
+                      slot="clear-filters"
+                      kind="ghost"
+                      size="lg"
+                      @click=${() => {
+                        table.resetColumnFilters();
+                        this.columnFilters = [];
+                        this.localFilters = [];
+                      }}>
+                      Clear filters
+                    </cds-button>
+                  </tag-set>
+                `
               : null}
           </cds-table-toolbar>
           <cds-table-head>
@@ -525,7 +552,10 @@ export class MyBatchTable extends LitElement {
                 </cds-table-header-row>`
             )}
           </cds-table-head>
-          <cds-table-body>
+          <cds-table-body
+            class=${table.getFilteredRowModel().rows.length === 0
+              ? 'empty-table-body'
+              : ''}>
             ${repeat(
               table.getRowModel().rows,
               (row) => row.id,
@@ -545,16 +575,29 @@ export class MyBatchTable extends LitElement {
                 </cds-table-row>
               `
             )}
+            ${table.getFilteredRowModel().rows.length === 0
+              ? html`<clabs-empty-state
+                  class="no-results-empty-state"
+                  title="No results found"
+                  subtitle="Try adjusting your search or filter options to find what you're looking for."
+                  size="lg"
+                  kind="noData"
+                  illustrationTheme="light">
+                </clabs-empty-state>`
+              : null}
           </cds-table-body>
         </cds-table>
         <cds-pagination
           class="cds--data-table-content__pagination"
-          start="0"
-          total-items="${table.getRowCount()}"
+          page=${table.getState().pagination.pageIndex + 1}
+          total-items=${table.getFilteredRowModel().rows.length}
+          page-size=${table.getState().pagination.pageSize}
           @cds-pagination-changed-current=${(event: CustomEvent) => {
             const { pageSize, page } = event.detail;
-            table.setPageSize(Number(pageSize));
-            table.setPageIndex(page - 1);
+            this.pagination = {
+              pageSize: Number(pageSize),
+              pageIndex: page - 1,
+            };
           }}>
           <cds-select-item value="10">10</cds-select-item>
           <cds-select-item value="20">20</cds-select-item>
@@ -603,18 +646,22 @@ const filterColumn = ({
   localFilters: ColumnFiltersState;
   setLocalFilters: (filters: any) => void;
 }) => {
-  const { filterVariant } = column.columnDef.meta ?? {};
+  //@ts-ignore
+  const filterVariant = (column.columnDef.meta?.filterVariant as string) ?? '';
 
   const sortedUniqueValues = Array.from(column.getFacetedUniqueValues().keys())
     .sort()
     .slice(0, 5000);
 
-  const getCheckboxState = (value) => {
-    const foundFilter = localFilters.find((c) => c.id === column.id);
+  const getCheckboxState = (value: string): boolean => {
+    const foundFilter: ColumnFilter | undefined = localFilters.find(
+      (c: ColumnFilter) => c.id === column.id
+    );
 
-    const isChecked = foundFilter
+    const isChecked: boolean = foundFilter
       ? (
-          localFilters.find((c) => c.id === column.id)?.value as string[]
+          localFilters.find((c: ColumnFilter) => c.id === column.id)
+            ?.value as string[]
         ).includes(value)
       : false;
 
@@ -623,8 +670,6 @@ const filterColumn = ({
 
   switch (filterVariant) {
     case 'select':
-      console.log('sortedUniqueValues', sortedUniqueValues);
-
       return html`<cds-layer>
         <cds-dropdown
           title-text=${header.id.charAt(0).toUpperCase() + header.id.slice(1)}
@@ -649,8 +694,6 @@ const filterColumn = ({
             setLocalFilters([...temp, { id: column.id, value: selectedValue }]);
           }}>
           ${sortedUniqueValues.map((value) => {
-            console.log(value);
-
             return html`
               <cds-dropdown-item value="${value}">${value}</cds-dropdown-item>
             `;
@@ -724,9 +767,8 @@ const filterColumn = ({
         <cds-layer>
           <cds-form-item>
             <cds-number-input
-              .value=${localFilters.find((c) => c.id === column.id)?.value ||
-              '0'}
-              min="0"
+              .value=${localFilters.find((c) => c.id === column.id)?.value || 0}
+              hide-steppers
               @input=${(e: Event) => {
                 const inputElement = e.target as HTMLInputElement;
                 const newValue = inputElement.value;
@@ -764,7 +806,6 @@ const filterColumn = ({
               const existingFilterIndex = updatedFilters.findIndex(
                 (c) => c.id === column.id
               );
-              console.log(inputElement);
 
               if (existingFilterIndex > -1) {
                 updatedFilters[existingFilterIndex] = {
@@ -776,10 +817,6 @@ const filterColumn = ({
               }
 
               setLocalFilters(updatedFilters);
-            }}
-            @cds-number-input=${(e: Event) => {
-              const inputElement = e.target as HTMLInputElement;
-              console.log(inputElement);
             }}
             type="text"
             placeholder="Filter by ${header.id}"

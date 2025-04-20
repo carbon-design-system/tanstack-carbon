@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@carbon-labs/wc-empty-state": "^0.2.0",
     "@carbon/styles": "^1.34.0",
-    "@carbon/web-components": "latest",
+    "@carbon/web-components": "^2.27.1",
     "@faker-js/faker": "^8.4.1",
     "@tanstack/lit-table": "^8.20.5",
     "@tanstack/match-sorter-utils": "^8.19.4",

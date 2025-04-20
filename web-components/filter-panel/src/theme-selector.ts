@@ -7,14 +7,18 @@ class ThemeSelector extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.render();
     this.addEventListener('cds-dropdown-selected', () => {
-      const selectedValue = this.shadowRoot?.querySelector('cds-dropdown')?.value;
+      const selectedValue = (
+        this.shadowRoot?.querySelector(
+          'cds-dropdown.theme-selector'
+        ) as HTMLSelectElement
+      )?.value;
       document.documentElement.setAttribute('data-carbon-theme', selectedValue);
-    }
-    );
+    });
   }
 
   render() {
-    this.shadowRoot.innerHTML = `
+    if (this.shadowRoot) {
+      this.shadowRoot.innerHTML = `
       <style>
       :host {
         position: fixed;
@@ -22,13 +26,14 @@ class ThemeSelector extends HTMLElement {
         right: 1rem;
       }
       </style>
-      <cds-dropdown direction="top" title-text="Dropdown label" value="white">
-      <cds-dropdown-item value="white">White</cds-dropdown-item>
-      <cds-dropdown-item value="g10">G10</cds-dropdown-item>
-      <cds-dropdown-item value="g90">G90</cds-dropdown-item>
-      <cds-dropdown-item value="g100">G100</cds-dropdown-item>
+      <cds-dropdown class="theme-selector" direction="top" title-text="Dropdown label" value="white">
+        <cds-dropdown-item value="white">White</cds-dropdown-item>
+        <cds-dropdown-item value="g10">G10</cds-dropdown-item>
+        <cds-dropdown-item value="g90">G90</cds-dropdown-item>
+        <cds-dropdown-item value="g100">G100</cds-dropdown-item>
       </cds-dropdown>
-    `;
+      `;
+    }
   }
 }
 
