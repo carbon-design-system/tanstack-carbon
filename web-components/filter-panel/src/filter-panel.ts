@@ -703,8 +703,7 @@ const filterColumn = ({
     case 'checkbox':
       return html`
         <cds-checkbox-group
-          legend-text=${column.id.charAt(0).toUpperCase() + header.id.slice(1)}
-          >
+          legend-text=${column.id.charAt(0).toUpperCase() + header.id.slice(1)}>
           ${sortedUniqueValues.map(
             (value) => html`
               <cds-checkbox

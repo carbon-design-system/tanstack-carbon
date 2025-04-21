@@ -17,18 +17,21 @@
   background-color: var(--cds-background);
   color: var(--cds-text-primary);
 }
+
 [data-carbon-theme='g90'] {
   @include theme(themes.$g90);
 
   background-color: var(--cds-background);
   color: var(--cds-text-primary);
 }
+
 [data-carbon-theme='g100'] {
   @include theme(themes.$g100);
 
   background-color: var(--cds-background);
   color: var(--cds-text-primary);
 }
+
 [data-carbon-theme='white'] {
   @include theme(themes.$white);
 
@@ -53,9 +56,11 @@
   @include type-style('body-compact-01');
   @include font-weight('semibold');
 }
+
 .table-container {
   position: relative;
 }
+
 cds-button::part(button) {
   box-shadow: none;
 }
@@ -124,6 +129,7 @@ cds-button::part(button) {
   position: sticky;
   top: 0;
   background-color: $layer-01;
+
   // border-top: 1px solid $border-subtle;
   z-index: 2;
   display: flex;
@@ -159,6 +165,7 @@ cds-button::part(button) {
     }
   }
 }
+
 .empty-table-body {
   height: 14rem;
   background-color: transparent;
