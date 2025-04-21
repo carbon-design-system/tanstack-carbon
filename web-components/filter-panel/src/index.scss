@@ -4,7 +4,6 @@
 @use '@carbon/styles/scss/spacing' as *;
 @use '@carbon/styles/scss/type' as *;
 
-
 :root {
   @include theme(themes.$white);
 
@@ -37,7 +36,6 @@
   color: var(--cds-text-primary);
 }
 
-
 // Flyout
 .flyout--container {
   padding: 1rem;
@@ -55,36 +53,11 @@
   @include type-style('body-compact-01');
   @include font-weight('semibold');
 }
-
-.filter-flyout-example .cds--popover-content {
-  max-inline-size: 642px;
-}
-
-.filter-checkbox-group-label {
-  @include type-style('label-01');
-
-  color: $text-secondary;
-  text-transform: capitalize;
-  margin-bottom: 0.5rem;
-}
-
-.tag-overflow-flyout-example {
-  height: 48px;
-  padding-left: 0.5rem;
-}
-
-.table-container{
+.table-container {
   position: relative;
 }
-
-.filter--summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.flyout-dropdown-selected-item {
-  text-transform: capitalize;
+cds-button::part(button) {
+  box-shadow: none;
 }
 
 .panel--container {
@@ -108,12 +81,6 @@
   //   width: 48px;
   //   background-color: $layer-02;
   // }
-}
-
-.cell {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 .filter--panel__content {
@@ -140,12 +107,6 @@
   right: 0;
 }
 
-.filter--panel__triggering-icon-open.cds--btn--ghost,
-.filter-panel-search-input,
-.tanstack-example .cds--table-toolbar {
-  background-color: $layer-01;
-}
-
 .filter-panel-button-set {
   position: sticky;
   bottom: 0; // account for x scrollbar of table
@@ -159,40 +120,16 @@
 
 .filter--panel__header {
   padding: 0 1rem;
+  box-sizing: content-box;
   position: sticky;
   top: 0;
   background-color: $layer-01;
-  border-top: 1px solid $border-subtle;
+  // border-top: 1px solid $border-subtle;
   z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
   min-height: $spacing-09;
-}
-
-.measure-tags {
-  position: absolute;
-  overflow: hidden;
-  inset-block-start: -100vh;
-  inset-inline-start: -100vw;
-  max-inline-size: 100vw;
-  pointer-events: none;
-  visibility: hidden;
-  display: flex; // will force only single line overflow to be measured
-}
-
-.filter-overflow-popover {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  background-color: $background-inverse;
-  color: $text-inverse;
-}
-
-
-.filter--summary-tag-and-overflow-wrapper {
-  display: flex;
-  align-items: center;
 }
 
 .scroll-divider {
@@ -225,11 +162,11 @@
 .empty-table-body {
   height: 14rem;
   background-color: transparent;
-}
 
-.no-results-empty-state{
-  padding-top: 2rem;
-  padding-left: 1rem;
-  max-width: 265px;
-  position: absolute;
+  .no-results-empty-state {
+    padding-top: 2rem;
+    padding-left: 1rem;
+    max-width: 265px;
+    position: absolute;
+  }
 }

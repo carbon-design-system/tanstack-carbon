@@ -704,9 +704,7 @@ const filterColumn = ({
       return html`
         <cds-checkbox-group
           legend-text=${column.id.charAt(0).toUpperCase() + header.id.slice(1)}
-          invalid-text="Invalid message goes here"
-          orientation="vertical"
-          warn-text="Warn message goes here">
+          >
           ${sortedUniqueValues.map(
             (value) => html`
               <cds-checkbox
