@@ -1,11 +1,9 @@
 @use '@carbon/styles/scss/reset';
 @use '@carbon/styles/scss/theme';
-@use '@carbon/styles/scss/type';
 @use '@carbon/styles/scss/themes';
 
 :root {
   @include theme.theme(themes.$white);
-  @include type.default-type();
 
   background-color: var(--cds-background);
   color: var(--cds-text-primary);
