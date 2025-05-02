@@ -93,7 +93,6 @@ export class MyBasicTable extends LitElement {
           ...this.expanded,
           [rowId]: !this.expanded[rowId],
         };
-        this.requestUpdate();
       } else {
         // the event is not from a row but from header's expand all button
         if (!this.isAllExpanded) {
@@ -122,7 +121,9 @@ export class MyBasicTable extends LitElement {
             table.getHeaderGroups(),
             (headerGroup) => headerGroup.id,
             (headerGroup) =>
-              html`<cds-table-header-row>
+              html`<cds-table-header-row
+                ?expanded="${this.isAllExpanded}"
+                data-expanded="${this.isAllExpanded}">
                 ${repeat(
                   headerGroup.headers,
                   (header) => header.id,
