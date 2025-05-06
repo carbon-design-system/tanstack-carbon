@@ -8,7 +8,6 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   TableController,
-  getFacetedUniqueValues,
   PaginationState,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
@@ -16,7 +15,6 @@ import '@carbon/web-components/es/components/pagination/index.js';
 
 import { makeData } from './makeData.ts';
 import indexStyles from './index.scss?inline';
-import '@carbon-labs/wc-empty-state/es/index.js';
 
 const styles = css`
   ${unsafeCSS(indexStyles)}
@@ -99,9 +97,7 @@ export class MyBatchTable extends LitElement {
 
       getCoreRowModel: getCoreRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
-      getFacetedUniqueValues: getFacetedUniqueValues(),
       getPaginationRowModel: getPaginationRowModel(),
-      // debugTable: true,
     });
 
     return html`
@@ -131,10 +127,7 @@ export class MyBatchTable extends LitElement {
                 </cds-table-header-row>`
             )}
           </cds-table-head>
-          <cds-table-body
-            class=${table.getFilteredRowModel().rows.length === 0
-              ? 'empty-table-body'
-              : ''}>
+          <cds-table-body>
             ${repeat(
               table.getRowModel().rows,
               (row) => row.id,
@@ -154,16 +147,6 @@ export class MyBatchTable extends LitElement {
                 </cds-table-row>
               `
             )}
-            ${table.getFilteredRowModel().rows.length === 0
-              ? html`<clabs-empty-state
-                  class="no-results-empty-state"
-                  title="No results found"
-                  subtitle="Try adjusting your search or filter options to find what you're looking for."
-                  size="lg"
-                  kind="noData"
-                  illustrationTheme="light">
-                </clabs-empty-state>`
-              : null}
           </cds-table-body>
         </cds-table>
         <cds-pagination
