@@ -27,7 +27,7 @@ const newResource = (
   config?: { aiLabelRows: number[] }
 ): Resource => {
   const isAIRow = config?.aiLabelRows?.includes(index);
-  
+
   return {
     ...(isAIRow && {
       aiLabel: exampleAiLabelTemplate,

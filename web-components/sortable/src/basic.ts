@@ -20,7 +20,7 @@ const styles = css`
   ${unsafeCSS(indexStyles)}
 `;
 
-const sortStatusFn: SortingFn<Resource> = (rowA, rowB, _columnId) => {
+const sortStatusFn: SortingFn<Resource> = (rowA, rowB) => {
   const statusA = rowA.original.status;
   const statusB = rowB.original.status;
   const statusOrder = ['single', 'complicated', 'relationship'];
@@ -119,8 +119,7 @@ export class MyBasicTable extends LitElement {
         <cds-table-body>
           ${table
             .getRowModel()
-            .rows
-            .map(
+            .rows.map(
               (row) => html`
                 <cds-table-row>
                   ${row

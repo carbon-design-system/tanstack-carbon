@@ -230,7 +230,7 @@ export class MyBatchTable extends LitElement {
                     row.getVisibleCells(),
                     (cell) => cell.id,
                     (cell) => {
-                    console.log(cell)
+                      console.log(cell);
                       return html` <cds-table-cell>
                         ${flexRender(
                           cell.column.columnDef.cell,
