@@ -10,7 +10,7 @@ export type Resource = {
   other: string;
   example: string;
   subRows?: Resource[];
-  aiLabel?: () => TemplateResult;
+  aiLabel?: (options: { alignment: string }) => TemplateResult; // for col
 };
 
 const range = (len: number) => {

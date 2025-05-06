@@ -9,21 +9,12 @@ import {
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
 import { exampleAiLabelTemplate } from './example-ai-label.js';
-import { makeData } from './makeData';
+import { makeData, Resource } from './makeData';
 import indexStyles from './index.scss?inline';
 
 const styles = css`
   ${unsafeCSS(indexStyles)}
 `;
-
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-};
 
 const columnHelper = createColumnHelper<Resource>();
 
@@ -91,10 +82,14 @@ export class MyBasicTable extends LitElement {
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                      ${typeof header.column.columnDef.meta?.aiLabel ===
-                      'function'
-                        ? header.column.columnDef.meta.aiLabel()
-                        : ''}
+                      ${
+                        // @ts-ignore
+                        typeof header.column.columnDef.meta?.aiLabel ===
+                        'function'
+                          ? // @ts-ignore
+                            header.column.columnDef.meta.aiLabel()
+                          : ''
+                      }
                     </cds-table-header-cell>`
                 )}</cds-table-header-row
               >`

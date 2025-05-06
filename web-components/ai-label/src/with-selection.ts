@@ -18,7 +18,7 @@ import TrashCan from '@carbon/web-components/es/icons/trash-can/16.js';
 import Add from '@carbon/web-components/es/icons/add/16.js';
 import Save from '@carbon/web-components/es/icons/save/16.js';
 import Download from '@carbon/web-components/es/icons/download/16.js';
-import { makeData } from './makeData';
+import { makeData, Resource } from './makeData';
 import {
   CDSPagination,
   CDSTableToolbarSearch,
@@ -28,15 +28,6 @@ import indexStyles from './index.scss?inline';
 const styles = css`
   ${unsafeCSS(indexStyles)}
 `;
-
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-};
 
 const columns: ColumnDef<Resource, any>[] = [
   // {
