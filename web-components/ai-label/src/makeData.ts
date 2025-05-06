@@ -1,4 +1,6 @@
 import { faker } from '@faker-js/faker';
+import { TemplateResult } from 'lit';
+import { exampleAiLabelTemplate } from './example-ai-label';
 
 export type Resource = {
   id: string;
@@ -8,6 +10,7 @@ export type Resource = {
   other: string;
   example: string;
   subRows?: Resource[];
+  aiLabel?: () => TemplateResult;
 };
 
 const range = (len: number) => {
@@ -18,8 +21,17 @@ const range = (len: number) => {
   return arr;
 };
 
-const newResource = (id: string, index: number): Resource => {
+const newResource = (
+  id: string,
+  index: number,
+  config?: { aiLabelRows: number[] }
+): Resource => {
+  const isAIRow = config?.aiLabelRows?.includes(index);
+  
   return {
+    ...(isAIRow && {
+      aiLabel: exampleAiLabelTemplate,
+    }),
     id,
     name: `Load balancer ${index}`,
     rule: faker.helpers.shuffle<Resource['rule']>([
@@ -36,13 +48,18 @@ const newResource = (id: string, index: number): Resource => {
   };
 };
 
-export function makeData(...lens: number[]) {
+export function makeData(
+  lens: number | number[],
+  config?: { aiLabelRows: number[] }
+): Resource[] {
+  const lensArray = Array.isArray(lens) ? lens : [lens];
+
   const makeDataLevel = (depth = 0): Resource[] => {
-    const len = lens[depth]!;
+    const len = lensArray[depth]!;
     return range(len).map((index): Resource => {
       return {
-        ...newResource(`load-balancer-${index}`, index),
-        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+        ...newResource(`load-balancer-${index}`, index, config),
+        subRows: lensArray[depth + 1] ? makeDataLevel(depth + 1) : undefined,
       };
     });
   };
