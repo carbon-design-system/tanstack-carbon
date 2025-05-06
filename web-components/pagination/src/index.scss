@@ -1,0 +1,56 @@
+@use '@carbon/styles/scss/reset';
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/themes';
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/type' as *;
+
+:root {
+  @include theme(themes.$white);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g10'] {
+  @include theme(themes.$g10);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g90'] {
+  @include theme(themes.$g90);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g100'] {
+  @include theme(themes.$g100);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='white'] {
+  @include theme(themes.$white);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+.table-container {
+  position: relative;
+}
+
+.empty-table-body {
+  height: 14rem;
+  background-color: transparent;
+
+  .no-results-empty-state {
+    padding-top: 2rem;
+    padding-left: 1rem;
+    max-width: 265px;
+    position: absolute;
+  }
+}
