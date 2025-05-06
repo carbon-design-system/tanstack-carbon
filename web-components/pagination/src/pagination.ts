@@ -80,21 +80,6 @@ export class MyBatchTable extends LitElement {
     pageSize: 10,
   };
 
-  firstUpdated(): void {
-    const tableContainer = this.shadowRoot?.querySelector(
-      '.table-container'
-    ) as HTMLElement;
-    setTimeout(() => {
-      if (tableContainer) {
-        tableContainer.style.setProperty(
-          '--table-height',
-          `${tableContainer.clientHeight}px`
-        );
-        tableContainer.style.minHeight = `${tableContainer.clientHeight}px`;
-      }
-    }, 0);
-  }
-
   performPagination = (event: CustomEvent) => {
     const { pageSize, page } = event.detail;
     this.pagination = {
