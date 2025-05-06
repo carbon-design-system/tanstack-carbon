@@ -1,0 +1,23 @@
+@use '@carbon/styles/scss/reset';
+@use '@carbon/styles/scss/theme';
+@use '@carbon/styles/scss/themes';
+
+:root {
+  @include theme.theme(themes.$white);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+:host {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  place-items: center;
+}
+
+.child-row-inner-container {
+  padding-block: 1rem;
+  padding-block-end: 1.5rem;
+}
