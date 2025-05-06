@@ -95,7 +95,7 @@ export class MyBatchTable extends LitElement {
     }, 0);
   }
 
-  performPagination = (event) => {
+  performPagination = (event:CustomEvent) => {
     const { pageSize, page } = event.detail;
     this.pagination = {
       pageSize: Number(pageSize),
