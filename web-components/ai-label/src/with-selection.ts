@@ -30,26 +30,6 @@ const styles = css`
 `;
 
 const columns: ColumnDef<Resource, any>[] = [
-  // {
-  //   id: 'select',
-  //   header: ({ table }) => {
-  //     console.log(table.getIsAllRowsSelected());
-  //     return html`
-  //       <cds-checkbox
-  //         ?checked="${table.getIsAllRowsSelected()}"
-  //         .indeterminate="${table.getIsSomeRowsSelected()}"
-  //         @cds-checkbox-changed="${table.getToggleAllRowsSelectedHandler()}"></cds-checkbox>
-  //     `;
-  //   },
-  //   cell: ({ row }) => html`
-  //     <cds-checkbox
-  //       @cds-checkbox-changed='${row.getToggleSelectedHandler()}'
-  //       ?checked='${row.getIsSelected()}'
-  //       ?disabled='${!row.getCanSelect()}'
-  //       .indeterminate='${row.getIsSomeSelected()}'
-  //     /></cds-checkbox>
-  //   `,
-  // },
   {
     accessorKey: 'name',
     cell: (info) => info.getValue(),
@@ -75,7 +55,6 @@ const columns: ColumnDef<Resource, any>[] = [
 ];
 
 const data: Resource[] = makeData(100, { aiLabelRows: [1, 3] });
-console.log(data);
 
 /**
  * An example table using `@tanstack/lit-table` and `@carbon/web-components` DataTable.
@@ -113,14 +92,7 @@ export class MyBatchTable extends LitElement {
       getCoreRowModel: getCoreRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
-      debugTable: true,
     });
-
-    console.log(table.getRowModel().rowsById);
-
-    console.log(table.getState().rowSelection);
-    console.log(table.getRowCount());
-    console.log('are some rows selected: ', table.getIsSomeRowsSelected());
 
     interface paginationDetail {
       detail: {
@@ -168,7 +140,7 @@ export class MyBatchTable extends LitElement {
             <cds-overflow-menu toolbar-action>
               ${Settings({
                 slot: 'icon',
-                class: `custom-icon-class`,
+                class: `cds--overflow-menu__icon`,
               })}
               <cds-overflow-menu-body>
                 <cds-overflow-menu-item @click=${() => alert('Alert 1')}>
@@ -220,15 +192,12 @@ export class MyBatchTable extends LitElement {
                   ${repeat(
                     row.getVisibleCells(),
                     (cell) => cell.id,
-                    (cell) => {
-                      console.log(cell);
-                      return html` <cds-table-cell>
-                        ${flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </cds-table-cell>`;
-                    }
+                    (cell) => html` <cds-table-cell>
+                      ${flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </cds-table-cell>`
                   )}
                 </cds-table-row>
               `;
@@ -262,13 +231,6 @@ export class MyBatchTable extends LitElement {
         display: flex;
         place-items: center;
         flex-direction: column;
-      }
-      cds-table-batch-actions[active] {
-        z-index: 1;
-        clip-path: polygon(0 0, 300% 0, 300% 300%, 0 300%);
-        opacity: 1;
-        pointer-events: all;
-        transform: translate3d(0, 0, 0);
       }
     `,
     styles,

@@ -37,7 +37,6 @@ const columns: ColumnDef<Resource, any>[] = [
   {
     id: 'select',
     header: ({ table }) => {
-      console.log(table.getIsAllRowsSelected());
       return html`
         <cds-checkbox
           ?checked="${table.getIsAllRowsSelected()}"
@@ -116,14 +115,7 @@ export class MyBatchTable extends LitElement {
       getCoreRowModel: getCoreRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
-      debugTable: true,
     });
-
-    console.log(table.getRowModel().rowsById);
-
-    console.log(table.getState().rowSelection);
-    console.log(table.getRowCount());
-    console.log('are some rows selected: ', table.getIsSomeRowsSelected());
 
     interface paginationDetail {
       detail: {
@@ -174,7 +166,7 @@ export class MyBatchTable extends LitElement {
             <cds-overflow-menu toolbar-action>
               ${Settings({
                 slot: 'icon',
-                class: `custom-icon-class`,
+                class: `cds--overflow-menu__icon`,
               })}
               <cds-overflow-menu-body>
                 <cds-overflow-menu-item @click=${() => alert('Alert 1')}>
@@ -260,13 +252,6 @@ export class MyBatchTable extends LitElement {
       display: flex;
       place-items: center;
       flex-direction: column;
-    }
-    cds-table-batch-actions[active] {
-      z-index: 1;
-      clip-path: polygon(0 0, 300% 0, 300% 300%, 0 300%);
-      opacity: 1;
-      pointer-events: all;
-      transform: translate3d(0, 0, 0);
     }
   `;
 }

@@ -22,8 +22,6 @@ const styles = css`
 `;
 
 const sortStatusFn: SortingFn<Resource> = (rowA, rowB) => {
-  console.log('lol');
-
   const statusA = rowA.original.status;
   const statusB = rowB.original.status;
   const statusOrder = ['single', 'complicated', 'relationship'];
