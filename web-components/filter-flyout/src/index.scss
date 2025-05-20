@@ -59,6 +59,7 @@
 .flyout--label {
   @include type-style('body-compact-01');
   @include font-weight('semibold');
+
   padding-bottom: 1rem;
 }
 
