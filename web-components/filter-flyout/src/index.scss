@@ -75,6 +75,10 @@
   bottom: 0; // account for x scrollbar of table
   display: flex;
 
+  cds-button::part(button) {
+    box-shadow: none;
+  }
+
   cds-button {
     min-width: 50%;
     max-inline-size: 50%;
