@@ -1,17 +1,18 @@
-import { LitElement, css, html, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { LitElement, css, html, unsafeCSS } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { state } from 'lit/decorators/state.js';
 import {
-  createColumnHelper,
   flexRender,
+  createColumnHelper,
   getCoreRowModel,
   getSortedRowModel,
-  TableController,
   SortingFn,
   type SortingState,
+  TableController,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
+import { exampleAiLabelTemplate } from './example-ai-label';
 
 import { makeData, Resource } from './makeData';
 import indexStyles from './index.scss?inline';
@@ -27,6 +28,10 @@ const sortStatusFn: SortingFn<Resource> = (rowA, rowB) => {
   return statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
 };
 
+type ColumnMeta = {
+  aiLabel?: () => unknown;
+};
+
 const columnHelper = createColumnHelper<Resource>();
 
 const columns = [
@@ -34,11 +39,13 @@ const columns = [
     id: 'lastName',
     cell: (info) => html`<i>${info.getValue()}</i>`,
     header: () => html`<span>Name</span>`,
-    sortDescFirst: false, //first sort order will be ascending (nullable values can mess up auto detection of sort order)
   }),
   columnHelper.accessor('rule', {
     header: () => 'Rule',
     cell: (info) => info.renderValue(),
+    meta: {
+      aiLabel: exampleAiLabelTemplate,
+    } as ColumnMeta,
     sortDescFirst: true, //first sort order will be descending (nullable values can mess up auto detection of sort order)
   }),
   columnHelper.accessor('status', {
@@ -61,18 +68,17 @@ const data: Resource[] = makeData(10);
  *
  */
 
-@customElement('basic-tanstack-table')
+@customElement('sortable-ai-label-table')
 export class MyBasicTable extends LitElement {
-  private tableController = new TableController<Resource>(this);
-
   @state()
   private _sorting: SortingState = [];
 
-  render() {
+  private tableController = new TableController<Resource>(this);
+
+  protected render() {
     const table = this.tableController.table({
       columns,
       data,
-      getCoreRowModel: getCoreRowModel(),
       state: {
         sorting: this._sorting,
       },
@@ -84,20 +90,23 @@ export class MyBasicTable extends LitElement {
         }
       },
       getSortedRowModel: getSortedRowModel(),
+      getCoreRowModel: getCoreRowModel(),
     });
 
     return html`
       <cds-table is-sortable .customSortRow=${() => null}>
+        <cds-table-header-title slot="title"
+          >Column, AI label with sorting</cds-table-header-title
+        >
         <cds-table-head>
           ${repeat(
             table.getHeaderGroups(),
             (headerGroup) => headerGroup.id,
             (headerGroup) => html`
               <cds-table-header-row>
-                ${repeat(
-                  headerGroup.headers,
-                  (header) => header.id,
-                  (header) => html`
+                ${headerGroup.headers.map((header) => {
+                  const meta = header.column.columnDef.meta as ColumnMeta;
+                  return html`
                     <cds-table-header-cell
                       sort-direction=${{ asc: 'ascending', desc: 'descending' }[
                         header.column.getIsSorted() as string
@@ -109,9 +118,12 @@ export class MyBasicTable extends LitElement {
                             header.column.columnDef.header,
                             header.getContext()
                           )}
+                      ${typeof meta?.aiLabel === 'function'
+                        ? meta.aiLabel() ?? null
+                        : ''}
                     </cds-table-header-cell>
-                  `
-                )}
+                  `;
+                })}
               </cds-table-header-row>
             `
           )}
@@ -119,7 +131,8 @@ export class MyBasicTable extends LitElement {
         <cds-table-body>
           ${table
             .getRowModel()
-            .rows.map(
+            .rows.slice(0, 10)
+            .map(
               (row) => html`
                 <cds-table-row>
                   ${row
@@ -169,6 +182,6 @@ export class MyBasicTable extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'basic-tanstack-table': MyBasicTable;
+    'sortable-ai-label-table': MyBasicTable;
   }
 }

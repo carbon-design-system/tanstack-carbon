@@ -1,4 +1,4 @@
-import { LitElement, css, html } from 'lit';
+import { LitElement, css, html, unsafeCSS } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
@@ -13,47 +13,24 @@ import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/checkbox/index.js';
 import '@carbon/web-components/es/components/pagination/index.js';
 import '@carbon/web-components/es/components/overflow-menu/index.js';
-import Settings from '@carbon/web-components/es/icons/settings/16';
-import TrashCan from '@carbon/web-components/es/icons/trash-can/16';
-import Add from '@carbon/web-components/es/icons/add/16';
-import Save from '@carbon/web-components/es/icons/save/16';
-import Download from '@carbon/web-components/es/icons/download/16';
-import { makeData } from './makeData';
+import Settings from '@carbon/web-components/es/icons/settings/16.js';
+import TrashCan from '@carbon/web-components/es/icons/trash-can/16.js';
+import Add from '@carbon/web-components/es/icons/add/16.js';
+import Save from '@carbon/web-components/es/icons/save/16.js';
+import Download from '@carbon/web-components/es/icons/download/16.js';
+import { makeData, Resource } from './makeData';
 import { prefix as carbonPrefix } from '@carbon/web-components/es/globals/settings.js';
 import {
   CDSPagination,
   CDSTableToolbarSearch,
 } from '@carbon/web-components/es';
+import indexStyles from './index.scss?inline';
 
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-};
+const styles = css`
+  ${unsafeCSS(indexStyles)}
+`;
 
 const columns: ColumnDef<Resource, any>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => {
-      return html`
-        <cds-checkbox
-          ?checked="${table.getIsAllRowsSelected()}"
-          .indeterminate="${table.getIsSomeRowsSelected()}"
-          @cds-checkbox-changed="${table.getToggleAllRowsSelectedHandler()}"></cds-checkbox>
-      `;
-    },
-    cell: ({ row }) => html`
-      <cds-checkbox
-        @cds-checkbox-changed='${row.getToggleSelectedHandler()}'
-        ?checked='${row.getIsSelected()}'
-        ?disabled='${!row.getCanSelect()}'
-        .indeterminate='${row.getIsSomeSelected()}'
-      /></cds-checkbox>
-    `,
-  },
   {
     accessorKey: 'name',
     cell: (info) => info.getValue(),
@@ -78,14 +55,14 @@ const columns: ColumnDef<Resource, any>[] = [
   },
 ];
 
-const data: Resource[] = makeData(100);
+const data: Resource[] = makeData(100, { aiLabelRows: [1, 3] });
 
 /**
  * An example table using `@tanstack/lit-table` and `@carbon/web-components` DataTable.
  *
  */
 
-@customElement('batch-tanstack-table')
+@customElement('with-selection-table')
 export class MyBatchTable extends LitElement {
   private tableController = new TableController<Resource>(this);
 
@@ -133,12 +110,9 @@ export class MyBatchTable extends LitElement {
     interface paginationFull extends CDSPagination, paginationDetail {}
 
     return html`
-      <cds-table>
+      <cds-table with-row-ai-labels>
         <cds-table-header-title slot="title"
-          >Batch actions</cds-table-header-title
-        >
-        <cds-table-header-description slot="description"
-          >With toolbar</cds-table-header-description
+          >AI label, with row selection</cds-table-header-title
         >
 
         <cds-table-toolbar slot="toolbar">
@@ -210,21 +184,25 @@ export class MyBatchTable extends LitElement {
           ${repeat(
             table.getRowModel().rows,
             (row) => row.id,
-            (row) => html`
-              <cds-table-row>
-                ${repeat(
-                  row.getVisibleCells(),
-                  (cell) => cell.id,
-                  (cell) =>
-                    html` <cds-table-cell>
+            (row) => {
+              return html`
+                <cds-table-row selection-name=${row.id}>
+                  ${row.original.aiLabel?.({
+                    alignment: 'bottom-left',
+                  })}
+                  ${repeat(
+                    row.getVisibleCells(),
+                    (cell) => cell.id,
+                    (cell) => html` <cds-table-cell>
                       ${flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
                     </cds-table-cell>`
-                )}
-              </cds-table-row>
-            `
+                  )}
+                </cds-table-row>
+              `;
+            }
           )}
         </cds-table-body>
       </cds-table>
@@ -245,20 +223,23 @@ export class MyBatchTable extends LitElement {
     `;
   }
 
-  static styles = css`
-    :host {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 2rem;
-      display: flex;
-      place-items: center;
-      flex-direction: column;
-    }
-  `;
+  static styles = [
+    css`
+      :host {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: flex;
+        place-items: center;
+        flex-direction: column;
+      }
+    `,
+    styles,
+  ];
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'batch-tanstack-table': MyBatchTable;
+    'with-selection-table': MyBatchTable;
   }
 }
