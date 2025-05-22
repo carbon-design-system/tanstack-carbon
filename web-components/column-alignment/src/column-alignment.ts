@@ -8,15 +8,22 @@ import {
   TableController,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
-import { makeData } from './makeData';
+import '@carbon/web-components/es/components/icon-indicator/index.js';
+import { ICON_INDICATOR_KIND } from '@carbon/web-components/es/components/icon-indicator/defs.js';
 
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
+import { makeData, Resource } from './makeData';
+
+const getStatusIconValue = (kind: string): ICON_INDICATOR_KIND => {
+  if (kind === 'disabled') {
+    return ICON_INDICATOR_KIND.FAILED;
+  }
+  if (kind === 'starting') {
+    return ICON_INDICATOR_KIND['NOT-STARTED'];
+  }
+  if (kind === 'active') {
+    return ICON_INDICATOR_KIND['IN-PROGRESS'];
+  }
+  return ICON_INDICATOR_KIND['IN-PROGRESS'];
 };
 
 const columnHelper = createColumnHelper<Resource>();
@@ -31,8 +38,12 @@ const columns = [
   }),
   columnHelper.accessor('status', {
     header: () => html`<span class="center-align-cell">Status</span>`,
-    cell: (info) =>
-      html`<span class="center-align-cell">${info.getValue()}</span>`,
+    cell: (info) => {
+      return html`<cds-icon-indicator
+        class="center-align-cell"
+        size="16"
+        kind="${getStatusIconValue(info.getValue())}"></cds-icon-indicator> `;
+    },
   }),
   columnHelper.accessor('other', {
     header: 'Other',
