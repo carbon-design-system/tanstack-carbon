@@ -106,6 +106,7 @@ export class DndExample extends LitElement {
                   ${(() => {
                     const col = this.items.find((col) => col.id === item);
                     const header = col?.columnDef?.header;
+                    // @ts-ignore
                     return typeof header === 'function' ? header() : header;
                   })()}
                 </cds-checkbox>
