@@ -12,21 +12,12 @@ import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/button/index.js';
 import ChevronRight from '@carbon/web-components/es/icons/chevron--right/16';
 import { styleMap } from 'lit/directives/style-map.js';
-import { makeData } from './makeData';
 
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-  subRows?: Resource[];
-};
+import { makeData, Resource } from './makeData';
 
 const columnHelper = createColumnHelper<Resource>();
 
-const data: Resource[] = makeData(10, 5);
+const data: Resource[] = makeData(10, 5, 3);
 
 /**
  * An example table using `@tanstack/lit-table` and `@carbon/web-components` DataTable.
@@ -39,31 +30,11 @@ export class NestedRowTable extends LitElement {
 
   _columns = [
     columnHelper.accessor((row) => row.name, {
-      id: 'lastName',
+      id: 'name',
       header: ({ table }) => html` <div class="flex">
         <cds-button
-          @click=${() => {
-            const rows = table.getRowModel().rows;
-            const newExpansionState = {} as {
-              [key: string]: boolean;
-            };
-            if (!this._expandAll) {
-              rows.forEach((row) => {
-                newExpansionState[row.id] = true;
-              });
-              this._expanded = newExpansionState;
-              this._expandAll = true;
-            } else {
-              rows.forEach((row) => {
-                newExpansionState[row.id] = false;
-              });
-              this._expanded = newExpansionState;
-              this._expandAll = false;
-            }
-            // doesn't seem to be working, but would expand all without having to do it manually
-            // table.getToggleAllRowsExpandedHandler();
-          }}
-          className="row-expander"
+          @click=${table.getToggleAllRowsExpandedHandler()}
+          class="row-expander"
           kind="ghost"
           size="sm">
           ${ChevronRight({
@@ -78,20 +49,13 @@ export class NestedRowTable extends LitElement {
       cell: ({ row, renderValue }) => {
         return html` <div
           style="${styleMap({
-            paddingLeft: row.depth > 0 ? `${row.depth * 2 + 1.5}rem` : 0,
+            paddingLeft: `${row.depth * 2 + (!row.getCanExpand() ? 2 : 0)}rem`,
           })}">
-          <div className="flex">
+          <div class="flex">
             ${row.getCanExpand()
               ? html`<cds-button
-                  @click=${() => {
-                    // row.getToggleExpandedHandler()
-                    if (!row.getIsExpanded()) {
-                      this._expanded = { ...this._expanded, [row.id]: true };
-                      return;
-                    }
-                    this._expanded = { ...this._expanded, [row.id]: false };
-                  }}
-                  className="row-expander"
+                  @click=${row.getToggleExpandedHandler()}
+                  class="row-expander"
                   kind="ghost"
                   size="sm">
                   ${ChevronRight({
@@ -125,19 +89,21 @@ export class NestedRowTable extends LitElement {
   @state()
   private _expanded = {};
 
-  @state()
-  private _expandAll = false;
-
   render() {
     const table = this.tableController.table({
       columns: this._columns,
       data,
       getCoreRowModel: getCoreRowModel(),
       getExpandedRowModel: getExpandedRowModel(),
-      // onExpandedChange: (row) => console.log('onChange', row),
       getSubRows: (row) => row.subRows,
       state: {
         expanded: this._expanded,
+      },
+      onExpandedChange: (oldExpanded) => {
+        this._expanded =
+          typeof oldExpanded === 'function'
+            ? oldExpanded(this._expanded)
+            : oldExpanded;
       },
     });
 
@@ -199,11 +165,22 @@ export class NestedRowTable extends LitElement {
       place-items: center;
     }
 
+    .flex {
+      display: flex;
+      align-items: center;
+    }
+
+    .row-expander {
+      margin-right: 1rem;
+    }
+
     .row-expandable-icon {
+      color: var(--cds-icon-primary, #161616);
       transition: transform 150ms ease-in;
     }
 
     .row-expanded-icon {
+      color: var(--cds-icon-primary, #161616);
       transform: rotate(0.25turn);
       transition: transform 150ms ease-in; // replace with carbon motion easing
     }
