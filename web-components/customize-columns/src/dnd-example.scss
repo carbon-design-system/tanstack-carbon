@@ -33,8 +33,9 @@ li {
   border-block-end: 1px solid $border-subtle-01;
 
   &.dragging {
-    opacity: 0.4;
     @include utilities.focus-outline('outline');
+
+    opacity: 0.4;
     outline-offset: -2px;
   }
 
