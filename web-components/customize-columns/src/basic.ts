@@ -210,13 +210,11 @@ export class MyBasicTable extends LitElement {
                 .columnVisibilityTemp=${this._columnVisibilityTemp}
                 .setColumnOrderTemp=${(order: string[]) => {
                   this._columnOrderTemp = order;
-                  this.requestUpdate();
                 }}
                 .setColumnVisibilityTemp=${(
                   visibility: Record<string, boolean>
                 ) => {
                   this._columnVisibilityTemp = visibility;
-                  this.requestUpdate();
                 }}>
               </dnd-example>
             </div>`;
