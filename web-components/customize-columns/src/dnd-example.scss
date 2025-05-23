@@ -1,0 +1,69 @@
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/themes';
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/colors';
+@use '@carbon/styles/scss/type';
+@use '@carbon/styles/scss/utilities';
+
+:root {
+  @include theme(themes.$white);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+:host {
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  background: $layer-02;
+  cursor: grab;
+  padding: 0.5rem;
+  border-block-end: 1px solid $border-subtle-01;
+
+  &.dragging {
+    opacity: 0.4;
+    @include utilities.focus-outline('outline');
+    outline-offset: -2px;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:focus {
+    @include utilities.focus-outline('outline');
+  }
+
+  &.drag-over {
+    outline: 2px dashed $focus;
+    outline-offset: -2px;
+  }
+}
+
+.drag-icon {
+  margin-block-start: 0.4rem;
+}
+
+.li-content {
+  display: flex;
+  gap: 0.5rem;
+  padding-inline-start: 1rem;
+  align-items: center;
+}
+
+cds-checkbox {
+  margin-block-end: 0;
+  flex: none;
+}

@@ -10,9 +10,10 @@ import {
 import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/overflow-menu/index.js';
 import '@carbon/web-components/es/components/button/index.js';
-import '@carbon/web-components/es/components/tearsheet/index.js';
+import '@carbon/ibm-products-web-components/es/components/tearsheet/index.js';
 import Column from '@carbon/web-components/es/icons/column/16';
 import { CDSTableToolbarSearch } from '@carbon/web-components/es';
+import './dnd-example.js';
 
 import { makeData } from './makeData';
 
@@ -63,10 +64,49 @@ export class MyBasicTable extends LitElement {
   private _globalFilter = '';
 
   @state()
+  private _columnOrder: string[] = [];
+
+  @state()
+  private _columnVisibility: Record<string, boolean> = {};
+
+  @state()
+  private _columnOrderTemp: string[] = [];
+
+  @state()
+  private _columnVisibilityTemp: Record<string, boolean> = {};
+
+  @state()
   private _tearsheetOpen = false;
 
   private _toggleTearsheet() {
     this._tearsheetOpen = !this._tearsheetOpen;
+  }
+
+  protected async firstUpdated() {
+    await this.updateComplete;
+    const tearsheet = this.renderRoot.querySelector(
+      'c4p-tearsheet'
+    ) as LitElement | null;
+    const content = tearsheet?.renderRoot.querySelector(
+      'cds-modal-body .c4p--tearsheet__content'
+    ) as HTMLElement | null;
+    if (content) content.style.padding = '0';
+
+    // Initialize a table instance to get column order and visibility. this can be removed if table instance is moved from render method to a this.someState
+    const table = this.tableController.table({
+      columns,
+      data,
+      getCoreRowModel: getCoreRowModel(),
+    });
+
+    this._columnOrder = table.getAllLeafColumns().map((col) => col.id);
+    this._columnVisibility = table.getAllLeafColumns().reduce((acc, col) => {
+      acc[col.id] = true;
+      return acc;
+    }, {} as Record<string, boolean>);
+
+    this._columnOrderTemp = [...this._columnOrder];
+    this._columnVisibilityTemp = { ...this._columnVisibility };
   }
 
   render() {
@@ -75,6 +115,8 @@ export class MyBasicTable extends LitElement {
       data,
       getCoreRowModel: getCoreRowModel(),
       state: {
+        columnOrder: this._columnOrder,
+        columnVisibility: this._columnVisibility,
         globalFilter: this._globalFilter,
       },
     });
@@ -150,46 +192,57 @@ export class MyBasicTable extends LitElement {
           )}
         </cds-table-body>
       </cds-table>
-      <cds-tearsheet
+      <c4p-tearsheet
         class="customize-col-tearsheet"
         ?open=${this._tearsheetOpen}
         prevent-close-on-click-outside
         width="narrow"
-        @cds-tearsheet-closed=${() => (this._tearsheetOpen = false)}>
+        @c4p-tearsheet-closed=${() => (this._tearsheetOpen = false)}>
         <span slot="title">Customize column order</span>
         ${repeat(
           table.getHeaderGroups(),
           (headerGroup) => headerGroup.id,
-          (headerGroup) =>
-            html`<div class="drag-wrapper">
-              ${repeat(
-                headerGroup.headers,
-                (header) => header.id,
-                (header) =>
-                  html` <div class="item">
-                    ${header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </div>`
-              )}
-            </div>`
+          (headerGroup) => {
+            return html` <div class="drag-wrapper">
+              <dnd-example
+                .items=${table.getAllLeafColumns()}
+                .columnOrderTemp=${this._columnOrderTemp}
+                .columnVisibilityTemp=${this._columnVisibilityTemp}
+                .setColumnOrderTemp=${(order: string[]) => {
+                  this._columnOrderTemp = order;
+                  this.requestUpdate();
+                }}
+                .setColumnVisibilityTemp=${(
+                  visibility: Record<string, boolean>
+                ) => {
+                  this._columnVisibilityTemp = visibility;
+                  this.requestUpdate();
+                }}>
+              </dnd-example>
+            </div>`;
+          }
         )}
         <cds-button
-          @click=${() => (this._tearsheetOpen = false)}
+          @click=${() => {
+            this._columnVisibilityTemp = { ...this._columnVisibility };
+            this._columnOrderTemp = [...this._columnOrder];
+            this._tearsheetOpen = false;
+          }}
           slot="actions"
           kind=${'secondary'}
           >Cancel</cds-button
         >
         <cds-button
-          @click=${() => (this._tearsheetOpen = false)}
+          @click=${() => {
+            this._columnVisibility = { ...this._columnVisibilityTemp };
+            this._columnOrder = [...this._columnOrderTemp];
+            this._tearsheetOpen = false;
+          }}
           slot="actions"
           kind=${'primary'}
           >Save</cds-button
         >
-      </cds-tearsheet>
+      </c4p-tearsheet>
     `;
   }
 
