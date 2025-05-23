@@ -202,7 +202,7 @@ export class MyBasicTable extends LitElement {
         ${repeat(
           table.getHeaderGroups(),
           (headerGroup) => headerGroup.id,
-          (headerGroup) => {
+          () => {
             return html` <div class="drag-wrapper">
               <dnd-example
                 .items=${table.getAllLeafColumns()}
