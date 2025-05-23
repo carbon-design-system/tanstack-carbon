@@ -28,20 +28,10 @@ export class DndExample extends LitElement {
 
   private dragStartIndex: number = -1;
 
-  updated(changedProperties: Map<string, any>) {
-    if (
-      changedProperties.has('items') ||
-      changedProperties.has('columnOrderTemp')
-    ) {
-      this.requestUpdate();
-    }
-  }
-
   private handleDragStart(e: DragEvent, index: number) {
     this.dragStartIndex = index;
     if (e.target instanceof HTMLElement) {
       e.target.classList.add('dragging');
-      e.target.blur();
     }
   }
 
@@ -66,28 +56,21 @@ export class DndExample extends LitElement {
     newOrder.splice(dropIndex, 0, draggedItem);
 
     this.setColumnOrderTemp(newOrder);
-    this.requestUpdate();
 
     const draggingElement = this.shadowRoot?.querySelector('.dragging');
     if (draggingElement) {
       draggingElement.classList.remove('dragging');
-    }
-
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
     }
   }
 
   private handleDragEnd(e: DragEvent) {
     if (e.target instanceof HTMLElement) {
       e.target.classList.remove('dragging');
-      e.target.blur();
     }
 
     const li = this.shadowRoot?.querySelectorAll('li');
     li?.forEach((item) => {
       item.classList.remove('drag-over');
-      item.blur();
     });
   }
 
@@ -97,7 +80,6 @@ export class DndExample extends LitElement {
       [columnId]: checked,
     };
     this.setColumnVisibilityTemp(newVisibility);
-    this.requestUpdate();
   }
 
   render() {
