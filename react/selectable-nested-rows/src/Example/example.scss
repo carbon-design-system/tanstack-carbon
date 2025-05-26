@@ -1,0 +1,38 @@
+@use '@carbon/react/scss/theme' as *;
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/utilities';
+@use '@carbon/react/scss/colors';
+@use '@carbon/react/scss/type';
+
+.page-grid {
+  margin-top: 4rem;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.basic-table th,
+.cds--data-table th:last-of-type {
+  position: relative;
+}
+
+.tanstack-example {
+  padding-bottom: 2rem;
+}
+
+// Nested row
+.row-expander {
+  width: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.row-expander .row-expanded-icon {
+  transform: rotate(90deg);
+  transition: transform 200ms;
+}
