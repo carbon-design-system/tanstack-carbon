@@ -24,15 +24,24 @@
 
 // Nested row
 .row-expander {
-  width: 32px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;
 }
 
 .row-expander .row-expanded-icon {
   transform: rotate(90deg);
   transition: transform 200ms;
+}
+
+// Selectable row
+.row-selector {
+  flex: none;
+  padding-left: 1rem;
+}
+
+.row-content {
+  flex: 1 0 auto;
+  padding-left: 1rem;
 }
