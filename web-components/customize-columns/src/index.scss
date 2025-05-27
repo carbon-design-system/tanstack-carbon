@@ -8,3 +8,31 @@
   background-color: var(--cds-background);
   color: var(--cds-text-primary);
 }
+
+[data-carbon-theme='g10'] {
+  @include theme.theme(themes.$g10);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g90'] {
+  @include theme.theme(themes.$g90);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g100'] {
+  @include theme.theme(themes.$g100);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='white'] {
+  @include theme.theme(themes.$white);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
