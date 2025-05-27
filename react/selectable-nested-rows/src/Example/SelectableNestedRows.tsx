@@ -13,7 +13,14 @@ import {
   // getFilteredRowModel,
 } from '@tanstack/react-table';
 import { DataTable, Button, Checkbox } from '@carbon/react';
-import { ChevronRight } from '@carbon/react/icons';
+import {
+  ChevronRight,
+  TrashCan,
+  Add,
+  Save,
+  Download,
+} from '@carbon/react/icons';
+
 const {
   Table,
   TableContainer,
@@ -22,12 +29,21 @@ const {
   TableHead,
   TableHeader,
   TableRow,
+  TableToolbar,
+  TableBatchActions,
+  TableBatchAction,
+  TableToolbarContent,
+  TableToolbarSearch,
+  TableToolbarAction,
+  TableToolbarMenu,
 } = DataTable;
 
 import { makeData, Resource } from './makeData';
 
 export const SelectableNestedRows = () => {
   const columnHelper = createColumnHelper<Resource>();
+
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const columns = [
     columnHelper.accessor((row) => row.name, {
@@ -141,6 +157,7 @@ export const SelectableNestedRows = () => {
     columns,
     state: {
       expanded,
+      rowSelection,
     },
     onExpandedChange: setExpanded,
     getSubRows: (row) => row.subRows,
@@ -149,11 +166,87 @@ export const SelectableNestedRows = () => {
     // filterFromLeafRows: true,
     // maxLeafRowFilterDepth: 0,
     // debugTable: true,
+    enableRowSelection: true, //enable row selection for all rows
+    // enableRowSelection: (row) => row.original.status !== 'disabled', // conditionally disable rows
+    onRowSelectionChange: setRowSelection,
   });
 
+  const shouldShowBatchActions = Object.keys(rowSelection).length > 0;
+
   return (
-    <TableContainer title="Selectable nested rows" className="tanstack-example">
-      <Table>
+    <TableContainer
+      title="Selectable nested rows"
+      className="tanstack-example"
+      style={{
+        width: table.getCenterTotalSize(),
+      }}>
+      <TableToolbar aria-label={'Table toolbar'}>
+        <TableBatchActions
+          shouldShowBatchActions={shouldShowBatchActions}
+          totalSelected={Object.keys(rowSelection).length ?? 0}
+          onCancel={() => table.resetRowSelection()}
+          onSelectAll={() => {
+            table.toggleAllRowsSelected(true);
+          }}
+          totalCount={data?.length}>
+          <TableBatchAction
+            tabIndex={shouldShowBatchActions ? 0 : -1}
+            renderIcon={TrashCan}
+            onClick={() => table.resetRowSelection()}>
+            Delete
+          </TableBatchAction>
+          <TableBatchAction
+            hasIconOnly
+            iconDescription="Add"
+            tabIndex={shouldShowBatchActions ? 0 : -1}
+            renderIcon={Add}
+            onClick={() => table.resetRowSelection()}>
+            Add
+          </TableBatchAction>
+          <TableBatchAction
+            hasIconOnly
+            iconDescription="Save"
+            tabIndex={shouldShowBatchActions ? 0 : -1}
+            renderIcon={Save}
+            onClick={() => table.resetRowSelection()}>
+            Save
+          </TableBatchAction>
+          <TableBatchAction
+            tabIndex={shouldShowBatchActions ? 0 : -1}
+            renderIcon={Download}
+            onClick={() => table.resetRowSelection()}>
+            Download
+          </TableBatchAction>
+        </TableBatchActions>
+        <TableToolbarContent aria-hidden={shouldShowBatchActions}>
+          {/* <TableToolbarSearch
+            tabIndex={shouldShowBatchActions ? -1 : 0}
+            defaultValue={globalFilter ?? ''}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setGlobalFilter(event.target.value)
+            }
+            placeholder="Search all columns..."
+          /> */}
+          <TableToolbarMenu tabIndex={shouldShowBatchActions ? -1 : 0}>
+            <TableToolbarAction onClick={() => alert('Alert 1')}>
+              Action 1
+            </TableToolbarAction>
+            <TableToolbarAction onClick={() => alert('Alert 2')}>
+              Action 2
+            </TableToolbarAction>
+            <TableToolbarAction onClick={() => alert('Alert 3')}>
+              Action 3
+            </TableToolbarAction>
+          </TableToolbarMenu>
+          <Button
+            tabIndex={shouldShowBatchActions ? -1 : 0}
+            onClick={() => {}}
+            kind="primary">
+            Add new
+          </Button>
+        </TableToolbarContent>
+      </TableToolbar>
+      <Table size="lg" useZebraStyles={false} aria-label="sample table">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
