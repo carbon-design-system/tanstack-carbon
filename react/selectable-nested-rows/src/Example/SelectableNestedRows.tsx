@@ -1,4 +1,5 @@
 import React from 'react';
+import cx from 'classnames';
 
 import {
   ExpandedState,
@@ -34,7 +35,6 @@ const {
 } = DataTable;
 
 import { makeData, Resource } from './makeData';
-
 
 export const SelectableNestedRows = () => {
   const columnHelper = createColumnHelper<Resource>();
@@ -86,15 +86,18 @@ export const SelectableNestedRows = () => {
         </div>
       ),
       cell: ({ row, getValue }) => (
-        <div
-          style={{
-            // Since rows are flattened by default,
-            // we can use the row.depth property
-            // and paddingLeft to visually indicate the depth
-            // of the row
-            paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 1)}rem`,
-          }}>
-          <div className="flex">
+        <>
+          <div
+            style={{
+              // Since rows are flattened by default,
+              // we can use the row.depth property
+              // and paddingLeft to visually indicate the depth
+              // of the row
+              paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 1)}rem`,
+            }}
+            className={cx('flex', {
+              ['border-line-wrapper']: row.depth || row.getIsExpanded(),
+            })}>
             {row.getCanExpand() ? (
               <Button
                 {...{
@@ -124,8 +127,14 @@ export const SelectableNestedRows = () => {
               }}
             />
             <span className="row-content">{getValue<boolean>()}</span>
+            <div
+              className="border-line"
+              style={{
+                width: `${row.depth * 2 + 3}rem`,
+              }}></div>
           </div>
-        </div>
+          <div className="expansion-indicator"></div>
+        </>
       ),
     }),
     columnHelper.accessor('rule', {
