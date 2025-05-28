@@ -7,10 +7,6 @@ import {
   getExpandedRowModel,
   flexRender,
   createColumnHelper,
-  FilterFn,
-  getFilteredRowModel,
-  // PaginationState,
-  // getPaginationRowModel,
 } from '@tanstack/react-table';
 import { DataTable, Button, Checkbox } from '@carbon/react';
 import {
@@ -20,9 +16,6 @@ import {
   Save,
   Download,
 } from '@carbon/react/icons';
-
-// A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
-import { rankItem } from '@tanstack/match-sorter-utils';
 
 const {
   Table,
@@ -36,31 +29,15 @@ const {
   TableBatchActions,
   TableBatchAction,
   TableToolbarContent,
-  TableToolbarSearch,
   TableToolbarAction,
   TableToolbarMenu,
 } = DataTable;
 
 import { makeData, Resource } from './makeData';
 
-// Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
-
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  });
-
-  // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
 
 export const SelectableNestedRows = () => {
   const columnHelper = createColumnHelper<Resource>();
-
-  const [rowSelection, setRowSelection] = React.useState({});
 
   const columns = [
     columnHelper.accessor((row) => row.name, {
@@ -168,7 +145,7 @@ export const SelectableNestedRows = () => {
   const [data] = React.useState(() => makeData(10, 5, 3, 2));
 
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
-  const [globalFilter, setGlobalFilter] = React.useState('');
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -176,24 +153,14 @@ export const SelectableNestedRows = () => {
     state: {
       expanded,
       rowSelection,
-      globalFilter,
     },
     getCoreRowModel: getCoreRowModel(),
     getSubRows: (row) => row.subRows,
     onExpandedChange: setExpanded,
     getExpandedRowModel: getExpandedRowModel(),
-    // filterFromLeafRows: true,
-    // maxLeafRowFilterDepth: 0,
-    // debugTable: true,
     enableRowSelection: true, //enable row selection for all rows
     // enableRowSelection: (row) => row.original.status !== 'disabled', // conditionally disable rows
     onRowSelectionChange: setRowSelection,
-    getFilteredRowModel: getFilteredRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: 'fuzzy', //apply fuzzy filter to the global filter (most common use case for fuzzy filter)
-    filterFns: {
-      fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
-    },
   });
 
   const shouldShowBatchActions = Object.keys(rowSelection).length > 0;
@@ -244,14 +211,6 @@ export const SelectableNestedRows = () => {
           </TableBatchAction>
         </TableBatchActions>
         <TableToolbarContent aria-hidden={shouldShowBatchActions}>
-          <TableToolbarSearch
-            tabIndex={shouldShowBatchActions ? -1 : 0}
-            defaultValue={globalFilter ?? ''}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              setGlobalFilter(event.target.value)
-            }
-            placeholder="Search all columns..."
-          />
           <TableToolbarMenu tabIndex={shouldShowBatchActions ? -1 : 0}>
             <TableToolbarAction onClick={() => alert('Alert 1')}>
               Action 1
