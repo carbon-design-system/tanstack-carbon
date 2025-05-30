@@ -1,8 +1,14 @@
 @use '@carbon/react/scss/theme' as *;
+@use '@carbon/react/scss/themes';
 @use '@carbon/react/scss/spacing' as *;
 @use '@carbon/react/scss/utilities';
+@use '@carbon/react/scss/utilities/ai-gradient' as *;
 @use '@carbon/react/scss/colors';
 @use '@carbon/react/scss/type';
+
+:root {
+  @include theme(themes.$white, true); // light default
+}
 
 .page-grid {
   margin-top: 4rem;
@@ -75,4 +81,60 @@ tr.ai-row {
 
 .cds--data-table td.ai-cell-select {
   padding-inline-end: 0;
+}
+
+.full-table-ai-wrapper {
+  position: relative;
+
+  // Allow for pseudo element to show for gradient border effect
+  padding: 2px;
+  border: none;
+}
+
+.full-table-ai-wrapper::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to top,
+    $ai-border-end,
+    $ai-popover-shadow-outer-01
+  );
+  z-index: -1;
+}
+
+.full-table-ai tbody {
+  position: relative;
+}
+
+.full-table-ai tbody::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  // Prevents the pseudo element overlay from obstructing click on elements below the overlay
+  pointer-events: none;
+  /* stylelint-disable */
+  background: linear-gradient(
+    to top,
+    var(--cds-ai-aura-start-sm, rgba(69, 137, 255, 0.16)) 0%,
+    var(--cds-ai-aura-end, rgba(255, 255, 255, 0)) 50%,
+    transparent 50%
+  );
+  /* stylelint-enable */
+
+  // Full table gradient needs to start from bottom which isn't configurable from this mixin yet
+  // @include utilities.ai-table-gradient;
+}
+
+// Ideally TableContainer would support the decorator prop and custom styling would be avoided
+.ai-full-table-label {
+  top: 1rem;
+  right: 1rem;
+  align-items: start;
 }

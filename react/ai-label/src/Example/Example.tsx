@@ -3,6 +3,7 @@ import { SortableWithAiLabel } from './SortableWithAiLabel';
 import { ColumnWithAiLabel } from './ColumnWithAiLabel';
 import { WithSelection } from './WithSelection';
 import './example.scss';
+import { FullTableAI } from './FullTableAi';
 
 export const Example = () => (
   <Grid className="page-grid">
@@ -14,6 +15,9 @@ export const Example = () => (
     </Column>
     <Column sm={4} md={8} lg={8}>
       <WithSelection />
+    </Column>
+    <Column sm={4} md={8} lg={8}>
+      <FullTableAI />
     </Column>
   </Grid>
 );
