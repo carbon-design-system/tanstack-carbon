@@ -7,6 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { DataTable, TableContainer } from '@carbon/react';
+import { ExampleAiLabel } from './ExampleAiLabel';
 import cx from 'classnames';
 
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
@@ -53,7 +54,10 @@ export const FullTableAI = () => {
   });
 
   return (
-    <TableContainer title="Full table" className="tanstack-example">
+    <TableContainer
+      title="Full table"
+      className="tanstack-example full-table-ai-wrapper">
+      <ExampleAiLabel size="sm" className="ai-full-table-label" />
       <Table className="ai-column-example full-table-ai">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
