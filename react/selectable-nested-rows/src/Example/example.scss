@@ -11,6 +11,7 @@
 .flex {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .basic-table th,
@@ -48,23 +49,19 @@
   align-content: center;
 }
 
-.flex {
-  position: relative;
-}
-
 .border-line {
   content: '';
   position: absolute;
   bottom: -1px;
   left: -1rem;
-  height: 0.125rem;;
-  background-color: var(--cds-layer, #f4f4f4) ;
+  height: 0.125rem;
+  background-color: var(--cds-layer, #f4f4f4);
 }
 
 .row-hovered .expansion-indicator {
   content: '';
   position: absolute;
-  top: 0px;
+  top: 0;
   width: 1px;
   height: 3.125rem;
   background-color: var(--cds-border-subtle-01, #c6c6c6);
