@@ -1,6 +1,6 @@
 ## Data table extensions, `@tanstack/react-table`
 
-> [!NOTE] Upon navigating to one of the Stackblitz or Code sandbox links, the
+> Upon navigating to one of the Stackblitz or Code sandbox links, the
 > environment will begin starting up and may take a few minutes until the
 > example is loaded.
 
