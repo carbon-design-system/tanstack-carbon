@@ -8,7 +8,6 @@ import {
 } from '@tanstack/react-table';
 import { DataTable, TableContainer } from '@carbon/react';
 import cx from 'classnames';
-import { ExampleAiLabel } from './ExampleAiLabel';
 
 const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
   DataTable;
