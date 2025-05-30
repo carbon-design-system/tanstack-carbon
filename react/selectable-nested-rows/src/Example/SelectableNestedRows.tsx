@@ -1,5 +1,4 @@
 import React from 'react';
-import cx from 'classnames';
 
 import {
   ExpandedState,
@@ -37,6 +36,44 @@ const {
 import { makeData, Resource } from './makeData';
 
 export const SelectableNestedRows = () => {
+  const [data] = React.useState(() => makeData(10, 3, 3, 2));
+
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+
+  // expansion indicator: state variables
+  const [hoveredRowIds, setHoveredRowIds] = React.useState([]);
+  const [expIndPos, setExpIndPos] = React.useState(0);
+
+  // expansion indicator: method to get row ids of all sub-rows
+  const getAllSubRowIds = (row) => {
+    const ids = [];
+
+    const collectIds = (row) => {
+      if (row.subRows && row.subRows.length > 0) {
+        for (const subRow of row.subRows) {
+          ids.push(subRow.id);
+          collectIds(subRow); // Recursive for deep nesting
+        }
+      }
+    };
+
+    collectIds(row);
+
+    return ids;
+  };
+
+  // for expansion indicator
+  const onRowHover = (row) => {
+    if (row.getCanExpand && row.getIsExpanded()) {
+      const indicatorPos = row.depth * 2 + 0.5;
+      setExpIndPos(indicatorPos);
+      setHoveredRowIds(getAllSubRowIds(row));
+    } else {
+      setHoveredRowIds([]);
+    }
+  };
+
   const columnHelper = createColumnHelper<Resource>();
 
   const columns = [
@@ -95,9 +132,7 @@ export const SelectableNestedRows = () => {
               // of the row
               paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 1)}rem`,
             }}
-            className={cx('flex', {
-              ['border-line-wrapper']: row.depth || row.getIsExpanded(),
-            })}>
+            className="flex">
             {row.getCanExpand() ? (
               <Button
                 {...{
@@ -130,10 +165,16 @@ export const SelectableNestedRows = () => {
             <div
               className="border-line"
               style={{
-                width: `${row.depth * 2 + 3}rem`,
+                width: `${
+                  row.depth * 2 + (row.depth || row.getIsExpanded() ? 3 : 0)
+                }rem`,
+              }}></div>
+            <div
+              className="expansion-indicator"
+              style={{
+                left: `${expIndPos}rem`,
               }}></div>
           </div>
-          <div className="expansion-indicator"></div>
         </>
       ),
     }),
@@ -150,11 +191,6 @@ export const SelectableNestedRows = () => {
       header: 'Example',
     }),
   ];
-
-  const [data] = React.useState(() => makeData(10, 5, 3, 2));
-
-  const [expanded, setExpanded] = React.useState<ExpandedState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -189,7 +225,7 @@ export const SelectableNestedRows = () => {
           onSelectAll={() => {
             table.toggleAllRowsSelected(true);
           }}
-          totalCount={data?.length}>
+          totalCount={table.getRowModel().flatRows.length}>
           <TableBatchAction
             tabIndex={shouldShowBatchActions ? 0 : -1}
             renderIcon={TrashCan}
@@ -261,7 +297,13 @@ export const SelectableNestedRows = () => {
         <TableBody>
           {table.getRowModel().rows.map((row) => {
             return (
-              <TableRow key={row.id}>
+              <TableRow
+                key={row.id}
+                onMouseEnter={() => onRowHover(row)}
+                onMouseLeave={() => setHoveredRowIds([])}
+                className={
+                  hoveredRowIds.indexOf(row.id) > -1 ? 'row-hovered' : ''
+                }>
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <TableCell key={cell.id}>

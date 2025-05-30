@@ -48,7 +48,7 @@
   align-content: center;
 }
 
-.border-line-wrapper {
+.flex {
   position: relative;
 }
 
@@ -56,8 +56,17 @@
   content: '';
   position: absolute;
   bottom: -1px;
-  left: -16px;
-  height: 2px; /* Height to cover the bottom border */
-  background-color: #f4f4f4; /* Match the background color */
+  left: -1rem;
+  height: 0.125rem;;
+  background-color: var(--cds-layer, #f4f4f4) ;
 }
 
+.row-hovered .expansion-indicator {
+  content: '';
+  position: absolute;
+  top: 0px;
+  width: 1px;
+  height: 3.125rem;
+  background-color: var(--cds-border-subtle-01, #c6c6c6);
+  z-index: 1;
+}
