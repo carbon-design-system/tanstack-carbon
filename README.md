@@ -87,8 +87,21 @@ No, the transition to start using TanStack Table can be incremental. In other
 words, Datagrid can remain in place and TanStack Table code be added as well. If
 your product was waiting on a feature to be built, try adding the coded example
 that matches that feature request. We have tested to ensure they are
-interoperable but, of course, reach out in slack #ibmproducts-pal-dev if you are
-having any problems, join our office hours, or open an issue in our GH repo.
+interoperable but, of course, reach out in slack
+[#carbon-for-ibmproducts](https://ibm.enterprise.slack.com/archives/CQGR0HC05)
+if you are having any problems, join our office hours, or open an issue in our
+GH repo.
+
+## Do I need TanStack Table?
+
+The TanStack Table library itself is in essence a utility and is not required
+for every table you build. It becomes most useful when constructing complex
+tables because of the ease and convenience of the data handling it provides,
+particularly around filtering, column customization, column resizing, editable
+cells, nested rows, etc. This library is meant to be used together with the Data
+table components from `@carbon/react` or `@carbon/web-components`, and is not a
+replacement for those components because it's a headless library with no UI
+components.
 
 ## Where can I go for help?
 
