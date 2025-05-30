@@ -1,5 +1,9 @@
 ## Data table extensions, `@tanstack/lit-table`
 
+> [!NOTE] Upon navigating to one of the Stackblitz or Code sandbox links, the
+> environment will begin starting up and may take a few minutes until the
+> example is loaded.
+
 | Example                | Code sandbox                                                                                                                    | Stackblitz                                                                                                                    |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | AI Label               | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/web-components/ai-label)          | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/web-components/ai-label)          |
