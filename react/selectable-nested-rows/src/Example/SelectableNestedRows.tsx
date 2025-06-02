@@ -302,7 +302,7 @@ export const SelectableNestedRows = () => {
                 onMouseEnter={() => onRowHover(row)}
                 onMouseLeave={() => setHoveredRowIds([])}
                 className={
-                  hoveredRowIds.indexOf(row.id) > -1 ? 'row-hovered' : ''
+                  hoveredRowIds.includes(row.id) ? 'row-hovered' : ''
                 }>
                 {row.getVisibleCells().map((cell) => {
                   return (
