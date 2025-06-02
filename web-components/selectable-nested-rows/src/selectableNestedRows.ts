@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import {
   createColumnHelper,
   flexRender,
@@ -8,10 +9,19 @@ import {
   getExpandedRowModel,
   TableController,
 } from '@tanstack/lit-table';
+
 import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/button/index.js';
+import '@carbon/web-components/es/components/checkbox/index.js';
+import '@carbon/web-components/es/components/overflow-menu/index.js';
+import { prefix as carbonPrefix } from '@carbon/web-components/es/globals/settings.js';
+
 import ChevronRight from '@carbon/web-components/es/icons/chevron--right/16';
-import { styleMap } from 'lit/directives/style-map.js';
+import Settings from '@carbon/web-components/es/icons/settings/16';
+import TrashCan from '@carbon/web-components/es/icons/trash-can/16';
+import Add from '@carbon/web-components/es/icons/add/16';
+import Save from '@carbon/web-components/es/icons/save/16';
+import Download from '@carbon/web-components/es/icons/download/16';
 
 import { makeData, Resource } from './makeData';
 
@@ -44,7 +54,12 @@ export class SelectableNestedRowsTable extends LitElement {
               : 'row-expandable-icon',
           })}
         </cds-button>
-        <span>Name</span>
+        <cds-checkbox
+          class="row-selector"
+          ?checked="${table.getIsAllRowsSelected()}"
+          .indeterminate="${table.getIsSomeRowsSelected()}"
+          @cds-checkbox-changed="${table.getToggleAllRowsSelectedHandler()}"></cds-checkbox>
+        <span class="row-content">Name</span>
       </div>`,
       cell: ({ row, renderValue }) => {
         return html` <div
@@ -52,21 +67,30 @@ export class SelectableNestedRowsTable extends LitElement {
             paddingLeft: `${row.depth * 2 + (!row.getCanExpand() ? 2 : 0)}rem`,
           })}">
           <div class="flex">
-            ${row.getCanExpand()
-              ? html`<cds-button
-                  @click=${row.getToggleExpandedHandler()}
-                  class="row-expander"
-                  kind="ghost"
-                  size="sm">
-                  ${ChevronRight({
-                    slot: 'icon',
-                    class: row.getIsExpanded()
-                      ? `row-expanded-icon`
-                      : 'row-expandable-icon',
-                  })}
-                </cds-button>`
-              : null}
-            ${renderValue()}
+            ${
+              row.getCanExpand()
+                ? html`<cds-button
+                    @click=${row.getToggleExpandedHandler()}
+                    class="row-expander"
+                    kind="ghost"
+                    size="sm">
+                    ${ChevronRight({
+                      slot: 'icon',
+                      class: row.getIsExpanded()
+                        ? `row-expanded-icon`
+                        : 'row-expandable-icon',
+                    })}
+                  </cds-button>`
+                : null
+            }
+            <cds-checkbox
+              class="row-selector"
+              @cds-checkbox-changed='${row.getToggleSelectedHandler()}'
+              ?checked='${row.getIsSelected()}'
+              ?disabled='${!row.getCanSelect()}'
+              .indeterminate='${row.getIsSomeSelected()}'
+            /></cds-checkbox>
+            <span class="row-content">${renderValue()}</span>
           </div>
         </div>`;
       },
@@ -89,6 +113,9 @@ export class SelectableNestedRowsTable extends LitElement {
   @state()
   private _expanded = {};
 
+  @state()
+  private _rowSelection: Record<string, boolean> = {};
+
   render() {
     const table = this.tableController.table({
       columns: this._columns,
@@ -98,6 +125,7 @@ export class SelectableNestedRowsTable extends LitElement {
       getSubRows: (row) => row.subRows,
       state: {
         expanded: this._expanded,
+        rowSelection: this._rowSelection,
       },
       onExpandedChange: (oldExpanded) => {
         this._expanded =
@@ -105,10 +133,65 @@ export class SelectableNestedRowsTable extends LitElement {
             ? oldExpanded(this._expanded)
             : oldExpanded;
       },
+      enableRowSelection: true,
+      onRowSelectionChange: (updaterOrValue) => {
+        if (typeof updaterOrValue === 'function') {
+          this._rowSelection = updaterOrValue(this._rowSelection);
+        } else {
+          this._rowSelection = updaterOrValue;
+        }
+      },
     });
 
     return html`
       <cds-table>
+        <cds-table-header-title slot="title"
+          >Selectable nested rows</cds-table-header-title
+        >
+        <cds-table-header-description slot="description"
+          >With toolbar</cds-table-header-description
+        >
+
+        <cds-table-toolbar slot="toolbar">
+          <cds-table-batch-actions
+            ?active=${table.getIsSomeRowsSelected()}
+            selected-rows-count=${table.getSelectedRowModel().rows.length}
+            @cds-table-batch-actions-cancel-clicked=${() =>
+              table.toggleAllRowsSelected(false)}>
+            <cds-button>Delete ${TrashCan({ slot: 'icon' })}</cds-button>
+
+            <cds-button tooltip-position="bottom" tooltip-text="Add"
+              >${Add({ slot: 'icon' })}</cds-button
+            >
+            <cds-button tooltip-position="bottom" tooltip-text="Save"
+              >${Save({ slot: 'icon' })}</cds-button
+            >
+            <cds-button href="javascript:void 0" download="table-data.json">
+              Download ${Download({ slot: 'icon' })}
+            </cds-button>
+          </cds-table-batch-actions>
+          <cds-table-toolbar-content>
+            <cds-overflow-menu toolbar-action>
+              ${Settings({
+                slot: 'icon',
+                class: `${carbonPrefix}--overflow-menu__icon`,
+              })}
+              <cds-overflow-menu-body>
+                <cds-overflow-menu-item @click=${() => alert('Alert 1')}>
+                  Action 1
+                </cds-overflow-menu-item>
+                <cds-overflow-menu-item @click=${() => alert('Alert 2')}>
+                  Action 2
+                </cds-overflow-menu-item>
+                <cds-overflow-menu-item @click=${() => alert('Alert 3')}>
+                  Action 3
+                </cds-overflow-menu-item>
+              </cds-overflow-menu-body>
+            </cds-overflow-menu>
+            <cds-button>Add new</cds-button>
+          </cds-table-toolbar-content>
+        </cds-table-toolbar>
+
         <cds-table-head>
           ${repeat(
             table.getHeaderGroups(),
@@ -171,7 +254,10 @@ export class SelectableNestedRowsTable extends LitElement {
     }
 
     .row-expander {
-      margin-right: 1rem;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .row-expandable-icon {
@@ -183,6 +269,18 @@ export class SelectableNestedRowsTable extends LitElement {
       color: var(--cds-icon-primary, #161616);
       transform: rotate(0.25turn);
       transition: transform 150ms ease-in; // replace with carbon motion easing
+    }
+
+    .row-selector {
+      flex: none;
+      padding-left: 1rem;
+    }
+
+    .row-content {
+      flex: 1 0 auto;
+      padding-left: 1rem;
+      height: 3rem;
+      align-content: center;
     }
   `;
 }
