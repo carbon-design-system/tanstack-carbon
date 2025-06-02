@@ -205,7 +205,7 @@ export class SelectableNestedRowsTable extends LitElement {
         <cds-table-toolbar slot="toolbar">
           <cds-table-batch-actions
             ?active=${table.getIsSomeRowsSelected()}
-            selected-rows-count=${table.getSelectedRowModel().rows.length}
+            selected-rows-count=${table.getSelectedRowModel().flatRows.length}
             @cds-table-batch-actions-cancel-clicked=${() =>
               table.toggleAllRowsSelected(false)}>
             <cds-button>Delete ${TrashCan({ slot: 'icon' })}</cds-button>
