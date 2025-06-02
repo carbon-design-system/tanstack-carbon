@@ -7,6 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  Row,
   TableController,
 } from '@tanstack/lit-table';
 
@@ -41,7 +42,7 @@ export class SelectableNestedRowsTable extends LitElement {
   _columns = [
     columnHelper.accessor((row) => row.name, {
       id: 'name',
-      header: ({ table }) => html` <div class="flex">
+      header: ({ table }) => html`<div class="flex">
         <cds-button
           @click=${table.getToggleAllRowsExpandedHandler()}
           class="row-expander"
@@ -62,11 +63,12 @@ export class SelectableNestedRowsTable extends LitElement {
         <span class="row-content">Name</span>
       </div>`,
       cell: ({ row, renderValue }) => {
-        return html` <div
+        return html`
+          <div class="flex"
           style="${styleMap({
-            paddingLeft: `${row.depth * 2 + (!row.getCanExpand() ? 2 : 0)}rem`,
-          })}">
-          <div class="flex">
+            paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 1)}rem`,
+          })}"
+          >
             ${
               row.getCanExpand()
                 ? html`<cds-button
@@ -91,8 +93,21 @@ export class SelectableNestedRowsTable extends LitElement {
               .indeterminate='${row.getIsSomeSelected()}'
             /></cds-checkbox>
             <span class="row-content">${renderValue()}</span>
-          </div>
-        </div>`;
+            <div
+              class="border-line"
+              style="${styleMap({
+                width: `${
+                  row.depth * 2 + (row.depth || row.getIsExpanded() ? 3 : 0)
+                }rem`,
+              })}"
+            ></div>
+            <div
+              class="expansion-indicator"
+              style="${styleMap({
+                left: `${this._expIndPos}rem`,
+              })}"
+            ></div>
+          </div>`;
       },
     }),
     columnHelper.accessor('rule', {
@@ -115,6 +130,41 @@ export class SelectableNestedRowsTable extends LitElement {
 
   @state()
   private _rowSelection: Record<string, boolean> = {};
+
+  // expansion indicator: state variables
+  @state()
+  private _hoveredRowIds: string[] = [];
+
+  @state()
+  private _expIndPos = 0;
+
+  // expansion indicator: method to get row ids of all sub-rows
+  private _getAllSubRowIds(row: Row<Resource>) {
+    const ids: string[] = [];
+
+    const collectIds = (row: Row<Resource>) => {
+      if (row.subRows && row.subRows.length > 0) {
+        for (const subRow of row.subRows) {
+          ids.push(subRow.id);
+          collectIds(subRow); // Recursive for deep nesting
+        }
+      }
+    };
+
+    collectIds(row);
+
+    return ids;
+  }
+
+  // for expansion indicator
+  private _onRowHover(row: Row<Resource>) {
+    if (row.getCanExpand() && row.getIsExpanded()) {
+      this._expIndPos = row.depth * 2 + 0.5;
+      this._hoveredRowIds = this._getAllSubRowIds(row);
+    } else {
+      this._hoveredRowIds = [];
+    }
+  }
 
   render() {
     const table = this.tableController.table({
@@ -219,7 +269,12 @@ export class SelectableNestedRowsTable extends LitElement {
             table.getRowModel().rows,
             (row) => row.id,
             (row) => html`
-              <cds-table-row>
+              <cds-table-row
+                @mouseenter="${() => this._onRowHover(row)}"
+                @mouseleave="${() => (this._hoveredRowIds = [])}"
+                class="${this._hoveredRowIds.includes(row.id)
+                  ? 'row-hovered'
+                  : ''}">
                 ${repeat(
                   row.getVisibleCells(),
                   (cell) => cell.id,
@@ -251,6 +306,7 @@ export class SelectableNestedRowsTable extends LitElement {
     .flex {
       display: flex;
       align-items: center;
+      position: relative;
     }
 
     .row-expander {
@@ -258,6 +314,7 @@ export class SelectableNestedRowsTable extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 1rem;
     }
 
     .row-expandable-icon {
@@ -274,6 +331,8 @@ export class SelectableNestedRowsTable extends LitElement {
     .row-selector {
       flex: none;
       padding-left: 1rem;
+      width: 1.25rem;
+      margin: 0;
     }
 
     .row-content {
@@ -281,6 +340,24 @@ export class SelectableNestedRowsTable extends LitElement {
       padding-left: 1rem;
       height: 3rem;
       align-content: center;
+    }
+    .border-line {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: -1rem;
+      height: 1px;
+      background-color: var(--cds-layer, #f4f4f4);
+    }
+
+    .row-hovered .expansion-indicator {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 1px;
+      height: 3.125rem;
+      background-color: var(--cds-border-subtle-01, #c6c6c6);
+      z-index: 1;
     }
   `;
 }
