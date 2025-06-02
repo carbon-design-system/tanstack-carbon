@@ -1,7 +1,7 @@
 ## Data table extensions, `@tanstack/react-table`
 
-> Upon navigating to a Stackblitz or CodeSandbox example, the environment
-> will start up and may take a few minutes until the example is loaded.
+> Upon navigating to a Stackblitz or CodeSandbox example, the environment will
+> start up and may take a few minutes until the example is loaded.
 
 | Example                | Code sandbox                                                                                                             | Stackblitz                                                                                                             |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
