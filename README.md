@@ -98,7 +98,7 @@ The TanStack Table library itself is in essence a utility and is not required
 for every table you build. It becomes most useful when constructing complex
 tables because of the ease and convenience of the data handling it provides,
 particularly around filtering, column customization, column resizing, editable
-cells, nested rows, etc. This library is meant to be used together with the Data
+cells, nested rows, etc. This library is meant to be used together with the data
 table components from `@carbon/react` or `@carbon/web-components`, and is not a
 replacement for those components because it's a headless library with no UI
 components.
