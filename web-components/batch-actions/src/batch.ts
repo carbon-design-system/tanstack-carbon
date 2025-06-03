@@ -40,9 +40,9 @@ const columns: ColumnDef<Resource, any>[] = [
     header: ({ table }) => {
       return html`
         <cds-checkbox
-          ?checked="${table.getIsAllRowsSelected()}"
-          .indeterminate="${table.getIsSomeRowsSelected()}"
-          @cds-checkbox-changed="${table.getToggleAllRowsSelectedHandler()}"></cds-checkbox>
+          ?checked="${table.getIsAllPageRowsSelected()}"
+          .indeterminate="${table.getIsSomePageRowsSelected()}"
+          @cds-checkbox-changed="${table.getToggleAllPageRowsSelectedHandler()}"></cds-checkbox>
       `;
     },
     cell: ({ row }) => html`
@@ -50,7 +50,6 @@ const columns: ColumnDef<Resource, any>[] = [
         @cds-checkbox-changed='${row.getToggleSelectedHandler()}'
         ?checked='${row.getIsSelected()}'
         ?disabled='${!row.getCanSelect()}'
-        .indeterminate='${row.getIsSomeSelected()}'
       /></cds-checkbox>
     `,
   },
