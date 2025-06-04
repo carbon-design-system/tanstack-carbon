@@ -32,17 +32,8 @@ import {
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { rankItem } from '@tanstack/match-sorter-utils';
 
-import { makeData } from './makeData';
+import { makeData, Resource } from './makeData';
 import './example.scss';
-
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-};
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -74,25 +65,19 @@ export const BatchActions = () => {
       id: 'select',
       width: 48,
       header: ({ table }) => (
+        // --- Row Selection behavior overview ---
+        //   1. "Header Checkbox" selects/deselects only the rows visible on the current page.
+        //      Exception: In tables with infinite or virtual scroll, this behavior may differ and is an implementation choice.
+        //      In such cases, the checkbox may be configured to select/deselect all rows in the table.
+        //   2. "Select All" button in Batch Actions Toolbar always selects all rows in the entire table, regardless of pagination or scroll mode.
+        //   3. "Cancel" button in Batch Actions Toolbar always deselects all rows in the entire table.
+
         // TableSelectAll throws DOM nesting error, using Checkbox instead to avoid this
         <Checkbox
           {...{
             checked: table.getIsAllPageRowsSelected(),
             indeterminate: table.getIsSomePageRowsSelected(),
-            onChange: () => {
-              const isIndeterminate = table.getIsSomeRowsSelected();
-              if (!isIndeterminate) {
-                table.toggleAllPageRowsSelected(true);
-              }
-              if (table.getIsAllPageRowsSelected()) {
-                table.toggleAllRowsSelected(false);
-                return;
-              }
-              if (isIndeterminate) {
-                table.toggleAllPageRowsSelected(true);
-                return;
-              }
-            },
+            onChange: table.getToggleAllPageRowsSelectedHandler(),
             id: 'batch-checkbox',
             labelText: 'header checkbox',
             hideLabel: true,
@@ -286,10 +271,6 @@ export const BatchActions = () => {
           table.setPageIndex(page - 1);
         }}
       />
-      <p>
-        {Object.keys(rowSelection).length} of{' '}
-        {table.getPreFilteredRowModel().rows.length} Total Rows Selected
-      </p>
     </TableContainer>
   );
 };
