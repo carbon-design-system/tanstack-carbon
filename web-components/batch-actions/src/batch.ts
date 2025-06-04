@@ -48,7 +48,7 @@ const columns: ColumnDef<Resource, any>[] = [
       //   1. "Header Checkbox" selects/deselects only the rows visible on the current page.
       //      Exception: In tables with infinite or virtual scroll, this behavior may differ and is an implementation choice.
       //      In such cases, the checkbox may be configured to select/deselect all rows in the table.
-      //   2. "Select All" button in Batch Actions Toolbar always selects all rows in the entire table, regardless of pagination or scroll mode. 
+      //   2. "Select All" button in Batch Actions Toolbar always selects all rows in the entire table, regardless of pagination or scroll mode.
       //      This feature hasn't been implemented in cds-table-batch-actions yet. Once it's added, the button should work as expected without requiring any additional code changes.
       //   3. "Cancel" button in Batch Actions Toolbar always deselects all rows in the entire table.
       return html`
@@ -56,7 +56,7 @@ const columns: ColumnDef<Resource, any>[] = [
           ?checked="${table.getIsAllPageRowsSelected()}"
           .indeterminate="${table.getIsSomePageRowsSelected()}"
           @cds-checkbox-changed="${(e: CustomEvent) => {
-            table.toggleAllPageRowsSelected(e?.target?.checked);
+            table.toggleAllPageRowsSelected(e.detail.checked);
             e.stopPropagation();
           }}"></cds-checkbox>
       `;
