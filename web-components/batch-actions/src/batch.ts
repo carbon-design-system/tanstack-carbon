@@ -18,31 +18,47 @@ import TrashCan from '@carbon/web-components/es/icons/trash-can/16';
 import Add from '@carbon/web-components/es/icons/add/16';
 import Save from '@carbon/web-components/es/icons/save/16';
 import Download from '@carbon/web-components/es/icons/download/16';
-import { makeData } from './makeData';
+import { makeData, Resource } from './makeData';
 import { prefix as carbonPrefix } from '@carbon/web-components/es/globals/settings.js';
 import {
   CDSPagination,
   CDSTableToolbarSearch,
 } from '@carbon/web-components/es';
 
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-};
+interface paginationDetail {
+  detail: {
+    pageSize: number;
+    page: number;
+  };
+}
+interface toolbarSearchDetail {
+  detail: {
+    value: string;
+  };
+}
+
+interface searchFull extends CDSTableToolbarSearch, toolbarSearchDetail {}
+interface paginationFull extends CDSPagination, paginationDetail {}
 
 const columns: ColumnDef<Resource, any>[] = [
   {
     id: 'select',
     header: ({ table }) => {
+      // --- Row Selection behavior overview ---
+      //   1. "Header Checkbox" selects/deselects only the rows visible on the current page.
+      //      Exception: In tables with infinite or virtual scroll, this behavior may differ and is an implementation choice.
+      //      In such cases, the checkbox may be configured to select/deselect all rows in the table.
+      //   2. "Select All" button in Batch Actions Toolbar always selects all rows in the entire table, regardless of pagination or scroll mode.
+      //      This feature hasn't been implemented in cds-table-batch-actions yet. Once it's added, the button should work as expected without requiring any additional code changes.
+      //   3. "Cancel" button in Batch Actions Toolbar always deselects all rows in the entire table.
       return html`
         <cds-checkbox
-          ?checked="${table.getIsAllRowsSelected()}"
-          .indeterminate="${table.getIsSomeRowsSelected()}"
-          @cds-checkbox-changed="${table.getToggleAllRowsSelectedHandler()}"></cds-checkbox>
+          ?checked="${table.getIsAllPageRowsSelected()}"
+          .indeterminate="${table.getIsSomePageRowsSelected()}"
+          @cds-checkbox-changed="${(e: CustomEvent) => {
+            table.toggleAllPageRowsSelected(e.detail.checked);
+            e.stopPropagation();
+          }}"></cds-checkbox>
       `;
     },
     cell: ({ row }) => html`
@@ -50,7 +66,6 @@ const columns: ColumnDef<Resource, any>[] = [
         @cds-checkbox-changed='${row.getToggleSelectedHandler()}'
         ?checked='${row.getIsSelected()}'
         ?disabled='${!row.getCanSelect()}'
-        .indeterminate='${row.getIsSomeSelected()}'
       /></cds-checkbox>
     `,
   },
@@ -117,20 +132,6 @@ export class MyBatchTable extends LitElement {
       getFilteredRowModel: getFilteredRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
     });
-
-    interface paginationDetail {
-      detail: {
-        pageSize: number;
-        page: number;
-      };
-    }
-    interface toolbarSearchDetail {
-      detail: {
-        value: string;
-      };
-    }
-    interface searchFull extends CDSTableToolbarSearch, toolbarSearchDetail {}
-    interface paginationFull extends CDSPagination, paginationDetail {}
 
     return html`
       <cds-table>
