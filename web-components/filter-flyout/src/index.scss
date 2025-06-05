@@ -1,0 +1,103 @@
+@use '@carbon/styles/scss/reset';
+@use '@carbon/styles/scss/theme' as *;
+@use '@carbon/styles/scss/themes';
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/type' as *;
+
+:root {
+  @include theme(themes.$white);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g10'] {
+  @include theme(themes.$g10);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g90'] {
+  @include theme(themes.$g90);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='g100'] {
+  @include theme(themes.$g100);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+[data-carbon-theme='white'] {
+  @include theme(themes.$white);
+
+  background-color: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+.table-container {
+  position: relative;
+}
+
+// Flyout
+.flyout--container {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+
+  &__filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+.flyout--label {
+  @include type-style('body-compact-01');
+  @include font-weight('semibold');
+
+  padding-bottom: 1rem;
+}
+
+.filter--flyout__toggle {
+  display: block;
+  inline-size: unset;
+  block-size: unset;
+  box-shadow: none;
+  background: transparent;
+}
+
+.filter-flyout-button-set {
+  position: sticky;
+  bottom: 0; // account for x scrollbar of table
+  display: flex;
+
+  cds-button::part(button) {
+    box-shadow: none;
+  }
+
+  cds-button {
+    min-width: 50%;
+    max-inline-size: 50%;
+  }
+}
+
+.empty-table-body {
+  height: 14rem;
+  background-color: transparent;
+
+  .no-results-empty-state {
+    padding-top: 2rem;
+    padding-left: 1rem;
+    max-width: 265px;
+    position: absolute;
+  }
+}
+
+cds-table-toolbar-content:not([has-batch-actions]) {
+  clip-path: none;
+}
