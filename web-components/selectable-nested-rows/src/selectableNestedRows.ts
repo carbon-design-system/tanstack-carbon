@@ -66,7 +66,7 @@ export class SelectableNestedRowsTable extends LitElement {
         return html`
           <div class="flex"
           style="${styleMap({
-            paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 1)}rem`,
+            paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 2)}rem`,
           })}"
           >
             ${
@@ -159,7 +159,7 @@ export class SelectableNestedRowsTable extends LitElement {
   // for expansion indicator
   private _onRowHover(row: Row<Resource>) {
     if (row.getCanExpand() && row.getIsExpanded()) {
-      this._expIndPos = row.depth * 2 + 0.5;
+      this._expIndPos = row.depth * 2 + 1;
       this._hoveredRowIds = this._getAllSubRowIds(row);
     } else {
       this._hoveredRowIds = [];
@@ -303,6 +303,11 @@ export class SelectableNestedRowsTable extends LitElement {
       place-items: center;
     }
 
+    :host cds-table-cell:first-of-type,
+    :host cds-table-header-cell:first-of-type {
+      padding-inline-start: 0.5rem;
+    }
+
     .flex {
       display: flex;
       align-items: center;
@@ -314,7 +319,6 @@ export class SelectableNestedRowsTable extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 1rem;
     }
 
     .row-expandable-icon {
@@ -330,7 +334,7 @@ export class SelectableNestedRowsTable extends LitElement {
 
     .row-selector {
       flex: none;
-      padding-left: 1rem;
+      padding-inline-start: 0.5rem;
       width: 1.25rem;
       margin: 0;
     }
@@ -345,9 +349,13 @@ export class SelectableNestedRowsTable extends LitElement {
       content: '';
       position: absolute;
       bottom: -1px;
-      left: -1rem;
+      left: -0.5rem;
       height: 1px;
       background-color: var(--cds-layer, #f4f4f4);
+    }
+
+    cds-table-row[selected] .border-line {
+      background-color: var(--cds-layer-selected-01, #e0e0e0);
     }
 
     .row-hovered .expansion-indicator {
