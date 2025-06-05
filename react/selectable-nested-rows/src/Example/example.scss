@@ -19,13 +19,18 @@
   position: relative;
 }
 
+.cds--data-table th:first-of-type,
+.cds--data-table td:first-of-type {
+  padding-inline-start: 0.5rem;
+}
+
 .tanstack-example {
   padding-bottom: 2rem;
 }
 
 // Nested row
 .row-expander {
-  padding: 0;
+  padding-inline: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,7 +44,7 @@
 // Selectable row
 .row-selector {
   flex: none;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
 }
 
 .cds--checkbox-wrapper.row-selector {
@@ -57,7 +62,7 @@
   content: '';
   position: absolute;
   bottom: -1px;
-  left: -1rem;
+  left: -0.5rem;
   height: 1px;
   background-color: var(--cds-layer, #f4f4f4);
 }

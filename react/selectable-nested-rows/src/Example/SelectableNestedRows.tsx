@@ -66,7 +66,7 @@ export const SelectableNestedRows = () => {
   // for expansion indicator
   const onRowHover = (row) => {
     if (row.getCanExpand && row.getIsExpanded()) {
-      const indicatorPos = row.depth * 2 + 0.5;
+      const indicatorPos = row.depth * 2 + 1;
       setExpIndPos(indicatorPos);
       setHoveredRowIds(getAllSubRowIds(row));
     } else {
@@ -130,7 +130,7 @@ export const SelectableNestedRows = () => {
               // we can use the row.depth property
               // and paddingLeft to visually indicate the depth
               // of the row
-              paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 1)}rem`,
+              paddingLeft: `${row.depth * 2 + (row.getCanExpand() ? 0 : 2)}rem`,
             }}
             className="flex">
             {row.getCanExpand() ? (
