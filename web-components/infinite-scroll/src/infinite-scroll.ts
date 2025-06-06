@@ -69,7 +69,7 @@ export class InfiniteScrollTable extends LitElement {
   @property()
   private page: number = 0;
 
-  containerRefElement: Ref<HTMLDivElement> = createRef();
+  // containerRefElement: Ref<HTMLDivElement> = createRef();
 
   connectedCallback() {
     this.rowVirtualizerController = new VirtualizerController(this, {
@@ -97,9 +97,9 @@ export class InfiniteScrollTable extends LitElement {
   }
 
   fetchMoreOnBottomReached() {
-    if (this.containerRefElement.value) {
+    if (this.tableContainerRef.value) {
       const { scrollHeight, scrollTop, clientHeight } =
-        this.containerRefElement.value;
+        this.tableContainerRef.value;
       if (
         scrollHeight - scrollTop - clientHeight === 0 &&
         this.loading === false
@@ -136,10 +136,9 @@ export class InfiniteScrollTable extends LitElement {
 
     return html`
       <div
-        ${ref(this.containerRefElement)}
+        ${ref(this.tableContainerRef)}
         class="container"
         @scroll=${this.fetchMoreOnBottomReached}
-        ${ref(this.tableContainerRef)}
         style="${styleMap({
           overflow: 'auto', //our scrollable table container
           position: 'relative', //needed for sticky header
@@ -221,29 +220,28 @@ export class InfiniteScrollTable extends LitElement {
                     )}
                   </cds-table-row>
                   ${displaySkeleton
-                    ? html`
-                    <cds-table-row
-                    style=${styleMap({
-                      display: 'flex',
-                      position: 'absolute',
-                      transform: `translateY(${virtualizer.getTotalSize()}px)`,
-                      width: '100%',
-                      alignItems: 'center',
-                      height: '48px',
-                    })}>
-                      ${repeat(
-                        columns,
-                        () => html` <cds-table-cell
-                          style=${styleMap({
-                            display: 'flex',
-                            width: '148px',
-                            alignItems: 'center',
-                            height: '48px',
-                          })}>
-                          <cds-skeleton-text></cds-skeleton-text>
-                        </cds-table-cell>`
-                      )}
-                      </<cds-table-row>`
+                    ? html` <cds-table-row
+                        style=${styleMap({
+                          display: 'flex',
+                          position: 'absolute',
+                          transform: `translateY(${virtualizer.getTotalSize()}px)`,
+                          width: '100%',
+                          alignItems: 'center',
+                          height: '48px',
+                        })}>
+                        ${repeat(
+                          columns,
+                          () => html` <cds-table-cell
+                            style=${styleMap({
+                              display: 'flex',
+                              width: '148px',
+                              alignItems: 'center',
+                              height: '48px',
+                            })}>
+                            <cds-skeleton-text></cds-skeleton-text>
+                          </cds-table-cell>`
+                        )}
+                      </cds-table-row>`
                     : nothing}
                 `;
               }
