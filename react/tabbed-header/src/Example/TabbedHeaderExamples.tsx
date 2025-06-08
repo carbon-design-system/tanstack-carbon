@@ -37,7 +37,7 @@ const columns = [
   }),
 ];
 
-export const HeaderExamples = () => {
+export const TabbedHeaderExamples = () => {
   const [table1Data] = useState(makeData(7));
   const [table2Data] = useState(makeData(7));
   const [table3Data] = useState(makeData(7));
