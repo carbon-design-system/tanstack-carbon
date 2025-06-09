@@ -4,16 +4,24 @@ import {
   AILabelContent,
   Button,
   IconButton,
+  AILabelProps,
 } from '@carbon/react';
 import { FolderOpen, Folders, View } from '@carbon/react/icons';
 import cx from 'classnames';
 
-export const ExampleAiLabel = ({ isRowAILabel = false }): JSX.Element => (
+interface CustomAILabelProps extends AILabelProps {
+  isRowAILabel?: boolean;
+}
+export const ExampleAiLabel = ({
+  className,
+  isRowAILabel = false,
+  size = 'mini',
+}: CustomAILabelProps): JSX.Element => (
   <AILabel
-    className={cx({ ['ai-label-container']: !isRowAILabel })}
+    className={cx(className, { ['ai-label-container']: !isRowAILabel })}
     autoAlign
     align="bottom-right"
-    size="mini">
+    size={size}>
     <AILabelContent>
       <div>
         <p className="secondary">AI Explained</p>
