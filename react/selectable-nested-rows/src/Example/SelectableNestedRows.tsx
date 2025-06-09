@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import {
   ExpandedState,
@@ -7,6 +7,7 @@ import {
   getExpandedRowModel,
   flexRender,
   createColumnHelper,
+  Row,
 } from '@tanstack/react-table';
 import { DataTable, Button, Checkbox } from '@carbon/react';
 import {
@@ -42,37 +43,47 @@ export const SelectableNestedRows = () => {
   const [rowSelection, setRowSelection] = React.useState({});
 
   // expansion indicator: state variables
+  const [hoveredRow, setHoveredRow] = React.useState<any>({});
   const [hoveredRowIds, setHoveredRowIds] = React.useState([]);
   const [expIndPos, setExpIndPos] = React.useState(0);
 
   // expansion indicator: method to get row ids of all sub-rows
-  const getAllSubRowIds = (row) => {
-    const ids = [];
+  const getAllSubRowIds = useMemo(() => {
+    return (row: Row<Resource>): string[] => {
+      const ids = [];
 
-    const collectIds = (row) => {
-      if (row.subRows && row.subRows.length > 0) {
-        for (const subRow of row.subRows) {
-          ids.push(subRow.id);
-          collectIds(subRow); // Recursive for deep nesting
+      const collectIds = (row) => {
+        if (row.subRows && row.subRows.length > 0) {
+          for (const subRow of row.subRows) {
+            ids.push(subRow.id);
+            collectIds(subRow); // Recursive for deep nesting
+          }
         }
-      }
+      };
+
+      collectIds(row);
+
+      return ids;
     };
-
-    collectIds(row);
-
-    return ids;
-  };
+  }, []);
 
   // for expansion indicator
-  const onRowHover = (row) => {
-    if (row.getCanExpand && row.getIsExpanded()) {
-      const indicatorPos = row.depth * 2 + 1;
-      setExpIndPos(indicatorPos);
-      setHoveredRowIds(getAllSubRowIds(row));
-    } else {
-      setHoveredRowIds([]);
-    }
-  };
+  const onRowHover = useCallback(
+    (row: Row<Resource>) => {
+      if (row.getCanExpand && row.getIsExpanded()) {
+        const indicatorPos = row.depth * 2 + 1;
+        setExpIndPos(indicatorPos);
+        setHoveredRowIds(getAllSubRowIds(row));
+      } else {
+        setHoveredRowIds([]);
+      }
+    },
+    [getAllSubRowIds]
+  );
+
+  useEffect(() => {
+    onRowHover(hoveredRow);
+  }, [hoveredRow, onRowHover]);
 
   const columnHelper = createColumnHelper<Resource>();
 
@@ -299,8 +310,8 @@ export const SelectableNestedRows = () => {
             return (
               <TableRow
                 key={row.id}
-                onMouseEnter={() => onRowHover(row)}
-                onMouseLeave={() => setHoveredRowIds([])}
+                onMouseEnter={() => setHoveredRow(row)}
+                onMouseLeave={() => setHoveredRow({})}
                 className={hoveredRowIds.includes(row.id) ? 'row-hovered' : ''}>
                 {row.getVisibleCells().map((cell) => {
                   return (
