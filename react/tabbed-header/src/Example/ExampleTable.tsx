@@ -46,33 +46,8 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-export const ExampleTable = () => {
+export const ExampleTable = ({ data, columns }) => {
   const [globalFilter, setGlobalFilter] = React.useState('');
-
-  const columnHelper = createColumnHelper<Resource>();
-  const columns = [
-    columnHelper.accessor((row) => row.name, {
-      id: 'name',
-      cell: (info) => <i>{info.getValue()}</i>,
-      header: () => <span>Name</span>,
-    }),
-    columnHelper.accessor('rule', {
-      header: () => 'Rule',
-      cell: (info) => info.renderValue(),
-    }),
-    columnHelper.accessor('status', {
-      header: () => <span>Status</span>,
-    }),
-    columnHelper.accessor('other', {
-      header: 'Other',
-    }),
-    columnHelper.accessor('example', {
-      header: 'Example',
-      enableGlobalFilter: false,
-    }),
-  ];
-
-  const [data] = React.useState<Resource[]>(() => makeData(5));
 
   const table = useReactTable({
     data,
