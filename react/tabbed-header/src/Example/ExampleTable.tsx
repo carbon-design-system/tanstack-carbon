@@ -22,13 +22,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  createColumnHelper,
 } from '@tanstack/react-table';
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { rankItem } from '@tanstack/match-sorter-utils';
-
-import { makeData, Resource } from './makeData';
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
