@@ -194,6 +194,7 @@ export class InfiniteScrollTable extends LitElement {
                   this.loading && this.data.length - 1 === item.index;
                 return html`
                   <cds-table-row
+                    data-index="${row.index}"
                     style=${styleMap({
                       display: 'flex',
                       position: 'absolute',
