@@ -17,7 +17,7 @@ import { makeData, Resource } from './makeData';
 
 const columnHelper = createColumnHelper<Resource>();
 
-const data: Resource[] = makeData(10, 5, 3);
+const data: Resource[] = makeData(5);
 
 /**
  * An example table using `@tanstack/lit-table` and `@carbon/web-components` DataTable.
@@ -31,21 +31,7 @@ export class DynamicNestedRowTable extends LitElement {
   _columns = [
     columnHelper.accessor((row) => row.name, {
       id: 'name',
-      header: ({ table }) => html` <div class="flex">
-        <cds-button
-          @click=${table.getToggleAllRowsExpandedHandler()}
-          class="row-expander"
-          kind="ghost"
-          size="sm">
-          ${ChevronRight({
-            slot: 'icon',
-            class: table.getIsAllRowsExpanded()
-              ? `row-expanded-icon`
-              : 'row-expandable-icon',
-          })}
-        </cds-button>
-        <span>Name</span>
-      </div>`,
+      header: () => html`<div class="flex expand-spacer">Name</div>`,
       cell: ({ row, renderValue }) => {
         return html` <div
           style="${styleMap({
@@ -109,6 +95,9 @@ export class DynamicNestedRowTable extends LitElement {
 
     return html`
       <cds-table>
+        <cds-table-header-title slot="title"
+          >Dynamic nested rows</cds-table-header-title
+        >
         <cds-table-head>
           ${repeat(
             table.getHeaderGroups(),
@@ -168,6 +157,10 @@ export class DynamicNestedRowTable extends LitElement {
     .flex {
       display: flex;
       align-items: center;
+    }
+
+    .expand-spacer {
+      padding-left: var(--cds-spacing-09, 3rem);
     }
 
     .row-expander {
