@@ -6,18 +6,18 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  Row,
   TableController,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/button/index.js';
+import '@carbon/web-components/es/components/skeleton-text/index.js';
 import ChevronRight from '@carbon/web-components/es/icons/chevron--right/16';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { makeData, Resource } from './makeData';
 
 const columnHelper = createColumnHelper<Resource>();
-
-const data: Resource[] = makeData(5);
 
 /**
  * An example table using `@tanstack/lit-table` and `@carbon/web-components` DataTable.
@@ -28,33 +28,65 @@ const data: Resource[] = makeData(5);
 export class DynamicNestedRowTable extends LitElement {
   private tableController = new TableController<Resource>(this);
 
+  @state()
+  private _expanded = {};
+
+  @state()
+  private data: Resource[] = makeData(5);
+
+  @state()
+  private _rowsFetchingList: Set<string> = new Set();
+
+  private async addSubRows(row: Row<Resource>) {
+    this._rowsFetchingList.add(row.id);
+
+    // Simulate delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const newSubRows = makeData(2);
+
+    this.data = this.data.map((_row) =>
+      _row.id === row.original.id
+        ? {
+            ..._row,
+            subRows: [...newSubRows],
+          }
+        : _row
+    );
+    this._rowsFetchingList.delete(row.id);
+  }
+
   _columns = [
     columnHelper.accessor((row) => row.name, {
       id: 'name',
       header: () => html`<div class="flex expand-spacer">Name</div>`,
       cell: ({ row, renderValue }) => {
-        return html` <div
+        return html`<div
+          class="flex"
           style="${styleMap({
-            paddingLeft: `${row.depth * 2 + (!row.getCanExpand() ? 2 : 0)}rem`,
+            paddingLeft: `${row.depth * 2}rem`,
           })}">
-          <div class="flex">
-            ${row.getCanExpand()
-              ? html`<cds-button
-                  @click=${row.getToggleExpandedHandler()}
-                  class="row-expander"
-                  kind="ghost"
-                  size="sm">
-                  ${ChevronRight({
-                    slot: 'icon',
-                    class: row.getIsExpanded()
-                      ? `row-expanded-icon`
-                      : 'row-expandable-icon',
-                  })}
-                </cds-button>`
-              : null}
-            ${renderValue()}
-          </div>
-        </div>`;
+          <cds-button
+            @click=${() => {
+              const isExpanded = row.getIsExpanded();
+              row.toggleExpanded();
+              if (!isExpanded && !row.subRows.length) {
+                this.addSubRows(row);
+              }
+            }}
+            ?disabled=${this._rowsFetchingList.has(row.id)}
+            class="row-expander"
+            kind="ghost"
+            size="sm">
+            ${ChevronRight({
+              slot: 'icon',
+              class: row.getIsExpanded()
+                ? `row-expanded-icon`
+                : 'row-expandable-icon',
+            })}
+          </cds-button>
+          ${renderValue()}
+        </div> `;
       },
     }),
     columnHelper.accessor('rule', {
@@ -72,13 +104,10 @@ export class DynamicNestedRowTable extends LitElement {
     }),
   ];
 
-  @state()
-  private _expanded = {};
-
   render() {
     const table = this.tableController.table({
       columns: this._columns,
-      data,
+      data: this.data,
       getCoreRowModel: getCoreRowModel(),
       getExpandedRowModel: getExpandedRowModel(),
       getSubRows: (row) => row.subRows,
@@ -124,21 +153,42 @@ export class DynamicNestedRowTable extends LitElement {
           ${repeat(
             table.getRowModel().rows,
             (row) => row.id,
-            (row) => html`
-              <cds-table-row>
-                ${repeat(
-                  row.getVisibleCells(),
-                  (cell) => cell.id,
-                  (cell) =>
-                    html` <cds-table-cell>
-                      ${flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+            (row) => {
+              return html`
+                <cds-table-row>
+                  ${repeat(
+                    row.getVisibleCells(),
+                    (cell) => cell.id,
+                    (cell) =>
+                      html` <cds-table-cell>
+                        ${flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </cds-table-cell>`
+                  )}
+                </cds-table-row>
+                ${row.getIsExpanded() && this._rowsFetchingList.has(row.id)
+                  ? html`<cds-table-row>
+                      ${repeat(
+                        row.getVisibleCells(),
+                        (cell) => cell.id,
+                        (cell) =>
+                          html`<cds-table-cell>
+                            ${cell.column.id === 'name'
+                              ? html`<div
+                                  style="${styleMap({
+                                    paddingLeft: `${row.depth * 2}rem`,
+                                  })}">
+                                  <cds-skeleton-text></cds-skeleton-text>
+                                </div>`
+                              : html`<cds-skeleton-text></cds-skeleton-text>`}
+                          </cds-table-cell>`
                       )}
-                    </cds-table-cell>`
-                )}
-              </cds-table-row>
-            `
+                    </cds-table-row>`
+                  : null}
+              `;
+            }
           )}
         </cds-table-body>
       </cds-table>
