@@ -2,17 +2,8 @@ import { useState } from 'react';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 
 import { createColumnHelper } from '@tanstack/react-table';
-import { makeData } from './makeData';
+import { makeData, Resource } from './makeData';
 import { ExampleTable } from './ExampleTable';
-
-type Resource = {
-  id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-};
 
 const columnHelper = createColumnHelper<Resource>();
 
@@ -37,7 +28,7 @@ const columns = [
   }),
 ];
 
-export const HeaderExamples = () => {
+export const TabbedHeaderExamples = () => {
   const [table1Data] = useState(makeData(7));
   const [table2Data] = useState(makeData(7));
   const [table3Data] = useState(makeData(7));

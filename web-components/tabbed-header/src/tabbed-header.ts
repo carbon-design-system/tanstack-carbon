@@ -28,8 +28,8 @@ const columns = [
   }),
 ];
 
-@customElement('header-tanstack-table')
-export class HeaderExample extends LitElement {
+@customElement('tabbed-header-table')
+export class TabbedHeaderExample extends LitElement {
   private table1Data = makeData(7);
   private table2Data = makeData(7);
   private table3Data = makeData(7);
@@ -88,6 +88,6 @@ export class HeaderExample extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'header-tanstack-table': HeaderExample;
+    'tabbed-header-table': TabbedHeaderExample;
   }
 }

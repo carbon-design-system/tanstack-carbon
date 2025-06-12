@@ -487,7 +487,7 @@
     lodash-es "^4.17.21"
     tslib "^2.6.3"
 
-"@carbon/web-components@^2.27.1", "@carbon/web-components@latest":
+"@carbon/web-components@^2.27.1", "@carbon/web-components@latest", "@carbon/web-components@~2.27.1":
   version "2.27.2"
   resolved "https://registry.yarnpkg.com/@carbon/web-components/-/web-components-2.27.2.tgz#8b864b9e8fd6bc9f52d90b7125c6d9aa111472bf"
   integrity sha512-F37/Pw+xB3YlXw4eO/BQxqoiNYBeHmdKBriYf7a3tFNRSMWzqDkt0SfGYegE6Ppr26HLRKFHdqK938laYx40fw==

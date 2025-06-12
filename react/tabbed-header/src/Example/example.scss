@@ -29,6 +29,10 @@ body {
   padding: 0;
 }
 
+.cds--data-table-container {
+  padding-block-start: 0;
+}
+
 .cds--data-table tbody {
   background: $layer-01;
 }
