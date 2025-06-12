@@ -37,22 +37,26 @@ export class DynamicNestedRowTable extends LitElement {
   @state()
   private _rowsFetchingList: Set<string> = new Set();
 
+  private updateSubRows(resources: Resource[], uuid: string) {
+    return resources.map((resource: Resource) => {
+      if (resource.uuid === uuid) {
+        resource.subRows = makeData(2);
+      } else if (resource.subRows) {
+        this.updateSubRows(resource.subRows, uuid);
+      }
+      return resource;
+    });
+  }
+
   private async addSubRows(row: Row<Resource>) {
     this._rowsFetchingList.add(row.id);
 
     // Simulate delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const newSubRows = makeData(2);
+    const cloneData = [...this.data];
+    this.data = this.updateSubRows(cloneData, row.original.uuid);
 
-    this.data = this.data.map((_row) =>
-      _row.id === row.original.id
-        ? {
-            ..._row,
-            subRows: [...newSubRows],
-          }
-        : _row
-    );
     this._rowsFetchingList.delete(row.id);
   }
 
@@ -64,27 +68,31 @@ export class DynamicNestedRowTable extends LitElement {
         return html`<div
           class="flex"
           style="${styleMap({
-            paddingLeft: `${row.depth * 2}rem`,
+            paddingLeft: `${
+              row.depth * 2 + (row.getCanExpand() || row.depth < 2 ? 0 : 1)
+            }rem`,
           })}">
-          <cds-button
-            @click=${() => {
-              const isExpanded = row.getIsExpanded();
-              row.toggleExpanded();
-              if (!isExpanded && !row.subRows.length) {
-                this.addSubRows(row);
-              }
-            }}
-            ?disabled=${this._rowsFetchingList.has(row.id)}
-            class="row-expander"
-            kind="ghost"
-            size="sm">
-            ${ChevronRight({
-              slot: 'icon',
-              class: row.getIsExpanded()
-                ? `row-expanded-icon`
-                : 'row-expandable-icon',
-            })}
-          </cds-button>
+          ${row.getCanExpand() || row.depth < 2
+            ? html`<cds-button
+                @click=${() => {
+                  const isExpanded = row.getIsExpanded();
+                  row.toggleExpanded();
+                  if (!isExpanded && !row.subRows.length) {
+                    this.addSubRows(row);
+                  }
+                }}
+                ?disabled=${this._rowsFetchingList.has(row.id)}
+                class="row-expander"
+                kind="ghost"
+                size="sm">
+                ${ChevronRight({
+                  slot: 'icon',
+                  class: row.getIsExpanded()
+                    ? `row-expanded-icon`
+                    : 'row-expandable-icon',
+                })}
+              </cds-button>`
+            : null}
           ${renderValue()}
         </div> `;
       },

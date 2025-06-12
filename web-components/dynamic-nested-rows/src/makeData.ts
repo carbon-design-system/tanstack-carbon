@@ -1,7 +1,9 @@
 import { faker } from '@faker-js/faker';
+import { v4 as uuidv4 } from 'uuid';
 
 export type Resource = {
   id: string;
+  uuid: string;
   name: string;
   rule: string;
   status: string;
@@ -21,6 +23,7 @@ const range = (len: number) => {
 const newResource = (id: string, index: number): Resource => {
   return {
     id,
+    uuid: uuidv4(),
     name: `Load balancer ${index}`,
     rule: faker.helpers.shuffle<Resource['rule']>([
       'DNS delegation',
