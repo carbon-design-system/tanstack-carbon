@@ -1,0 +1,8 @@
+@use '@carbon/react' with (
+  $font-path: '@ibm/plex'
+);
+
+body {
+  margin: 0;
+  padding: 0;
+}
