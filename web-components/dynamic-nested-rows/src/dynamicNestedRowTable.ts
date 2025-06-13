@@ -69,7 +69,7 @@ export class DynamicNestedRowTable extends LitElement {
           class="flex"
           style="${styleMap({
             paddingLeft: `${
-              row.depth * 2 + (row.getCanExpand() || row.depth < 2 ? 0 : 1)
+              row.depth * 2 + (row.getCanExpand() || row.depth < 2 ? 0 : 0.5)
             }rem`,
           })}">
           ${row.getCanExpand() || row.depth < 2
@@ -186,7 +186,7 @@ export class DynamicNestedRowTable extends LitElement {
                             ${cell.column.id === 'name'
                               ? html`<div
                                   style="${styleMap({
-                                    paddingLeft: `${row.depth * 2}rem`,
+                                    paddingLeft: `${row.depth * 2 + 2.5}rem`,
                                   })}">
                                   <cds-skeleton-text></cds-skeleton-text>
                                 </div>`
@@ -212,6 +212,11 @@ export class DynamicNestedRowTable extends LitElement {
       place-items: center;
     }
 
+    :host cds-table-cell:first-of-type,
+    :host cds-table-header-cell:first-of-type {
+      padding-inline-start: 0.5rem;
+    }
+
     .flex {
       display: flex;
       align-items: center;
@@ -222,7 +227,7 @@ export class DynamicNestedRowTable extends LitElement {
     }
 
     .row-expander {
-      margin-right: 1rem;
+      margin-right: 0.5rem;
     }
 
     .row-expandable-icon {
