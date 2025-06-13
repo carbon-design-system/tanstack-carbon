@@ -18,6 +18,11 @@
   position: relative;
 }
 
+.cds--data-table th:first-of-type,
+.cds--data-table td:first-of-type {
+  padding-inline-start: 0.5rem;
+}
+
 .tanstack-example {
   padding-bottom: 2rem;
 }
@@ -29,7 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 }
 
 .row-expander .row-expanded-icon {
@@ -52,5 +57,5 @@
 }
 
 .expand-spacer {
-  padding-left: $spacing-09;
+  padding-left: $spacing-08;
 }

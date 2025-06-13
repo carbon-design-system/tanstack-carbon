@@ -15,9 +15,25 @@ const { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } =
 
 import { makeData, Resource } from './makeData';
 
+function updateSubRows(
+  resources: Resource[],
+  uuid: string,
+  newSubRows: Resource[]
+) {
+  return resources.map((resource: Resource) => {
+    if (resource.uuid === uuid) {
+      resource.subRows = newSubRows;
+    } else if (resource.subRows) {
+      updateSubRows(resource.subRows, uuid, newSubRows);
+    }
+    return resource;
+  });
+}
+
 export const DynamicNestedRows = () => {
   const [data, setData] = React.useState(() => makeData(5));
   const [rowsFetchingList, setRowsFetchingList] = useState([]);
+
   const columns = React.useMemo<ColumnDef<Resource>[]>(
     () => [
       {
@@ -38,24 +54,29 @@ export const DynamicNestedRows = () => {
                 // of the row
                 paddingLeft: `${
                   row.depth * 2 +
-                  (!row.getCanExpand() && !foundManualSubRowCheck ? 2 : 0)
+                  ((row.getCanExpand() || foundManualSubRowCheck) &&
+                  row.depth < 2
+                    ? 0
+                    : 0.5)
                 }rem`,
               }}>
               <div className="flex">
-                {row.getCanExpand() || foundManualSubRowCheck ? (
+                {(row.getCanExpand() || foundManualSubRowCheck) &&
+                row.depth < 2 ? (
                   <Button
                     {...{
                       onClick: async () => {
                         if (foundLoadingRow) return;
                         const isRowExpanded = row.getIsExpanded();
-                        if (!isRowExpanded) {
+                        if (!isRowExpanded && !row.subRows.length) {
                           const newSubRows =
                             await table?.options?.meta?.checkSubRows(row.id);
-                          const clonedData = [...data];
-                          const rowIndexToUpdate = clonedData.findIndex(
-                            (r) => r.id === row.original.id
+
+                          const clonedData = updateSubRows(
+                            [...data],
+                            row.original.uuid,
+                            newSubRows
                           );
-                          clonedData[rowIndexToUpdate].subRows = newSubRows;
                           setData(clonedData);
                         }
                         row.toggleExpanded(isRowExpanded ? false : true);
@@ -92,6 +113,10 @@ export const DynamicNestedRows = () => {
       {
         accessorKey: 'other',
         header: () => <span>Other</span>,
+      },
+      {
+        accessorKey: 'example',
+        header: () => 'Example',
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,7 +201,16 @@ export const DynamicNestedRows = () => {
                     {row.getVisibleCells().map((cell) => {
                       return (
                         <TableCell key={cell.id}>
-                          <SkeletonText />
+                          {cell.column.id === 'name' ? (
+                            <div
+                              style={{
+                                paddingLeft: `${row.depth * 2 + 2.5}rem`,
+                              }}>
+                              <SkeletonText />
+                            </div>
+                          ) : (
+                            <SkeletonText />
+                          )}
                         </TableCell>
                       );
                     })}
