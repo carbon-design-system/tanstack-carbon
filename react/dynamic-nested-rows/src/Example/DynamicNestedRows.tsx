@@ -48,7 +48,7 @@ export const DynamicNestedRows = () => {
                       onClick: async () => {
                         if (foundLoadingRow) return;
                         const isRowExpanded = row.getIsExpanded();
-                        if (!isRowExpanded) {
+                        if (!isRowExpanded && !row.subRows.length) {
                           const newSubRows =
                             await table?.options?.meta?.checkSubRows(row.id);
                           const clonedData = [...data];
