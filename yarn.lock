@@ -487,7 +487,7 @@
     lodash-es "^4.17.21"
     tslib "^2.6.3"
 
-"@carbon/web-components@^2.27.1", "@carbon/web-components@latest":
+"@carbon/web-components@^2.27.1", "@carbon/web-components@latest", "@carbon/web-components@~2.27.1":
   version "2.27.2"
   resolved "https://registry.yarnpkg.com/@carbon/web-components/-/web-components-2.27.2.tgz#8b864b9e8fd6bc9f52d90b7125c6d9aa111472bf"
   integrity sha512-F37/Pw+xB3YlXw4eO/BQxqoiNYBeHmdKBriYf7a3tFNRSMWzqDkt0SfGYegE6Ppr26HLRKFHdqK938laYx40fw==
@@ -2220,10 +2220,22 @@
   dependencies:
     "@tanstack/virtual-core" "3.13.6"
 
+"@tanstack/react-virtual@^3.13.10":
+  version "3.13.10"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.13.10.tgz#6eec305f01769e1778af98046973b128437c53d5"
+  integrity sha512-nvrzk4E9mWB4124YdJ7/yzwou7IfHxlSef6ugCFcBfRmsnsma3heciiiV97sBNxyc3VuwtZvmwXd0aB5BpucVw==
+  dependencies:
+    "@tanstack/virtual-core" "3.13.10"
+
 "@tanstack/table-core@8.21.3":
   version "8.21.3"
   resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.21.3.tgz#2977727d8fc8dfa079112d9f4d4c019110f1732c"
   integrity sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==
+
+"@tanstack/virtual-core@3.13.10":
+  version "3.13.10"
+  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.13.10.tgz#141c4da589eda797ee25d14f6aa400dfebac606c"
+  integrity sha512-sPEDhXREou5HyZYqSWIqdU580rsF6FGeN7vpzijmP3KTiOGjOMZASz4Y6+QKjiFQwhWrR58OP8izYaNGVxvViA==
 
 "@tanstack/virtual-core@3.13.6":
   version "3.13.6"
