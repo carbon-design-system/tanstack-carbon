@@ -223,7 +223,7 @@ export class DynamicNestedRowTable extends LitElement {
     }
 
     .expand-spacer {
-      padding-left: var(--cds-spacing-09, 3rem);
+      padding-left: var(--cds-spacing-08, 2.5rem);
     }
 
     .row-expander {
