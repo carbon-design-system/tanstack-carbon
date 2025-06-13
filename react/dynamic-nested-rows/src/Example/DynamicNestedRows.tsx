@@ -176,7 +176,16 @@ export const DynamicNestedRows = () => {
                     {row.getVisibleCells().map((cell) => {
                       return (
                         <TableCell key={cell.id}>
-                          <SkeletonText />
+                          {cell.column.id === 'name' ? (
+                            <div
+                              style={{
+                                paddingLeft: `${row.depth * 2 + 2.5}rem`,
+                              }}>
+                              <SkeletonText />
+                            </div>
+                          ) : (
+                            <SkeletonText />
+                          )}
                         </TableCell>
                       );
                     })}
