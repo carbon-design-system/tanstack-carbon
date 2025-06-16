@@ -103,21 +103,11 @@ export const Virtual = () => {
                       width: header.getSize(),
                       alignItems: 'center',
                     }}>
-                    <div
-                      {...{
-                        className: header.column.getCanSort()
-                          ? 'cursor-pointer select-none'
-                          : '',
-                        onClick: header.column.getToggleSortingHandler(),
-                      }}>
+                    <div>
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                      {{
-                        asc: ' 🔼',
-                        desc: ' 🔽',
-                      }[header.column.getIsSorted() as string] ?? null}
                     </div>
                   </TableHeader>
                 );
@@ -147,7 +137,7 @@ function TableBodyComponent({ table, tableContainerRef }: TableBodyProps) {
   // Important: Keep the row virtualizer in the lowest component possible to avoid unnecessary re-renders.
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
     count: rows.length,
-    estimateSize: () => 33, //estimate row height for accurate scrollbar dragging
+    estimateSize: () => 48, //estimate row height for accurate scrollbar dragging
     getScrollElement: () =>
       tableContainerRef.current.querySelector('.cds--data-table-content'),
     //measure dynamic row height, except in firefox because it measures table border height incorrectly
