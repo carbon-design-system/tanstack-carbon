@@ -8,7 +8,6 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getSortedRowModel,
   Table as TanstackTable,
   Row,
 } from '@tanstack/react-table';
@@ -67,7 +66,6 @@ export const Virtual = () => {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
