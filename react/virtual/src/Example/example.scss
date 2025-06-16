@@ -1,0 +1,11 @@
+@use '@carbon/react/scss/spacing' as *;
+
+.page-grid {
+  margin-top: 4rem;
+}
+
+.cds--data-table-content {
+  overflow: auto;
+  position: relative;
+  height: 600px;
+}
