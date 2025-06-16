@@ -5,7 +5,7 @@
 }
 
 .cds--data-table-content {
-  overflow: auto; //our scrollable table container
-  position: relative; //needed for sticky header
-  height: 600px; //should be a fixed height
+  overflow: auto;
+  position: relative;
+  height: 600px;
 }
