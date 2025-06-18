@@ -1,5 +1,5 @@
 {
-  "name": "header-table-web-component",
+  "name": "tabbed-header-table-web-component",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +13,7 @@
     "@carbon/web-components": "latest",
     "@faker-js/faker": "^8.4.1",
     "@tanstack/lit-table": "^8.20.5",
+    "@tanstack/match-sorter-utils": "^8.19.4",
     "sass": "^1.64.1",
     "lit": "^3.2.0"
   },
