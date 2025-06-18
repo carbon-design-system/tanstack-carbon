@@ -11,8 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@carbon/react": "^1.64.1",
-    "@carbon/ibm-products": "^2.47.0",
+    "@carbon/react": "1.64.1",
+    "@carbon/ibm-products": "2.47.0",
     "@faker-js/faker": "^8.4.1",
     "@tanstack/react-table": "^8.20.1",
     "@tanstack/match-sorter-utils": "^8.19.4",
