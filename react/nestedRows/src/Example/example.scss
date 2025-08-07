@@ -11,11 +11,17 @@
 .flex {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .basic-table th,
 .cds--data-table th:last-of-type {
   position: relative;
+}
+
+.cds--data-table th:first-of-type,
+.cds--data-table td:first-of-type {
+  padding-inline-start: 0.5rem;
 }
 
 .tanstack-example {
@@ -24,15 +30,41 @@
 
 // Nested row
 .row-expander {
-  width: 32px;
-  padding: 0;
+  padding-inline: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;
 }
 
 .row-expander .row-expanded-icon {
   transform: rotate(90deg);
   transition: transform 200ms;
+}
+
+.row-content {
+  flex: 1 0 auto;
+  padding-left: 1rem;
+  height: 3rem;
+  align-content: center;
+}
+
+// expansion indicator styles
+.border-line {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -0.5rem;
+  height: 1px;
+  background-color: var(--cds-layer, #f4f4f4);
+  // background-color: red;
+}
+
+.row-hovered .expansion-indicator {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 3.125rem;
+  background-color: var(--cds-border-subtle-01, #c6c6c6);
+  z-index: 1;
 }
