@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  Row,
   TableController,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
