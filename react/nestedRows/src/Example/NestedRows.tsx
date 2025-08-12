@@ -50,7 +50,7 @@ export const NestedRows = () => {
   const onRowHover = useCallback(
     (row: Row<Resource>) => {
       if (row.getCanExpand && row.getIsExpanded()) {
-        const indicatorPos = row.depth * 2 + 1;
+        const indicatorPos = row.depth * 2 + 1.5;
         setExpIndPos(indicatorPos);
         setHoveredRowIds(getAllSubRowIds(row));
       } else {
@@ -94,7 +94,10 @@ export const NestedRows = () => {
             // we can use the row.depth property
             // and paddingLeft to visually indicate the depth
             // of the row
-            paddingLeft: `${row.depth * 2 + (!row.getCanExpand() ? 2 : 0)}rem`,
+            paddingLeft: `${
+              row.depth * 2 +
+              (row.depth ? (row.getCanExpand() ? 0.5 : 1.5) : 0.5)
+            }rem`,
           }}
           className="flex">
           {row.getCanExpand() ? (
@@ -118,7 +121,12 @@ export const NestedRows = () => {
             className="border-line"
             style={{
               width: `${
-                row.depth * 2 + (row.depth || row.getIsExpanded() ? 3.5 : 0)
+                row.depth * 2 +
+                (!row.depth && !row.getIsExpanded()
+                  ? 0
+                  : row.getCanExpand()
+                  ? 3
+                  : 1)
               }rem`,
             }}></div>
           <div
