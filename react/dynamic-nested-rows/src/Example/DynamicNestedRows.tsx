@@ -65,7 +65,7 @@ export const DynamicNestedRows = () => {
   const onRowHover = useCallback(
     (row: Row<Resource>) => {
       if (row.getCanExpand && row.getIsExpanded()) {
-        const indicatorPos = row.depth * 2 + 1;
+        const indicatorPos = row.depth * 2 + 1.5;
         setExpIndPos(indicatorPos);
         setHoveredRowIds(getAllSubRowIds(row));
       } else {
@@ -105,8 +105,10 @@ export const DynamicNestedRows = () => {
               // of the row
               paddingLeft: `${
                 row.depth * 2 +
-                ((row.getCanExpand() || foundManualSubRowCheck) && row.depth < 2
-                  ? 0
+                (row.depth
+                  ? row.getCanExpand() || row.depth < 2
+                    ? 0.5
+                    : 1.5
                   : 0.5)
               }rem`,
             }}>
@@ -147,7 +149,12 @@ export const DynamicNestedRows = () => {
               className="border-line"
               style={{
                 width: `${
-                  row.depth * 2 + (row.depth || row.getIsExpanded() ? 2 : 0)
+                  row.depth * 2 +
+                  (!row.depth && !row.getIsExpanded()
+                    ? 0
+                    : row.getCanExpand() || row.depth < 2
+                    ? 3
+                    : 1)
                 }rem`,
               }}></div>
             <div
@@ -262,7 +269,7 @@ export const DynamicNestedRows = () => {
                           {cell.column.id === 'name' ? (
                             <div
                               style={{
-                                paddingLeft: `${row.depth * 2 + 2.5}rem`,
+                                paddingLeft: `${row.depth * 2 + 3}rem`,
                               }}>
                               <SkeletonText />
                             </div>
