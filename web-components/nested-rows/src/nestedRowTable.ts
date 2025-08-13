@@ -51,7 +51,10 @@ export class NestedRowTable extends LitElement {
         return html` <div
           class="flex"
           style="${styleMap({
-            paddingLeft: `${row.depth * 2 + (!row.getCanExpand() ? 2 : 0)}rem`,
+            paddingLeft: `${
+              row.depth * 2 +
+              (row.depth ? (row.getCanExpand() ? 0.5 : 1.5) : 0.5)
+            }rem`,
           })}">
           ${row.getCanExpand()
             ? html`<cds-button
@@ -72,7 +75,12 @@ export class NestedRowTable extends LitElement {
             class="border-line"
             style="${styleMap({
               width: `${
-                row.depth * 2 + (row.depth || row.getIsExpanded() ? 3 : 0)
+                row.depth * 2 +
+                (!row.depth && !row.getIsExpanded()
+                  ? 0
+                  : row.getCanExpand()
+                  ? 3
+                  : 1)
               }rem`,
             })}"></div>
           <div
@@ -129,7 +137,7 @@ export class NestedRowTable extends LitElement {
   // for expansion indicator
   private _onRowHover(row: Row<Resource>) {
     if (row.getCanExpand() && row.getIsExpanded()) {
-      this._expIndPos = row.depth * 2 + 1;
+      this._expIndPos = row.depth * 2 + 1.5;
       this._hoveredRowIds = this._getAllSubRowIds(row);
     } else {
       this._hoveredRowIds = [];
@@ -217,9 +225,12 @@ export class NestedRowTable extends LitElement {
       place-items: center;
     }
 
-    :host cds-table-cell:first-of-type,
     :host cds-table-header-cell:first-of-type {
       padding-inline-start: 0.5rem;
+    }
+
+    :host cds-table-cell:first-of-type {
+      padding-inline-start: 0;
     }
 
     .flex {
@@ -248,7 +259,7 @@ export class NestedRowTable extends LitElement {
 
     .row-content {
       flex: 1 0 auto;
-      padding-left: 1rem;
+      padding-left: 0.5rem;
       height: 3rem;
       align-content: center;
     }
@@ -257,7 +268,7 @@ export class NestedRowTable extends LitElement {
       content: '';
       position: absolute;
       bottom: -1px;
-      left: -0.5rem;
+      left: 0;
       height: 1px;
       background-color: var(--cds-layer, #f4f4f4);
     }

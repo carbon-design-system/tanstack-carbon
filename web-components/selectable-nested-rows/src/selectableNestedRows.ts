@@ -345,6 +345,7 @@ export class SelectableNestedRowsTable extends LitElement {
       height: 3rem;
       align-content: center;
     }
+
     .border-line {
       content: '';
       position: absolute;

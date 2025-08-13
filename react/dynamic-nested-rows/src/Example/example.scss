@@ -11,6 +11,7 @@
 .flex {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .basic-table th,
@@ -20,7 +21,7 @@
 
 .cds--data-table th:first-of-type,
 .cds--data-table td:first-of-type {
-  padding-inline-start: 0.5rem;
+  padding-inline-start: 0;
 }
 
 .tanstack-example {
@@ -29,12 +30,10 @@
 
 // Nested row
 .row-expander {
-  width: 32px;
-  padding: 0;
+  padding-inline: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 0.5rem;
 }
 
 .row-expander .row-expanded-icon {
@@ -58,4 +57,30 @@
 
 .expand-spacer {
   padding-left: $spacing-08;
+}
+
+.row-content {
+  flex: 1 0 auto;
+  padding-left: $spacing-03;
+  height: 3rem;
+  align-content: center;
+}
+
+.border-line {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background-color: var(--cds-layer, #f4f4f4);
+}
+
+.row-hovered .expansion-indicator {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 3.125rem;
+  background-color: var(--cds-border-subtle-01, #c6c6c6);
+  z-index: 1;
 }
