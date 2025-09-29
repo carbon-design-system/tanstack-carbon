@@ -316,7 +316,7 @@
     react-table "^7.8.0"
     react-window "^1.8.11"
 
-"@carbon/icon-helpers@^10.67.0":
+"@carbon/icon-helpers@^10.65.0", "@carbon/icon-helpers@^10.67.0":
   version "10.67.0"
   resolved "https://registry.yarnpkg.com/@carbon/icon-helpers/-/icon-helpers-10.67.0.tgz#3270c4813c9ad63a2793660e160185e80b4f808a"
   integrity sha512-b4fRuGaaM55/MY1o2t3v1vVwvjQ/byz7YuxO8dabOrTxus7OjtkAwHhWyEOzN+4icD12C3GXw1qSYVObyiIjHw==
