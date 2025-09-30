@@ -23,7 +23,7 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.3",
+    "typescript": "5.5.4",
     "vite": "^5.4.1"
   }
 }

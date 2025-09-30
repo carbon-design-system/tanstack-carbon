@@ -92,7 +92,7 @@ export function useKeyPress(
         if (preventAction) {
           return false;
         }
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
@@ -111,7 +111,7 @@ export function useKeyPress(
         if (preventAction) {
           return false;
         }
-        // eslint-disable-next-line react-hooks/rules-of-hooks
+
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, true)) {
