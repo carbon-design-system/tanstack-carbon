@@ -1,7 +1,8 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
-import TrashCan16 from '@carbon/web-components/es/icons/trash-can/16';
+import TrashCan16 from '@carbon/icons/es/trash-can/16';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 
 import {
   createColumnHelper,
@@ -103,7 +104,7 @@ export class ContextRow extends LitElement {
               class="context-menu"
               style="top: ${this.menuY}px; left: ${this.menuX}px;">
               <div class="menu-item" @click=${this.removeItem}>
-                <span class="icon">${TrashCan16()}</span>
+                <span class="icon">${iconLoader(TrashCan16)}</span>
                 Delete
               </div>
             </div>

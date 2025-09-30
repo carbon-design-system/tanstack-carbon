@@ -12,7 +12,8 @@ import {
 import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/button/index.js';
 import '@carbon/web-components/es/components/skeleton-text/index.js';
-import ChevronRight from '@carbon/web-components/es/icons/chevron--right/16';
+import ChevronRight from '@carbon/icons/es/chevron--right/16';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { makeData, Resource } from './makeData';
@@ -127,7 +128,7 @@ export class DynamicNestedRowTable extends LitElement {
                 class="row-expander"
                 kind="ghost"
                 size="sm">
-                ${ChevronRight({
+                ${iconLoader(ChevronRight, {
                   slot: 'icon',
                   class: row.getIsExpanded()
                     ? `row-expanded-icon`

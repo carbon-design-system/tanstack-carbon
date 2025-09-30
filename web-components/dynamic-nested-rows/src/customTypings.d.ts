@@ -1,1 +1,1 @@
-declare module '@carbon/web-components/es/icons/chevron--right/16';
+declare module '@carbon/icons/es/chevron--right/16';

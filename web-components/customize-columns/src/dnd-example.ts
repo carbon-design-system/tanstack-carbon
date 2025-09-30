@@ -2,7 +2,8 @@ import { LitElement, css, html, unsafeCSS } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import '@carbon/web-components/es/components/checkbox/index.js';
-import Draggable from '@carbon/web-components/es/icons/draggable/16.js';
+import Draggable from '@carbon/icons/es/draggable/16.js';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import '@carbon/web-components/es/components/icon-button/index.js';
 
 import styles from './dnd-example.scss?inline';
@@ -98,7 +99,9 @@ export class DndExample extends LitElement {
               @drop="${(e: DragEvent) => this.handleDrop(e, index)}"
               @dragend="${this.handleDragEnd}">
               <div class="li-content">
-                <div class="drag-icon">${Draggable({ slot: 'icon' })}</div>
+                <div class="drag-icon">
+                  ${iconLoader(Draggable, { slot: 'icon' })}
+                </div>
                 <cds-checkbox
                   ?checked=${this.columnVisibilityTemp[item]}
                   @cds-checkbox-changed=${(e: CustomEvent) =>
