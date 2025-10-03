@@ -258,7 +258,8 @@ export class MyFilterTable extends LitElement {
             align="top"
             kind="ghost"
             size="lg"
-            @click=${() => {
+            @click=${(event: KeyboardEvent) => {
+              event.stopPropagation();
               this.popoverOpen = !this.popoverOpen;
             }}>
             ${iconLoader(Filter, { slot: 'icon' })}
