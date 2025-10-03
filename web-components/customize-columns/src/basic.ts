@@ -11,7 +11,8 @@ import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/overflow-menu/index.js';
 import '@carbon/web-components/es/components/button/index.js';
 import '@carbon/ibm-products-web-components/es/components/tearsheet/index.js';
-import Column from '@carbon/web-components/es/icons/column/16';
+import Column from '@carbon/icons/es/column/16.js';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import { CDSTableToolbarSearch } from '@carbon/web-components/es';
 import './dnd-example.js';
 
@@ -141,7 +142,7 @@ export class MyBasicTable extends LitElement {
               @click=${this._toggleTearsheet}
               tooltipText="Customize columns"
               kind="ghost"
-              >${Column({
+              >${iconLoader(Column, {
                 slot: 'icon',
                 class: `customize-col-icon`,
               })}</cds-button

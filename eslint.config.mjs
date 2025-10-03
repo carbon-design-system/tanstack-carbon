@@ -4,6 +4,12 @@ import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
@@ -50,6 +56,8 @@ export default [
       },
       parserOptions: {
         sourceType: 'script',
+        project: ['./react/**/tsconfig.json'],
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {

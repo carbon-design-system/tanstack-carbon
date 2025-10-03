@@ -28,12 +28,13 @@ import '@carbon/web-components/es/components/text-input/index.js';
 import '@carbon/web-components/es/components/number-input/index.js';
 import '@carbon/web-components/es/components/layer/index.js';
 import '@carbon/web-components/es/components/checkbox/index.js';
-import Filter from '@carbon/web-components/es/icons/filter/16.js';
-import TrashCan from '@carbon/web-components/es/icons/trash-can/16.js';
-import Add from '@carbon/web-components/es/icons/add/16.js';
-import Save from '@carbon/web-components/es/icons/save/16.js';
-import Download from '@carbon/web-components/es/icons/download/16.js';
-import Close from '@carbon/web-components/es/icons/close/16.js';
+import Filter from '@carbon/icons/es/filter/16.js';
+import TrashCan from '@carbon/icons/es/trash-can/16.js';
+import Add from '@carbon/icons/es/add/16.js';
+import Save from '@carbon/icons/es/save/16.js';
+import Download from '@carbon/icons/es/download/16.js';
+import Close from '@carbon/icons/es/close/16.js';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import { makeData } from './makeData';
 import indexStyles from './index.scss?inline';
 import './filter-tagset.ts';
@@ -400,7 +401,7 @@ export class MyBatchTable extends LitElement {
                         this.animatePanel();
                         this.returnFocusToFlyoutTrigger();
                       }}>
-                      ${Close({ slot: 'icon' })}
+                      ${iconLoader(Close, { slot: 'icon' })}
                       <span slot="tooltip-content">Close</span>
                     </cds-icon-button>
                     <p class="flyout--label">Filter</p>
@@ -476,15 +477,17 @@ export class MyBatchTable extends LitElement {
               selected-rows-count=${table.getSelectedRowModel().rows.length}
               @cds-table-batch-actions-cancel-clicked=${() =>
                 table.toggleAllRowsSelected(false)}>
-              <cds-button>Delete ${TrashCan({ slot: 'icon' })}</cds-button>
+              <cds-button
+                >Delete ${iconLoader(TrashCan, { slot: 'icon' })}</cds-button
+              >
               <cds-button tooltip-position="bottom" tooltip-text="Add">
-                ${Add({ slot: 'icon' })}
+                ${iconLoader(Add, { slot: 'icon' })}
               </cds-button>
               <cds-button tooltip-position="bottom" tooltip-text="Save">
-                ${Save({ slot: 'icon' })}
+                ${iconLoader(Save, { slot: 'icon' })}
               </cds-button>
               <cds-button href="javascript:void(0)" download="table-data.json">
-                Download ${Download({ slot: 'icon' })}
+                Download ${iconLoader(Download, { slot: 'icon' })}
               </cds-button>
             </cds-table-batch-actions>
             <cds-table-toolbar-content style="justify-content: space-between">
@@ -503,7 +506,7 @@ export class MyBatchTable extends LitElement {
                     )?.focus();
                   }, 0);
                 }}>
-                ${Filter({ slot: 'icon' })}
+                ${iconLoader(Filter, { slot: 'icon' })}
                 <span slot="tooltip-content">Filter</span>
               </cds-icon-button>
               <cds-table-toolbar-search

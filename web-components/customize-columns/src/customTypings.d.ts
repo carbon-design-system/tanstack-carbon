@@ -1,1 +1,2 @@
-declare module '@carbon/web-components/es/icons/column/16';
+declare module '@carbon/icons/es/column/16.js';
+declare module '@carbon/icons/es/draggable/16.js';

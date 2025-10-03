@@ -13,11 +13,12 @@ import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/checkbox/index.js';
 import '@carbon/web-components/es/components/pagination/index.js';
 import '@carbon/web-components/es/components/overflow-menu/index.js';
-import Settings from '@carbon/web-components/es/icons/settings/16';
-import TrashCan from '@carbon/web-components/es/icons/trash-can/16';
-import Add from '@carbon/web-components/es/icons/add/16';
-import Save from '@carbon/web-components/es/icons/save/16';
-import Download from '@carbon/web-components/es/icons/download/16';
+import Settings from '@carbon/icons/es/settings/16';
+import TrashCan from '@carbon/icons/es/trash-can/16';
+import Add from '@carbon/icons/es/add/16';
+import Save from '@carbon/icons/es/save/16';
+import Download from '@carbon/icons/es/download/16';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import { makeData, Resource } from './makeData';
 import { prefix as carbonPrefix } from '@carbon/web-components/es/globals/settings.js';
 import {
@@ -146,17 +147,20 @@ export class MyBatchTable extends LitElement {
           <cds-table-batch-actions
             ?active=${table.getIsSomeRowsSelected()}
             selected-rows-count=${table.getSelectedRowModel().rows.length}
+            total-rows-count=${table.getFilteredRowModel().rows.length}
             @cds-table-batch-actions-cancel-clicked=${() =>
               table.toggleAllRowsSelected(false)}>
-            <cds-button>Delete ${TrashCan({ slot: 'icon' })}</cds-button>
+            <cds-button
+              >Delete ${iconLoader(TrashCan, { slot: 'icon' })}</cds-button
+            >
             <cds-button tooltip-position="bottom" tooltip-text="Add"
-              >${Add({ slot: 'icon' })}</cds-button
+              >${iconLoader(Add, { slot: 'icon' })}</cds-button
             >
             <cds-button tooltip-position="bottom" tooltip-text="Save"
-              >${Save({ slot: 'icon' })}</cds-button
+              >${iconLoader(Save, { slot: 'icon' })}</cds-button
             >
             <cds-button href="javascript:void 0" download="table-data.json">
-              Download ${Download({ slot: 'icon' })}
+              Download ${iconLoader(Download, { slot: 'icon' })}
             </cds-button>
           </cds-table-batch-actions>
           <cds-table-toolbar-content>
@@ -166,7 +170,7 @@ export class MyBatchTable extends LitElement {
                 (this._globalFilter =
                   e.detail.value)}></cds-table-toolbar-search>
             <cds-overflow-menu toolbar-action>
-              ${Settings({
+              ${iconLoader(Settings, {
                 slot: 'icon',
                 class: `${carbonPrefix}--overflow-menu__icon`,
               })}

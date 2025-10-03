@@ -8,7 +8,8 @@ import {
   TableController,
   getFilteredRowModel,
 } from '@tanstack/lit-table';
-import Settings16 from '@carbon/web-components/es/icons/settings/16';
+import Settings16 from '@carbon/icons/es/settings/16';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import '@carbon/web-components/es/components/data-table/index.js';
 import '@carbon/web-components/es/components/popover/index.js';
 import '@carbon/web-components/es/components/radio-button/index.js';
@@ -114,7 +115,7 @@ export class MyBasicTable extends LitElement {
               size="sm"
               type="button"
               @click="${this._onClick}">
-              ${Settings16()}
+              ${iconLoader(Settings16)}
             </button>
             <cds-popover-content>
               <div class="content-wrapper">

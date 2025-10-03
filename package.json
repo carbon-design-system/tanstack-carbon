@@ -7,7 +7,7 @@
     "clean": "rm -rf **/{node_modules,es,lib,dist}",
     "format": "prettier --cache --write '**/*.{js,md,scss,ts,tsx}' '!**/{build,es,lib,storybook,ts,umd,dist}/**'",
     "format:diff": "prettier --list-different '**/*.{js,jsx,md,scss,ts,tsx}' '*.{js,jsx,md,scss,ts,tsx}' '!**/{build,es,lib,storybook,ts,umd}/**'",
-    "lint": "npx eslint --flag unstable_config_lookup_from_file .",
+    "lint": "npx eslint .",
     "lint:styles": "stylelint '**/*.scss' --report-needless-disables --report-invalid-scope-disables"
   },
   "private": true,
@@ -30,7 +30,7 @@
     "stylelint": "^16.9.0",
     "stylelint-config-carbon": "^1.20.0",
     "stylelint-config-standard-scss": "^13.1.0",
-    "typescript-eslint": "^8.23.0"
+    "typescript-eslint": "8.23.0"
   },
   "commitlint": {
     "extends": [

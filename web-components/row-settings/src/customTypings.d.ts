@@ -1,1 +1,1 @@
-declare module '@carbon/web-components/es/icons/settings/16';
+declare module '@carbon/icons/es/settings/16';

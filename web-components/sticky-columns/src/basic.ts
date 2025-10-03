@@ -9,8 +9,9 @@ import {
   TableController,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
-import TrashCan from '@carbon/web-components/es/icons/trash-can/16';
-import Edit from '@carbon/web-components/es/icons/edit/16';
+import TrashCan from '@carbon/icons/es/trash-can/16';
+import Edit from '@carbon/icons/es/edit/16';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import { makeData } from './makeData';
 import { styleMap } from 'lit/directives/style-map.js';
 
@@ -50,10 +51,10 @@ const columns = [
     cell: () => {
       return html`<div className="flex">
         <cds-button tooltip-position="bottom" tooltip-text="Delete"
-          >${TrashCan({ slot: 'icon' })}</cds-button
+          >${iconLoader(TrashCan, { slot: 'icon' })}</cds-button
         >
         <cds-button tooltip-position="bottom" tooltip-text="Edit"
-          >${Edit({ slot: 'icon' })}</cds-button
+          >${iconLoader(Edit, { slot: 'icon' })}</cds-button
         >
       </div>`;
     },

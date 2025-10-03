@@ -24,7 +24,8 @@ import '@carbon/web-components/es/components/text-input/index.js';
 import '@carbon/web-components/es/components/number-input/index.js';
 import '@carbon/web-components/es/components/layer/index.js';
 import '@carbon/web-components/es/components/checkbox/index.js';
-import Filter from '@carbon/web-components/es/icons/filter/16.js';
+import Filter from '@carbon/icons/es/filter/16.js';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import { makeData, Resource } from './makeData.ts';
 import indexStyles from './index.scss?inline';
 import './filter-tagset.ts';
@@ -257,10 +258,11 @@ export class MyFilterTable extends LitElement {
             align="top"
             kind="ghost"
             size="lg"
-            @click=${() => {
+            @click=${(event: KeyboardEvent) => {
+              event.stopPropagation();
               this.popoverOpen = !this.popoverOpen;
             }}>
-            ${Filter({ slot: 'icon' })}
+            ${iconLoader(Filter, { slot: 'icon' })}
             <span slot="tooltip-content">Filter</span>
           </cds-icon-button>
           <cds-popover-content>

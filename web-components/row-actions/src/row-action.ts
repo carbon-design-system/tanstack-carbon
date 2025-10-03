@@ -2,8 +2,9 @@ import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import '@carbon/web-components/es/components/button/index.js';
-import Edit16 from '@carbon/web-components/es/icons/edit/16';
-import TrashCan16 from '@carbon/web-components/es/icons/trash-can/16';
+import Edit16 from '@carbon/icons/es/edit/16';
+import TrashCan16 from '@carbon/icons/es/trash-can/16';
+import { iconLoader } from '@carbon/web-components/es/globals/internal/icon-loader.js';
 import {
   createColumnHelper,
   flexRender,
@@ -56,7 +57,7 @@ const columns = [
             type="button"
             kind="ghost"
             @click="${() => onDelete(row)}">
-            ${TrashCan16()}
+            ${iconLoader(TrashCan16)}
           </cds-button>
           <cds-button
             aria-label="Edit"
@@ -64,7 +65,7 @@ const columns = [
             type="button"
             kind="ghost"
             @click="${() => onEdit(row)}">
-            ${Edit16()}
+            ${iconLoader(Edit16)}
           </cds-button>
         </div>
       `;

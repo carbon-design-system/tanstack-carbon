@@ -9,7 +9,8 @@ import {
   TableController,
 } from '@tanstack/lit-table';
 import '@carbon/web-components/es/components/data-table/index.js';
-import '@carbon/web-components/es/components/side-panel/index.js';
+import '@carbon/ibm-products-web-components/es/components/side-panel/index.js';
+
 import { makeData } from './makeData';
 
 type Resource = {
@@ -124,13 +125,14 @@ export class MyBasicTable extends LitElement {
           )}
         </cds-table-body>
       </cds-table>
-      <cds-side-panel
+      <c4p-side-panel
+        label-text="Resource"
         title=${this._panelOpen
           ? (this._panelRowData as any).original.name
           : ''}
         ?open=${this._panelOpen}
-        @cds-side-panel-closed=${() => (this._panelOpen = false)}
-        >children content</cds-side-panel
+        @c4p-side-panel-closed=${() => (this._panelOpen = false)}
+        ><p>children content</p></c4p-side-panel
       >
     `;
   }
