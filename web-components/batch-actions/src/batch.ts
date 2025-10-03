@@ -147,6 +147,7 @@ export class MyBatchTable extends LitElement {
           <cds-table-batch-actions
             ?active=${table.getIsSomeRowsSelected()}
             selected-rows-count=${table.getSelectedRowModel().rows.length}
+            total-rows-count=${table.getFilteredRowModel().rows.length}
             @cds-table-batch-actions-cancel-clicked=${() =>
               table.toggleAllRowsSelected(false)}>
             <cds-button
