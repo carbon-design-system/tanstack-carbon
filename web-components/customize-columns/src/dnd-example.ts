@@ -28,7 +28,7 @@ export class DndExample extends LitElement {
   setColumnVisibilityTemp!: (visibility: Record<string, boolean>) => void;
 
   private dragStartIndex: number = -1;
-  
+
   // Keyboard navigation state
   private keyboardMovingItemId: string | null = null;
   private keyboardOriginalIndex: number = -1;
@@ -81,7 +81,7 @@ export class DndExample extends LitElement {
 
   private handleKeyDown(e: KeyboardEvent, itemId: string, index: number) {
     const { key } = e;
-    
+
     // Not in move mode - activate on Enter/Space
     if (this.keyboardMovingItemId === null) {
       if (key === 'Enter' || key === ' ') {
@@ -90,18 +90,18 @@ export class DndExample extends LitElement {
       }
       return;
     }
-    
+
     // In move mode - prevent Tab navigation
     if (key === 'Tab') {
       e.preventDefault();
       return;
     }
-    
+
     // Only respond if this is the moving item
     if (this.keyboardMovingItemId !== itemId) return;
-    
+
     const currentIndex = this.columnOrderTemp.indexOf(itemId);
-    
+
     switch (key) {
       case 'ArrowUp':
         e.preventDefault();
@@ -109,20 +109,20 @@ export class DndExample extends LitElement {
           this.moveItemAndRefocus(currentIndex, currentIndex - 1);
         }
         break;
-        
+
       case 'ArrowDown':
         e.preventDefault();
         if (currentIndex < this.columnOrderTemp.length - 1) {
           this.moveItemAndRefocus(currentIndex, currentIndex + 1);
         }
         break;
-        
+
       case 'Enter':
       case ' ':
         e.preventDefault();
         this.deactivateMoveMode();
         break;
-        
+
       case 'Escape':
         e.preventDefault();
         e.stopPropagation();
@@ -130,25 +130,25 @@ export class DndExample extends LitElement {
         break;
     }
   }
-  
+
   private activateMoveMode(itemId: string, index: number) {
     this.keyboardMovingItemId = itemId;
     this.keyboardOriginalIndex = index;
     this.requestUpdate();
   }
-  
+
   private deactivateMoveMode() {
     this.keyboardMovingItemId = null;
     this.keyboardOriginalIndex = -1;
     this.requestUpdate();
   }
-  
+
   private moveItemAndRefocus(fromIndex: number, toIndex: number) {
     this.moveItem(fromIndex, toIndex);
     this.requestUpdate();
     this.focusItemAtIndex(toIndex);
   }
-  
+
   private cancelMove(currentIndex: number) {
     if (currentIndex !== this.keyboardOriginalIndex) {
       this.moveItem(currentIndex, this.keyboardOriginalIndex);
@@ -157,7 +157,7 @@ export class DndExample extends LitElement {
     this.deactivateMoveMode();
     this.focusItemAtIndex(originalIndex);
   }
-  
+
   private focusItemAtIndex(index: number) {
     this.updateComplete.then(() => {
       const items = this.shadowRoot?.querySelectorAll('li');
@@ -189,15 +189,21 @@ export class DndExample extends LitElement {
           (item, index) => html`
             <li
               draggable="true"
-              tabindex="${this.keyboardMovingItemId && this.keyboardMovingItemId !== item ? '-1' : '0'}"
-              class="${this.keyboardMovingItemId === item ? 'keyboard-moving' : ''}"
+              tabindex="${this.keyboardMovingItemId &&
+              this.keyboardMovingItemId !== item
+                ? '-1'
+                : '0'}"
+              class="${this.keyboardMovingItemId === item
+                ? 'keyboard-moving'
+                : ''}"
               aria-grabbed="${this.keyboardMovingItemId === item}"
               @dragstart="${(e: DragEvent) => this.handleDragStart(e, index)}"
               @dragover="${this.handleDragOver}"
               @dragleave="${this.handleDragLeave}"
               @drop="${(e: DragEvent) => this.handleDrop(e, index)}"
               @dragend="${this.handleDragEnd}"
-              @keydown="${(e: KeyboardEvent) => this.handleKeyDown(e, item, index)}">
+              @keydown="${(e: KeyboardEvent) =>
+                this.handleKeyDown(e, item, index)}">
               <div class="li-content">
                 <div class="drag-icon">
                   ${iconLoader(Draggable, { slot: 'icon' })}

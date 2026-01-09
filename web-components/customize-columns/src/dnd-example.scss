@@ -54,7 +54,7 @@ li {
 
   &.keyboard-moving {
     @include utilities.focus-outline('outline');
-    
+
     background: $layer-accent-01;
     outline-offset: -2px;
   }
