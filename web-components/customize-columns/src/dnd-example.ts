@@ -29,6 +29,10 @@ export class DndExample extends LitElement {
 
   private dragStartIndex: number = -1;
 
+  // Keyboard navigation state
+  private keyboardMovingItemId: string | null = null;
+  private keyboardOriginalIndex: number = -1;
+
   private handleDragStart(e: DragEvent, index: number) {
     this.dragStartIndex = index;
     if (e.target instanceof HTMLElement) {
@@ -75,6 +79,99 @@ export class DndExample extends LitElement {
     });
   }
 
+  private handleKeyDown(e: KeyboardEvent, itemId: string, index: number) {
+    const { key } = e;
+
+    // Not in move mode - activate on Enter/Space
+    if (this.keyboardMovingItemId === null) {
+      if (key === 'Enter' || key === ' ') {
+        e.preventDefault();
+        this.activateMoveMode(itemId, index);
+      }
+      return;
+    }
+
+    // In move mode - prevent Tab navigation
+    if (key === 'Tab') {
+      e.preventDefault();
+      return;
+    }
+
+    // Only respond if this is the moving item
+    if (this.keyboardMovingItemId !== itemId) return;
+
+    const currentIndex = this.columnOrderTemp.indexOf(itemId);
+
+    switch (key) {
+      case 'ArrowUp':
+        e.preventDefault();
+        if (currentIndex > 0) {
+          this.moveItemAndRefocus(currentIndex, currentIndex - 1);
+        }
+        break;
+
+      case 'ArrowDown':
+        e.preventDefault();
+        if (currentIndex < this.columnOrderTemp.length - 1) {
+          this.moveItemAndRefocus(currentIndex, currentIndex + 1);
+        }
+        break;
+
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        this.deactivateMoveMode();
+        break;
+
+      case 'Escape':
+        e.preventDefault();
+        e.stopPropagation();
+        this.cancelMove(currentIndex);
+        break;
+    }
+  }
+
+  private activateMoveMode(itemId: string, index: number) {
+    this.keyboardMovingItemId = itemId;
+    this.keyboardOriginalIndex = index;
+    this.requestUpdate();
+  }
+
+  private deactivateMoveMode() {
+    this.keyboardMovingItemId = null;
+    this.keyboardOriginalIndex = -1;
+    this.requestUpdate();
+  }
+
+  private moveItemAndRefocus(fromIndex: number, toIndex: number) {
+    this.moveItem(fromIndex, toIndex);
+    this.requestUpdate();
+    this.focusItemAtIndex(toIndex);
+  }
+
+  private cancelMove(currentIndex: number) {
+    if (currentIndex !== this.keyboardOriginalIndex) {
+      this.moveItem(currentIndex, this.keyboardOriginalIndex);
+    }
+    const originalIndex = this.keyboardOriginalIndex;
+    this.deactivateMoveMode();
+    this.focusItemAtIndex(originalIndex);
+  }
+
+  private focusItemAtIndex(index: number) {
+    this.updateComplete.then(() => {
+      const items = this.shadowRoot?.querySelectorAll('li');
+      (items?.[index] as HTMLElement)?.focus();
+    });
+  }
+
+  private moveItem(fromIndex: number, toIndex: number) {
+    const newOrder = [...this.columnOrderTemp];
+    const [movedItem] = newOrder.splice(fromIndex, 1);
+    newOrder.splice(toIndex, 0, movedItem);
+    this.setColumnOrderTemp(newOrder);
+  }
+
   private handleCheckboxChange(columnId: string, checked: boolean) {
     const newVisibility = {
       ...this.columnVisibilityTemp,
@@ -92,12 +189,21 @@ export class DndExample extends LitElement {
           (item, index) => html`
             <li
               draggable="true"
-              tabindex="0"
+              tabindex="${this.keyboardMovingItemId &&
+              this.keyboardMovingItemId !== item
+                ? '-1'
+                : '0'}"
+              class="${this.keyboardMovingItemId === item
+                ? 'keyboard-moving'
+                : ''}"
+              aria-grabbed="${this.keyboardMovingItemId === item}"
               @dragstart="${(e: DragEvent) => this.handleDragStart(e, index)}"
               @dragover="${this.handleDragOver}"
               @dragleave="${this.handleDragLeave}"
               @drop="${(e: DragEvent) => this.handleDrop(e, index)}"
-              @dragend="${this.handleDragEnd}">
+              @dragend="${this.handleDragEnd}"
+              @keydown="${(e: KeyboardEvent) =>
+                this.handleKeyDown(e, item, index)}">
               <div class="li-content">
                 <div class="drag-icon">
                   ${iconLoader(Draggable, { slot: 'icon' })}

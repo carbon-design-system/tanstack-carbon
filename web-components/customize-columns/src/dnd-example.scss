@@ -51,6 +51,13 @@ li {
     outline: 2px dashed $focus;
     outline-offset: -2px;
   }
+
+  &.keyboard-moving {
+    @include utilities.focus-outline('outline');
+
+    background: $layer-accent-01;
+    outline-offset: -2px;
+  }
 }
 
 .drag-icon {
