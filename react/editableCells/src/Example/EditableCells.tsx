@@ -1,5 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { DataTable, TextInput } from '@carbon/react';
+import { useState, useRef } from 'react';
+import { DataTable, TextInput, IconButton } from '@carbon/react';
+import { Edit } from '@carbon/icons-react';
+import type { Table as TanStackTable, Cell, TableMeta } from '@tanstack/react-table';
+
 const {
   Table,
   TableBody,
@@ -16,17 +19,24 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { makeData } from './makeData';
+import { makeData, type Resource } from './makeData';
 import { useKeyPress } from './hooks/useKeyPress';
 
-type Resource = {
+interface CustomTableMeta extends TableMeta<Resource> {
+  updateData: (rowIndex: number, columnId: string, value: unknown) => void;
+}
+
+interface EditableCellProps {
+  tableContainerRef: React.RefObject<HTMLDivElement>;
+  table: TanStackTable<Resource>;
+  cell: Cell<Resource, unknown>;
+  editingId: string | null;
+  setEditingId: (id: string | null) => void;
   id: string;
-  name: string;
-  rule: string;
-  status: string;
-  other: string;
-  example: string;
-};
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  tabIndex?: number;
+}
 
 const EditableCell = ({
   tableContainerRef,
@@ -37,72 +47,127 @@ const EditableCell = ({
   id,
   children,
   ...rest
-}) => {
-  const [editValue, setEditValue] = useState(null);
-  const handleEditableCellKeyDown = (event: KeyboardEvent) => {
-    if (event.code !== 'Enter') return;
-    setEditingId((event.target as HTMLElement).id);
+}: EditableCellProps) => {
+  const [editValue, setEditValue] = useState<string | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const cellId = `cell__${id}`;
+
+  const resetEditState = () => {
+    setEditingId(null);
+    setEditValue(null);
+    setIsHovered(false);
   };
 
-  const handleEditModeKeyDown = (event: KeyboardEvent) => {
-    if (event.code === 'Enter' || event.code === 'Escape') {
-      table.options.meta?.updateData(
-        cell.row.index,
-        cell.column.id,
-        editValue ?? cell.getValue()
-      );
-      setEditingId(null);
-      // This is sketchy, refactor later
-      setTimeout(() => {
-        const activeCell = tableContainerRef?.current.querySelector(
-          `#cell__${id}`
-        );
-        activeCell.tabIndex = 0;
-        activeCell.focus();
-      }, 10);
+  const saveAndExitEditMode = () => {
+    (table.options.meta as CustomTableMeta | undefined)?.updateData?.(
+      cell.row.index,
+      cell.column.id,
+      editValue ?? cell.getValue()
+    );
+    resetEditState();
+  };
+
+  const focusCell = (cellElement: HTMLElement) => {
+    cellElement.tabIndex = 0;
+    cellElement.focus();
+  };
+
+  const handleTabNavigation = (e: React.KeyboardEvent, currentCellId: string) => {
+    e.preventDefault();
+    saveAndExitEditMode();
+
+    // Move to next cell after state update
+    setTimeout(() => {
+      if (!tableContainerRef.current) return;
+      const currentCell = tableContainerRef.current.querySelector(`#${currentCellId}`);
+      if (!currentCell) return;
+
+      const sibling = e.shiftKey
+        ? currentCell.previousElementSibling
+        : currentCell.nextElementSibling;
+      
+      if (sibling) {
+        focusCell(sibling as HTMLElement);
+      } else if (!e.shiftKey) {
+        // If at end of row, move to first cell of next row
+        const parentRow = currentCell.closest('tr');
+        if (parentRow?.nextElementSibling) {
+          const firstCell = parentRow.nextElementSibling.children[0] as HTMLElement;
+          if (firstCell) {
+            focusCell(firstCell);
+          }
+        }
+      }
+    }, 0);
+  };
+
+  const handleEditableCellKeyDown = (event: KeyboardEvent) => {
+    // Enter edit mode on Enter, F2, or Space
+    if (event.code === 'Enter' || event.code === 'F2' || event.code === 'Space') {
+      event.preventDefault();
+      setEditingId((event.target as HTMLElement).id);
+      return;
+    }
+
+    // Start typing to enter edit mode and replace content
+    if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      setEditingId((event.target as HTMLElement).id);
+      setEditValue(event.key);
     }
   };
 
   const { style } = rest;
 
-  return editingId === `cell__${id}` ? (
+  return editingId === cellId ? (
     <td
+      className="editable-cell-editing"
       style={{
         width: style?.width,
-        padding: 0,
       }}>
       <TextInput
         className="editable-cell-input"
-        id={`cell__${id}`}
+        id={cellId}
         labelText="Editable cell"
         hideLabel
-        value={editValue ?? cell.getValue()}
+        value={editValue ?? String(cell.getValue() ?? '')}
         {...rest}
         autoFocus
-        style={{
-          height: 48 - 1, // account for border to prevent extra 1px height added to cell
+        onKeyDown={(e) => {
+          if (e.key === 'Tab') {
+            handleTabNavigation(e, cellId);
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            saveAndExitEditMode();
+          } else if (e.key === 'Escape') {
+            resetEditState();
+          }
         }}
-        onBlur={() => {
-          // Save cell data
-          table.options.meta?.updateData(
-            cell.row.index,
-            cell.column.id,
-            editValue ?? cell.getValue()
-          );
-          setEditingId(null);
-        }}
+        onBlur={saveAndExitEditMode}
         onChange={(e) => setEditValue(e.target.value)}
-        // @ts-expect-error TextInput doesn't like passing onKeyDown
-        onKeyDown={handleEditModeKeyDown}
       />
     </td>
   ) : (
     <TableCell
-      id={`cell__${id}`}
-      // @ts-expect-error TextInput doesn't like passing onKeyDown
+      id={cellId}
+      // @ts-expect-error TableCell doesn't like passing onKeyDown
       onKeyDown={handleEditableCellKeyDown}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsHovered(true)}
+      onBlur={() => setIsHovered(false)}
       {...rest}>
-      {children}
+      <div className="editable-cell-container">
+        <span>{children}</span>
+        <IconButton
+          label="Edit cell"
+          kind="ghost"
+          size="sm"
+          tabIndex={-1}
+          className={`editable-cell-edit-button ${isHovered ? 'editable-cell-edit-button--visible' : ''}`}
+          onClick={() => setEditingId(cellId)}>
+          <Edit />
+        </IconButton>
+      </div>
     </TableCell>
   );
 };
@@ -114,11 +179,6 @@ export const EditableCells = () => {
     'MetaLeft+ArrowLeft',
     'MetaRight+ArrowLeft',
   ]);
-  const captureCommandLeft = useRef<boolean>(false);
-
-  useEffect(() => {
-    captureCommandLeft.current = commandLeft;
-  }, [commandLeft]);
 
   const columns = [
     columnHelper.accessor((row) => row.name, {
@@ -140,9 +200,9 @@ export const EditableCells = () => {
       header: 'Example',
     }),
   ];
-  const tableContainer = useRef<HTMLDivElement>();
+  const tableContainer = useRef<HTMLDivElement>(null);
   const [data, setData] = useState(makeData(7));
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const table = useReactTable({
     data,
@@ -170,15 +230,16 @@ export const EditableCells = () => {
   };
 
   const removeActiveCell = () => {
-    if (editingId) return;
+    if (editingId || !tableContainer.current) return;
     const allTableCells = tableContainer.current.querySelectorAll('td');
     allTableCells.forEach((cell) => {
       cell.tabIndex = -1;
     });
-    (document.activeElement as HTMLElement).blur();
+    (document.activeElement as HTMLElement)?.blur();
   };
 
-  const getActiveCell = () => {
+  const getActiveCell = (): Element | null => {
+    if (!tableContainer.current) return null;
     const activeCellElement =
       tableContainer.current.querySelector('td[tabindex="0"]');
     return activeCellElement;
@@ -187,14 +248,50 @@ export const EditableCells = () => {
   const addActiveCell = (target: Element) => {
     if (editingId) return;
     const activeCell = target.closest('td');
+    if (!activeCell) return;
     activeCell.tabIndex = 0;
     activeCell.focus();
+  };
+
+  const navigateCells = (activeCellElement: Element, direction: 'horizontal' | 'vertical', forward: boolean) => {
+    removeActiveCell();
+    
+    if (direction === 'horizontal') {
+      const sibling = forward
+        ? activeCellElement.nextElementSibling
+        : activeCellElement.previousElementSibling;
+      
+      if (sibling) {
+        addActiveCell(sibling);
+      } else if (forward) {
+        // If at end of row, move to first cell of next row
+        const parentRow = activeCellElement.closest('tr');
+        if (parentRow?.nextElementSibling) {
+          const firstCell = parentRow.nextElementSibling.children[0];
+          if (firstCell) {
+            addActiveCell(firstCell);
+          }
+        }
+      }
+    } else {
+      // Vertical navigation
+      const parentRow = activeCellElement.closest('tr');
+      const activeCellRowIndex = getChildElementIndex(activeCellElement);
+      const targetRow = forward ? parentRow?.nextElementSibling : parentRow?.previousElementSibling;
+      
+      if (targetRow && activeCellRowIndex >= 0) {
+        const targetCell = targetRow.children[activeCellRowIndex];
+        if (targetCell) {
+          addActiveCell(targetCell);
+        }
+      }
+    }
   };
 
   const handleFocusChange = (event: HTMLElementEvent<HTMLElement>) => {
     if (tableContainer?.current) {
       const tableBody = tableContainer?.current.querySelector('tbody');
-      if (!tableBody.contains(event.target)) {
+      if (!tableBody?.contains(event.target)) {
         return;
       }
     }
@@ -202,76 +299,44 @@ export const EditableCells = () => {
     addActiveCell(event.target);
   };
 
-  const getChildElementIndex = (node: Element) => {
+  const getChildElementIndex = (node: Element | null): number => {
+    if (!node?.parentNode) return -1;
     return Array.prototype.indexOf.call(node.parentNode.children, node);
   };
 
   const handleKeyDownActiveCell = (event: KeyboardEvent) => {
-    event.preventDefault();
     const key = event.code;
     const activeCellElement = getActiveCell();
+
     if (commandLeft) {
       return;
     }
-    // Don't enter switch if there is no active cell
-    if (!getActiveCell()) return;
-    switch (key) {
-      case 'ArrowLeft': {
-        // Prevent scrolling
-        event.preventDefault();
-        if (activeCellElement.previousElementSibling) {
-          removeActiveCell();
-          addActiveCell(activeCellElement.previousElementSibling);
-        }
-        return;
-      }
-      case 'ArrowRight': {
-        // Prevent scrolling
-        event.preventDefault();
-        if (activeCellElement.nextElementSibling) {
-          removeActiveCell();
-          addActiveCell(activeCellElement.nextElementSibling);
-        }
-        return;
-      }
-      case 'ArrowUp': {
-        // Prevent scrolling
-        event.preventDefault();
-        const parentRow = getActiveCell().closest('tr');
-        const activeCellRowIndex = getChildElementIndex(getActiveCell());
-        if (parentRow.previousElementSibling) {
-          const newParentRow = parentRow.previousElementSibling;
-          const newRowCells = newParentRow.children;
-          removeActiveCell();
-          addActiveCell(newRowCells[activeCellRowIndex]);
-        }
-        return;
-      }
-      case 'ArrowDown': {
-        // Prevent scrolling
-        event.preventDefault();
-        const parentRow = getActiveCell().closest('tr');
-        const activeCellRowIndex = getChildElementIndex(getActiveCell());
-        if (parentRow.nextElementSibling) {
-          const newParentRow = parentRow.nextElementSibling;
-          const newRowCells = newParentRow.children;
-          removeActiveCell();
-          addActiveCell(newRowCells[activeCellRowIndex]);
-        }
-        return;
-      }
-      case 'Tab': {
-        removeActiveCell();
-        return;
-      }
-      case 'Enter': {
-        return;
-      }
-    }
-  };
 
-  const handleMultiKeyPress = () => {
-    console.log('multi');
+    // Don't enter switch if there is no active cell
+    if (!activeCellElement) return;
+
+    // Prevent default for navigation keys
+    event.preventDefault();
+
+    switch (key) {
+      case 'ArrowLeft':
+        navigateCells(activeCellElement, 'horizontal', false);
+        return;
+      case 'ArrowRight':
+        navigateCells(activeCellElement, 'horizontal', true);
+        return;
+      case 'ArrowUp':
+        navigateCells(activeCellElement, 'vertical', false);
+        return;
+      case 'ArrowDown':
+        navigateCells(activeCellElement, 'vertical', true);
+        return;
+      case 'Tab':
+        navigateCells(activeCellElement, 'horizontal', true);
+        return;
+      case 'Enter':
+        return;
+    }
   };
 
   return (
@@ -288,13 +353,7 @@ export const EditableCells = () => {
           aria-label="sample table"
           // @ts-expect-error purposefully passing onClick
           onClick={handleFocusChange}
-          onKeyDown={
-            !editingId
-              ? commandLeft
-                ? handleMultiKeyPress
-                : handleKeyDownActiveCell
-              : undefined
-          }
+          onKeyDown={!editingId ? handleKeyDownActiveCell : undefined}
           role="grid">
           <TableHead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -308,9 +367,9 @@ export const EditableCells = () => {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHeader>
                 ))}
               </TableRow>

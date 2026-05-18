@@ -1,16 +1,8 @@
-@use '@carbon/react/scss/theme' as *;
 @use '@carbon/react/scss/spacing' as *;
 @use '@carbon/react/scss/utilities';
-@use '@carbon/react/scss/colors';
-@use '@carbon/react/scss/type';
 
 .page-grid {
   margin-top: 4rem;
-}
-
-.flex {
-  display: flex;
-  align-items: center;
 }
 
 .basic-table th,
@@ -31,4 +23,26 @@
 
 .editable-cell-input .cds--text-input {
   height: 48px;
+}
+
+.editable-cell-editing {
+  padding: 0;
+}
+
+.editable-cell-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-03;
+}
+
+.editable-cell-edit-button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+
+  &--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
