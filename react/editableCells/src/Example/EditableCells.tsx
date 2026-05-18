@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { DataTable, TextInput, IconButton } from '@carbon/react';
 import { Edit } from '@carbon/icons-react';
-import type { Table as TanStackTable, Cell, TableMeta } from '@tanstack/react-table';
+import type { Table as TanStackTable, Cell, RowData } from '@tanstack/react-table';
+import { useKeyPress } from './hooks/useKeyPress';
 
 const {
   Table,
@@ -20,11 +21,15 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { makeData, type Resource } from './makeData';
-import { useKeyPress } from './hooks/useKeyPress';
 
-interface CustomTableMeta extends TableMeta<Resource> {
-  updateData: (rowIndex: number, columnId: string, value: unknown) => void;
+declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface TableMeta<TData extends RowData> {
+    updateData: (rowIndex: number, columnId: string, value: unknown) => void;
+  }
 }
+
+const columnHelper = createColumnHelper<Resource>();
 
 interface EditableCellProps {
   tableContainerRef: React.RefObject<HTMLDivElement>;
@@ -46,24 +51,27 @@ const EditableCell = ({
   setEditingId,
   id,
   children,
-  ...rest
+  style,
+  tabIndex,
 }: EditableCellProps) => {
   const [editValue, setEditValue] = useState<string | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [showEditButton, setShowEditButton] = useState(false);
   const cellId = `cell__${id}`;
+  const initialValue = String(cell.getValue() ?? '');
 
   const resetEditState = () => {
     setEditingId(null);
     setEditValue(null);
-    setIsHovered(false);
+    setShowEditButton(false);
   };
 
   const saveAndExitEditMode = () => {
-    (table.options.meta as CustomTableMeta | undefined)?.updateData?.(
-      cell.row.index,
-      cell.column.id,
-      editValue ?? cell.getValue()
-    );
+    const nextValue = editValue ?? initialValue;
+
+    if (nextValue !== initialValue) {
+      table.options.meta?.updateData(cell.row.index, cell.column.id, nextValue);
+    }
+
     resetEditState();
   };
 
@@ -116,8 +124,6 @@ const EditableCell = ({
     }
   };
 
-  const { style } = rest;
-
   return editingId === cellId ? (
     <td
       className="editable-cell-editing"
@@ -129,8 +135,9 @@ const EditableCell = ({
         id={cellId}
         labelText="Editable cell"
         hideLabel
-        value={editValue ?? String(cell.getValue() ?? '')}
-        {...rest}
+        value={editValue ?? initialValue}
+        style={style}
+        tabIndex={tabIndex}
         autoFocus
         onKeyDown={(e) => {
           if (e.key === 'Tab') {
@@ -151,11 +158,12 @@ const EditableCell = ({
       id={cellId}
       // @ts-expect-error TableCell doesn't like passing onKeyDown
       onKeyDown={handleEditableCellKeyDown}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onFocus={() => setIsHovered(true)}
-      onBlur={() => setIsHovered(false)}
-      {...rest}>
+      onMouseEnter={() => setShowEditButton(true)}
+      onMouseLeave={() => setShowEditButton(false)}
+      onFocus={() => setShowEditButton(true)}
+      onBlur={() => setShowEditButton(false)}
+      style={style}
+      tabIndex={tabIndex}>
       <div className="editable-cell-container">
         <span>{children}</span>
         <IconButton
@@ -163,7 +171,7 @@ const EditableCell = ({
           kind="ghost"
           size="sm"
           tabIndex={-1}
-          className={`editable-cell-edit-button ${isHovered ? 'editable-cell-edit-button--visible' : ''}`}
+          className={`editable-cell-edit-button ${showEditButton ? 'editable-cell-edit-button--visible' : ''}`}
           onClick={() => setEditingId(cellId)}>
           <Edit />
         </IconButton>
@@ -173,14 +181,12 @@ const EditableCell = ({
 };
 
 export const EditableCells = () => {
-  const columnHelper = createColumnHelper<Resource>();
-
   const commandLeft = useKeyPress([
     'MetaLeft+ArrowLeft',
     'MetaRight+ArrowLeft',
   ]);
 
-  const columns = [
+  const columns = useMemo(() => [
     columnHelper.accessor((row) => row.name, {
       id: 'name',
       cell: (info) => info.getValue(),
@@ -199,7 +205,7 @@ export const EditableCells = () => {
     columnHelper.accessor('example', {
       header: 'Example',
     }),
-  ];
+  ], []);
   const tableContainer = useRef<HTMLDivElement>(null);
   const [data, setData] = useState(makeData(7));
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -211,15 +217,14 @@ export const EditableCells = () => {
     meta: {
       updateData: (rowIndex, columnId, value) => {
         setData((old) =>
-          old.map((row, index) => {
-            if (index === rowIndex) {
-              return {
-                ...old[rowIndex]!,
+          old.map((row, index) =>
+            index === rowIndex
+              ? {
+                ...row,
                 [columnId]: value,
-              };
-            }
-            return row;
-          })
+              }
+              : row
+          )
         );
       },
     },
@@ -229,110 +234,120 @@ export const EditableCells = () => {
     target: T;
   };
 
-  const removeActiveCell = () => {
-    if (editingId || !tableContainer.current) return;
-    const allTableCells = tableContainer.current.querySelectorAll('td');
-    allTableCells.forEach((cell) => {
-      cell.tabIndex = -1;
-    });
-    (document.activeElement as HTMLElement)?.blur();
-  };
+  const getActiveCell = useCallback((): HTMLTableCellElement | null => {
+    return tableContainer.current?.querySelector('td[tabindex="0"]') ?? null;
+  }, []);
 
-  const getActiveCell = (): Element | null => {
-    if (!tableContainer.current) return null;
-    const activeCellElement =
-      tableContainer.current.querySelector('td[tabindex="0"]');
-    return activeCellElement;
-  };
-
-  const addActiveCell = (target: Element) => {
+  const setActiveCell = useCallback((cell: HTMLTableCellElement | null) => {
     if (editingId) return;
-    const activeCell = target.closest('td');
-    if (!activeCell) return;
-    activeCell.tabIndex = 0;
-    activeCell.focus();
+
+    const activeCell = getActiveCell();
+
+    if (activeCell && activeCell !== cell) {
+      activeCell.tabIndex = -1;
+    }
+
+    if (!cell) {
+      activeCell?.blur();
+      return;
+    }
+
+    cell.tabIndex = 0;
+    cell.focus();
+  }, [editingId, getActiveCell]);
+
+  const getCellIndex = (cell: Element | null): number => {
+    if (!cell?.parentElement) return -1;
+    return Array.prototype.indexOf.call(cell.parentElement.children, cell);
   };
 
-  const navigateCells = (activeCellElement: Element, direction: 'horizontal' | 'vertical', forward: boolean) => {
-    removeActiveCell();
-    
+  const navigateCells = (
+    activeCellElement: HTMLTableCellElement,
+    direction: 'horizontal' | 'vertical',
+    forward: boolean
+  ) => {
     if (direction === 'horizontal') {
       const sibling = forward
         ? activeCellElement.nextElementSibling
         : activeCellElement.previousElementSibling;
-      
-      if (sibling) {
-        addActiveCell(sibling);
-      } else if (forward) {
-        // If at end of row, move to first cell of next row
+
+      if (sibling instanceof HTMLTableCellElement) {
+        setActiveCell(sibling);
+        return;
+      }
+
+      if (forward) {
         const parentRow = activeCellElement.closest('tr');
-        if (parentRow?.nextElementSibling) {
-          const firstCell = parentRow.nextElementSibling.children[0];
-          if (firstCell) {
-            addActiveCell(firstCell);
-          }
+        const firstCell = parentRow?.nextElementSibling?.children[0];
+
+        if (firstCell instanceof HTMLTableCellElement) {
+          setActiveCell(firstCell);
         }
       }
-    } else {
-      // Vertical navigation
-      const parentRow = activeCellElement.closest('tr');
-      const activeCellRowIndex = getChildElementIndex(activeCellElement);
-      const targetRow = forward ? parentRow?.nextElementSibling : parentRow?.previousElementSibling;
-      
-      if (targetRow && activeCellRowIndex >= 0) {
-        const targetCell = targetRow.children[activeCellRowIndex];
-        if (targetCell) {
-          addActiveCell(targetCell);
-        }
-      }
+
+      return;
+    }
+
+    const parentRow = activeCellElement.closest('tr');
+    const activeCellRowIndex = getCellIndex(activeCellElement);
+    const targetRow = forward
+      ? parentRow?.nextElementSibling
+      : parentRow?.previousElementSibling;
+
+    if (!targetRow || activeCellRowIndex < 0) return;
+
+    const targetCell = targetRow.children[activeCellRowIndex];
+
+    if (targetCell instanceof HTMLTableCellElement) {
+      setActiveCell(targetCell);
     }
   };
 
   const handleFocusChange = (event: HTMLElementEvent<HTMLElement>) => {
-    if (tableContainer?.current) {
-      const tableBody = tableContainer?.current.querySelector('tbody');
-      if (!tableBody?.contains(event.target)) {
-        return;
-      }
-    }
-    removeActiveCell();
-    addActiveCell(event.target);
-  };
+    const tableBody = tableContainer.current?.querySelector('tbody');
 
-  const getChildElementIndex = (node: Element | null): number => {
-    if (!node?.parentNode) return -1;
-    return Array.prototype.indexOf.call(node.parentNode.children, node);
+    if (!tableBody?.contains(event.target)) {
+      return;
+    }
+
+    const targetCell = event.target.closest('td');
+
+    if (targetCell instanceof HTMLTableCellElement) {
+      setActiveCell(targetCell);
+    }
   };
 
   const handleKeyDownActiveCell = (event: KeyboardEvent) => {
-    const key = event.code;
     const activeCellElement = getActiveCell();
 
     if (commandLeft) {
       return;
     }
 
-    // Don't enter switch if there is no active cell
-    if (!activeCellElement) return;
+    if (!activeCellElement || event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
 
-    // Prevent default for navigation keys
-    event.preventDefault();
-
-    switch (key) {
+    switch (event.code) {
       case 'ArrowLeft':
+        event.preventDefault();
         navigateCells(activeCellElement, 'horizontal', false);
         return;
       case 'ArrowRight':
+        event.preventDefault();
         navigateCells(activeCellElement, 'horizontal', true);
         return;
       case 'ArrowUp':
+        event.preventDefault();
         navigateCells(activeCellElement, 'vertical', false);
         return;
       case 'ArrowDown':
+        event.preventDefault();
         navigateCells(activeCellElement, 'vertical', true);
         return;
       case 'Tab':
-        navigateCells(activeCellElement, 'horizontal', true);
+        event.preventDefault();
+        navigateCells(activeCellElement, 'horizontal', !event.shiftKey);
         return;
       case 'Enter':
         return;
