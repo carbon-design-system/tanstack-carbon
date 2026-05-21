@@ -10,6 +10,16 @@ export type Resource = {
   subRows?: Resource[];
 };
 
+export const ruleOptions = [
+  { id: 'dns_delegation', text: 'DNS delegation' },
+  { id: 'round_robin', text: 'Round Robin' },
+];
+export const statusOptions = [
+  { id: 'starting', text: 'Starting' },
+  { id: 'active', text: 'Active' },
+  { id: 'disabled', text: 'Disabled' },
+];
+
 const range = (len: number) => {
   const arr: number[] = [];
   for (let i = 0; i < len; i++) {
@@ -22,15 +32,8 @@ const newResource = (id: string, index: number): Resource => {
   return {
     id,
     name: `Load balancer ${index}`,
-    rule: faker.helpers.shuffle<Resource['rule']>([
-      'DNS delegation',
-      'Round Robin',
-    ])[0],
-    status: faker.helpers.shuffle<Resource['status']>([
-      'starting',
-      'active',
-      'disabled',
-    ])[0]!,
+    rule: faker.helpers.shuffle(ruleOptions.map(opt => opt.id))[0],
+    status: faker.helpers.shuffle(statusOptions.map(opt => opt.id))[0]!,
     other: 'Test',
     example: faker.number.int(1000).toString(),
   };
