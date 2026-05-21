@@ -7,6 +7,7 @@ export type Resource = {
   status: string;
   other: string;
   example: string;
+  date: Date;
   subRows?: Resource[];
 };
 
@@ -36,6 +37,7 @@ const newResource = (id: string, index: number): Resource => {
     status: faker.helpers.shuffle(statusOptions.map(opt => opt.id))[0]!,
     other: 'Test',
     example: faker.number.int(1000).toString(),
+    date: faker.date.future(),
   };
 };
 

@@ -1,6 +1,6 @@
-import { useCallback, useEffect,  useMemo, useRef, useState } from 'react';
-import { DataTable, TextInput, NumberInput, Dropdown, IconButton } from '@carbon/react';
-import { Edit, CaretSort, ChevronDown } from '@carbon/icons-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { DataTable, TextInput, NumberInput, Dropdown, IconButton, DatePicker, DatePickerInput } from '@carbon/react';
+import { Edit, CaretSort, ChevronDown, Calendar } from '@carbon/icons-react';
 import type { Table as TanStackTable, Cell, RowData } from '@tanstack/react-table';
 import { useKeyPress } from './hooks/useKeyPress';
 
@@ -31,7 +31,7 @@ declare module '@tanstack/react-table' {
 
 const columnHelper = createColumnHelper<Resource>();
 
-type CellType = 'text' | 'number' | 'selection';
+type CellType = 'text' | 'number' | 'selection' | 'date';
 
 interface SelectOption {
   id: string;
@@ -79,6 +79,7 @@ const EditableCell = ({
   const dropdownRef = useRef<HTMLButtonElement>(null);
   const textInputRef = useRef<HTMLInputElement>(null);
   const numberInputRef = useRef<HTMLInputElement>(null);
+  const datePickerRef = useRef<HTMLInputElement>(null);
 
   // Update initialValue when cell value changes externally
   useEffect(() => {
@@ -96,6 +97,9 @@ const EditableCell = ({
   const focusInputByCellType = () => {
     if (cellType === 'selection') {
       dropdownRef.current?.click();
+    } else if (cellType === 'date') {
+      datePickerRef.current?.click();
+      datePickerRef.current?.focus();
     } else if (cellType === 'number') {
       numberInputRef.current?.focus();
     } else if (cellType === 'text') {
@@ -187,8 +191,8 @@ const EditableCell = ({
   }, [editValue, initialValue, config, saveAndExitEditMode, tableContainerRef, getNextCellId]);
 
   const handleEditableCellKeyDown = useCallback((event: KeyboardEvent) => {
-    // Don't enter edit mode for selection type on Space (it opens dropdown)
-    if (cellType === 'selection' && event.code === 'Space') {
+    // Don't enter edit mode for selection/date type on Space (it opens dropdown/picker)
+    if ((cellType === 'selection' || cellType === 'date') && event.code === 'Space') {
       return;
     }
 
@@ -197,8 +201,8 @@ const EditableCell = ({
       event.preventDefault();
       setEditingId((event.target as HTMLElement).id);
 
-      // Auto-open dropdown for selection type
-      if (cellType === 'selection') {
+      // Auto-open dropdown for selection/date type
+      if (cellType === 'selection' || cellType === 'date') {
         setTimeout(() => {
           focusInputByCellType();
         }, 10);
@@ -207,7 +211,7 @@ const EditableCell = ({
     }
 
     // Start typing to enter edit mode and replace content (only for text/number)
-    if (cellType !== 'selection' && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    if (cellType !== 'selection' && cellType !== 'date' && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
       event.preventDefault();
       setEditingId((event.target as HTMLElement).id);
       setEditValue(event.key);
@@ -224,7 +228,7 @@ const EditableCell = ({
   }, [editingId, cellId, cellType]);
 
   const getIconForCellType = () => {
-    const icons = { text: Edit, number: CaretSort, selection: ChevronDown };
+    const icons = { text: Edit, number: CaretSort, selection: ChevronDown, date: Calendar };
     return icons[cellType] || Edit;
   };
 
@@ -329,6 +333,31 @@ const EditableCell = ({
           />
         );
 
+      case 'date':
+        return (
+          <DatePicker
+            datePickerType="single"
+            onChange={(newDate) => {
+              const newDateObj = newDate[0];
+              setTimeout(() => {
+                table.options.meta?.updateData(cell.row.index, cell.column.id, newDateObj);
+                setInitialValue(newDateObj);
+                resetEditState();
+                sendFocusBackToTable();
+              }, 10);
+            }}
+            value={initialValue as Date}
+          >
+            <DatePickerInput
+              {...commonProps}
+              placeholder="mm/dd/yyyy"
+              labelText="Editable date cell"
+              id={`${cellId}-date-picker`}
+              ref={datePickerRef}
+            />
+          </DatePicker>
+        );
+
       default: // text
         return (
           <TextInput
@@ -373,9 +402,7 @@ const EditableCell = ({
           size="sm"
           tabIndex={-1}
           className={`editable-cell-edit-button ${showEditButton ? 'editable-cell-edit-button--visible' : ''}`}
-          onClick={() => {
-            setEditingId(cellId);
-          }}>
+          onClick={() => setEditingId(cellId)}>
           {(() => {
             const Icon = getIconForCellType();
             return <Icon size={16} />;
@@ -416,6 +443,9 @@ export const EditableCells = () => {
       },
       invalidText: 'Please enter a positive number',
     },
+    date: {
+      type: 'date',
+    },
   }), []);
 
   // Helper to display selection cell values
@@ -423,6 +453,15 @@ export const EditableCells = () => {
     if (!value) return '';
     const option = cellConfigs[columnId]?.selectOptions?.find(opt => opt.id === value);
     return option ? option.text : value;
+  };
+
+  // Helper to format date for display
+  const formatDate = (date: Date | null) => {
+    if (!date || !(date instanceof Date)) return '';
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
   };
 
   const columns = useMemo(() => [
@@ -446,6 +485,11 @@ export const EditableCells = () => {
     }),
     columnHelper.accessor('example', {
       header: 'Example',
+
+    }),
+    columnHelper.accessor('date', {
+      header: 'Date',
+      cell: (info) => formatDate(info.getValue() as Date),
 
     }),
   ], [cellConfigs]);
