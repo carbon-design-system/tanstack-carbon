@@ -99,6 +99,7 @@ Add your example to the appropriate README:
 - For Web Components: Update `/web-components/README.md`
 
 Add a new row under the **"More Examples (Community Contributed)"** section:
+(Add this heading if not present)
 
 ```markdown
 ## More Examples (Community Contributed)
