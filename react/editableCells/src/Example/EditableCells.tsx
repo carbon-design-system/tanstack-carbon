@@ -1,7 +1,17 @@
-import { useCallback, useEffect,  useMemo, useRef, useState } from 'react';
-import { DataTable, TextInput, NumberInput, Dropdown, IconButton } from '@carbon/react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  DataTable,
+  TextInput,
+  NumberInput,
+  Dropdown,
+  IconButton,
+} from '@carbon/react';
 import { Edit, CaretSort, ChevronDown } from '@carbon/icons-react';
-import type { Table as TanStackTable, Cell, RowData } from '@tanstack/react-table';
+import type {
+  Table as TanStackTable,
+  Cell,
+  RowData,
+} from '@tanstack/react-table';
 import { useKeyPress } from './hooks/useKeyPress';
 
 const {
@@ -20,7 +30,12 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { makeData, ruleOptions, statusOptions, type Resource } from './makeData';
+import {
+  makeData,
+  ruleOptions,
+  statusOptions,
+  type Resource,
+} from './makeData';
 
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,7 +86,9 @@ const EditableCell = ({
   config,
 }: EditableCellProps) => {
   const cellType = config?.type || 'text';
-  const [editValue, setEditValue] = useState<string | number | SelectOption | null>(null);
+  const [editValue, setEditValue] = useState<
+    string | number | SelectOption | null
+  >(null);
   const [initialValue, setInitialValue] = useState(cell.getValue());
   const [showEditButton, setShowEditButton] = useState(false);
   const cellId = `cell__${id}`;
@@ -119,6 +136,7 @@ const EditableCell = ({
     }
 
     resetEditState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editValue, initialValue, config, table, cell]);
 
   const focusCell = (cellElement: HTMLElement) => {
@@ -131,88 +149,125 @@ const EditableCell = ({
     tableElement?.focus();
   }, [tableContainerRef]);
 
-  const getNextCellId = useCallback((key: string, shiftKey: boolean = false) => {
-    const rows = table.getRowModel().rows;
-    const columns = table.getAllColumns();
-    const currentRowIndex = cell.row.index;
-    const currentColIndex = columns.findIndex(col => col.id === cell.column.id);
+  const getNextCellId = useCallback(
+    (key: string, shiftKey: boolean = false) => {
+      const rows = table.getRowModel().rows;
+      const columns = table.getAllColumns();
+      const currentRowIndex = cell.row.index;
+      const currentColIndex = columns.findIndex(
+        (col) => col.id === cell.column.id
+      );
 
-    if (key === 'Tab') {
-      if (shiftKey) {
-        // Move to previous cell
-        if (currentColIndex > 0) {
-          return `cell__${rows[currentRowIndex].id}_${columns[currentColIndex - 1].id}`;
+      if (key === 'Tab') {
+        if (shiftKey) {
+          // Move to previous cell
+          if (currentColIndex > 0) {
+            return `cell__${rows[currentRowIndex].id}_${
+              columns[currentColIndex - 1].id
+            }`;
+          }
+        } else {
+          // Move to next cell
+          if (currentColIndex < columns.length - 1) {
+            return `cell__${rows[currentRowIndex].id}_${
+              columns[currentColIndex + 1].id
+            }`;
+          } else if (currentRowIndex < rows.length - 1) {
+            // Move to first cell of next row
+            return `cell__${rows[currentRowIndex + 1].id}_${columns[0].id}`;
+          }
         }
-      } else {
-        // Move to next cell
-        if (currentColIndex < columns.length - 1) {
-          return `cell__${rows[currentRowIndex].id}_${columns[currentColIndex + 1].id}`;
-        } else if (currentRowIndex < rows.length - 1) {
-          // Move to first cell of next row
-          return `cell__${rows[currentRowIndex + 1].id}_${columns[0].id}`;
+      } else if (key === 'Enter') {
+        // Move to cell below
+        if (currentRowIndex < rows.length - 1) {
+          return `cell__${rows[currentRowIndex + 1].id}_${
+            columns[currentColIndex].id
+          }`;
         }
       }
-    } else if (key === 'Enter') {
-      // Move to cell below
-      if (currentRowIndex < rows.length - 1) {
-        return `cell__${rows[currentRowIndex + 1].id}_${columns[currentColIndex].id}`;
+      return null;
+    },
+    [table, cell]
+  );
+
+  const handleTabNavigation = useCallback(
+    (e: React.KeyboardEvent) => {
+      e.preventDefault();
+
+      // Validate before saving
+      const nextValue = editValue ?? initialValue;
+      if (config?.validator && config.validator(nextValue)) {
+        // Invalid - don't navigate
+        return;
       }
-    }
-    return null;
-  }, [table, cell]);
 
-  const handleTabNavigation = useCallback((e: React.KeyboardEvent) => {
-    e.preventDefault();
+      saveAndExitEditMode();
 
-    // Validate before saving
-    const nextValue = editValue ?? initialValue;
-    if (config?.validator && config.validator(nextValue)) {
-      // Invalid - don't navigate
-      return;
-    }
+      // Use getNextCellId to determine next cell
+      const nextCellId = getNextCellId('Tab', e.shiftKey);
 
-    saveAndExitEditMode();
+      // Move to next cell after state update
+      setTimeout(() => {
+        if (!tableContainerRef.current || !nextCellId) return;
+        const nextCell = tableContainerRef.current.querySelector(
+          `#${nextCellId}`
+        );
+        if (nextCell instanceof HTMLElement) {
+          focusCell(nextCell);
+        }
+      }, 0);
+    },
+    [
+      editValue,
+      initialValue,
+      config,
+      saveAndExitEditMode,
+      tableContainerRef,
+      getNextCellId,
+    ]
+  );
 
-    // Use getNextCellId to determine next cell
-    const nextCellId = getNextCellId('Tab', e.shiftKey);
-
-    // Move to next cell after state update
-    setTimeout(() => {
-      if (!tableContainerRef.current || !nextCellId) return;
-      const nextCell = tableContainerRef.current.querySelector(`#${nextCellId}`);
-      if (nextCell instanceof HTMLElement) {
-        focusCell(nextCell);
+  const handleEditableCellKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      // Don't enter edit mode for selection type on Space (it opens dropdown)
+      if (cellType === 'selection' && event.code === 'Space') {
+        return;
       }
-    }, 0);
-  }, [editValue, initialValue, config, saveAndExitEditMode, tableContainerRef, getNextCellId]);
 
-  const handleEditableCellKeyDown = useCallback((event: KeyboardEvent) => {
-    // Don't enter edit mode for selection type on Space (it opens dropdown)
-    if (cellType === 'selection' && event.code === 'Space') {
-      return;
-    }
+      // Enter edit mode on Enter, F2, or Space
+      if (
+        event.code === 'Enter' ||
+        event.code === 'F2' ||
+        event.code === 'Space'
+      ) {
+        event.preventDefault();
+        setEditingId((event.target as HTMLElement).id);
 
-    // Enter edit mode on Enter, F2, or Space
-    if (event.code === 'Enter' || event.code === 'F2' || event.code === 'Space') {
-      event.preventDefault();
-      setEditingId((event.target as HTMLElement).id);
-
-      // Auto-open dropdown for selection type
-      if (cellType === 'selection') {
-        setTimeout(() => {
-          focusInputByCellType();
-        }, 10);
+        // Auto-open dropdown for selection type
+        if (cellType === 'selection') {
+          setTimeout(() => {
+            focusInputByCellType();
+          }, 10);
+        }
+        return;
       }
-      return;
-    }
 
-    // Start typing to enter edit mode and replace content (only for text/number)
-    if (cellType !== 'selection' && event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-      event.preventDefault();
-      setEditingId((event.target as HTMLElement).id);
-      setEditValue(event.key);
-    }
-  }, [cellType, setEditingId]);
+      // Start typing to enter edit mode and replace content (only for text/number)
+      if (
+        cellType !== 'selection' &&
+        event.key.length === 1 &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.altKey
+      ) {
+        event.preventDefault();
+        setEditingId((event.target as HTMLElement).id);
+        setEditValue(event.key);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cellType, setEditingId]
+  );
 
   // Auto-focus input when entering edit mode
   useEffect(() => {
@@ -221,6 +276,7 @@ const EditableCell = ({
         focusInputByCellType();
       }, 0);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingId, cellId, cellType]);
 
   const getIconForCellType = () => {
@@ -239,7 +295,9 @@ const EditableCell = ({
         const nextCellId = getNextCellId('Enter');
         setTimeout(() => {
           if (nextCellId && tableContainerRef.current) {
-            const nextCell = tableContainerRef.current.querySelector(`#${nextCellId}`);
+            const nextCell = tableContainerRef.current.querySelector(
+              `#${nextCellId}`
+            );
             if (nextCell instanceof HTMLElement) {
               focusCell(nextCell);
             }
@@ -259,7 +317,7 @@ const EditableCell = ({
   const renderEditingCell = () => {
     const isInvalid = config?.validator?.(editValue ?? initialValue);
     const commonProps = {
-      className: "editable-cell-input",
+      className: 'editable-cell-input',
       id: cellId,
       hideLabel: true,
       style,
@@ -267,10 +325,15 @@ const EditableCell = ({
     };
 
     switch (cellType) {
-      case 'number':
-        const numValue = editValue !== null
-          ? (typeof editValue === 'number' ? editValue : Number(editValue))
-          : (initialValue ? Number(initialValue) : 0);
+      case 'number': {
+        const numValue =
+          editValue !== null
+            ? typeof editValue === 'number'
+              ? editValue
+              : Number(editValue)
+            : initialValue
+            ? Number(initialValue)
+            : 0;
 
         return (
           <NumberInput
@@ -285,15 +348,17 @@ const EditableCell = ({
               if (relatedTarget?.closest('.cds--number__controls')) return;
               saveAndExitEditMode();
             }}
-            onChange={(e, { value }) => setEditValue(value)}
+            onChange={(_e, { value }) => setEditValue(value)}
             ref={numberInputRef}
           />
         );
+      }
 
-      case 'selection':
-        const initialOption = config?.selectOptions?.find(
-          opt => opt.id === String(initialValue || '')
-        ) || null;
+      case 'selection': {
+        const initialOption =
+          config?.selectOptions?.find(
+            (opt) => opt.id === String(initialValue || '')
+          ) || null;
 
         return (
           <Dropdown
@@ -309,7 +374,11 @@ const EditableCell = ({
                 const option = selectedItem as SelectOption;
                 setEditValue(option);
                 setTimeout(() => {
-                  table.options.meta?.updateData(cell.row.index, cell.column.id, option.id);
+                  table.options.meta?.updateData(
+                    cell.row.index,
+                    cell.column.id,
+                    option.id
+                  );
                   setInitialValue(option.id);
                   resetEditState();
                   sendFocusBackToTable();
@@ -328,6 +397,7 @@ const EditableCell = ({
             }}
           />
         );
+      }
 
       default: // text
         return (
@@ -372,7 +442,9 @@ const EditableCell = ({
           kind="ghost"
           size="sm"
           tabIndex={-1}
-          className={`editable-cell-edit-button ${showEditButton ? 'editable-cell-edit-button--visible' : ''}`}
+          className={`editable-cell-edit-button ${
+            showEditButton ? 'editable-cell-edit-button--visible' : ''
+          }`}
           onClick={() => {
             setEditingId(cellId);
           }}>
@@ -393,62 +465,68 @@ export const EditableCells = () => {
   ]);
 
   // Define cell configurations for different column types
-  const cellConfigs: Record<string, CellConfig> = useMemo(() => ({
-    name: {
-      type: 'text',
-    },
-    rule: {
-      type: 'selection',
-      selectOptions: ruleOptions,
-    },
-    status: {
-      type: 'selection',
-      selectOptions: statusOptions,
-    },
-    other: {
-      type: 'text',
-    },
-    example: {
-      type: 'number',
-      validator: (value) => {
-        const num = Number(value);
-        return isNaN(num) || num < 0;
+  const cellConfigs: Record<string, CellConfig> = useMemo(
+    () => ({
+      name: {
+        type: 'text',
       },
-      invalidText: 'Please enter a positive number',
-    },
-  }), []);
+      rule: {
+        type: 'selection',
+        selectOptions: ruleOptions,
+      },
+      status: {
+        type: 'selection',
+        selectOptions: statusOptions,
+      },
+      other: {
+        type: 'text',
+      },
+      example: {
+        type: 'number',
+        validator: (value) => {
+          const num = Number(value);
+          return isNaN(num) || num < 0;
+        },
+        invalidText: 'Please enter a positive number',
+      },
+    }),
+    []
+  );
 
   // Helper to display selection cell values
   const getSelectionDisplayValue = (columnId: string, value: string | null) => {
     if (!value) return '';
-    const option = cellConfigs[columnId]?.selectOptions?.find(opt => opt.id === value);
+    const option = cellConfigs[columnId]?.selectOptions?.find(
+      (opt) => opt.id === value
+    );
     return option ? option.text : value;
   };
 
-  const columns = useMemo(() => [
-    columnHelper.accessor('name', {
-      header: "Name",
-
-    }),
-    columnHelper.accessor('rule', {
-      header: 'Rule',
-      cell: (info) => getSelectionDisplayValue('rule', info.getValue() as string | null),
-
-    }),
-    columnHelper.accessor('status', {
-      header: "Status",
-      cell: (info) => getSelectionDisplayValue('status', info.getValue() as string | null),
-
-    }),
-    columnHelper.accessor('other', {
-      header: 'Other',
-
-    }),
-    columnHelper.accessor('example', {
-      header: 'Example',
-
-    }),
-  ], [cellConfigs]);
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('name', {
+        header: 'Name',
+      }),
+      columnHelper.accessor('rule', {
+        header: 'Rule',
+        cell: (info) =>
+          getSelectionDisplayValue('rule', info.getValue() as string | null),
+      }),
+      columnHelper.accessor('status', {
+        header: 'Status',
+        cell: (info) =>
+          getSelectionDisplayValue('status', info.getValue() as string | null),
+      }),
+      columnHelper.accessor('other', {
+        header: 'Other',
+      }),
+      columnHelper.accessor('example', {
+        header: 'Example',
+      }),
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cellConfigs]
+  );
   const tableContainer = useRef<HTMLDivElement>(null);
   const [data, setData] = useState(makeData(7));
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -463,9 +541,9 @@ export const EditableCells = () => {
           old.map((row, index) =>
             index === rowIndex
               ? {
-                ...row,
-                [columnId]: value,
-              }
+                  ...row,
+                  [columnId]: value,
+                }
               : row
           )
         );
@@ -481,23 +559,26 @@ export const EditableCells = () => {
     return tableContainer.current?.querySelector('td[tabindex="0"]') ?? null;
   }, []);
 
-  const setActiveCell = useCallback((cell: HTMLTableCellElement | null) => {
-    if (editingId) return;
+  const setActiveCell = useCallback(
+    (cell: HTMLTableCellElement | null) => {
+      if (editingId) return;
 
-    const activeCell = getActiveCell();
+      const activeCell = getActiveCell();
 
-    if (activeCell && activeCell !== cell) {
-      activeCell.tabIndex = -1;
-    }
+      if (activeCell && activeCell !== cell) {
+        activeCell.tabIndex = -1;
+      }
 
-    if (!cell) {
-      activeCell?.blur();
-      return;
-    }
+      if (!cell) {
+        activeCell?.blur();
+        return;
+      }
 
-    cell.tabIndex = 0;
-    cell.focus();
-  }, [editingId, getActiveCell]);
+      cell.tabIndex = 0;
+      cell.focus();
+    },
+    [editingId, getActiveCell]
+  );
 
   const getCellIndex = (cell: Element | null): number => {
     if (!cell?.parentElement) return -1;
@@ -625,9 +706,9 @@ export const EditableCells = () => {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHeader>
                 ))}
               </TableRow>

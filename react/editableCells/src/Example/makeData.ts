@@ -32,8 +32,8 @@ const newResource = (id: string, index: number): Resource => {
   return {
     id,
     name: `Load balancer ${index}`,
-    rule: faker.helpers.shuffle(ruleOptions.map(opt => opt.id))[0],
-    status: faker.helpers.shuffle(statusOptions.map(opt => opt.id))[0]!,
+    rule: faker.helpers.shuffle(ruleOptions.map((opt) => opt.id))[0],
+    status: faker.helpers.shuffle(statusOptions.map((opt) => opt.id))[0]!,
     other: 'Test',
     example: faker.number.int(1000).toString(),
   };
