@@ -13,7 +13,6 @@ Before contributing, ensure you have:
 ## 🎯 What Makes a Good Example?
 
 A good example should:
-- Demonstrate a **specific TanStack Table feature** (e.g., filtering, sorting, pagination)
 - Use **Carbon Design System components** for UI
 - Be **self-contained** and easy to understand
 - Include **clear, commented code**
@@ -120,7 +119,6 @@ Add a new row under the **"More Examples (Community Contributed)"** section:
    - **Clear title**: "Add example: Your Feature Name"
    - **Description** of what the example demonstrates
    - **Screenshots** or GIFs showing the example in action
-   - Reference to issue #88 if applicable
 
 
 Thank you for contributing to TanStack Carbon! Your examples help developers learn and build better data tables. 🎉
