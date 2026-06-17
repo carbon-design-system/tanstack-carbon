@@ -161,8 +161,6 @@ export function useKeyPress(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyCode, setKeyPressed, keyPressed]);
 
-  console.log(keyPressed);
-
   return keyPressed;
 }
 
