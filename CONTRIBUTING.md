@@ -65,7 +65,7 @@ cp -r web-components/sortable web-components/your-example-name
 ```
 
 
-### 5. Code Guidelines
+### 4. Code Guidelines
 
 - **Use TypeScript** for type safety
 - **Follow Carbon Design System patterns** for UI components
@@ -74,7 +74,7 @@ cp -r web-components/sortable web-components/your-example-name
 - **Use meaningful variable names**
 - **Include sample data** via `makeData.ts` or similar
 
-### 6. Testing Your Example
+### 5. Testing Your Example
 
 Before submitting, test your example:
 
