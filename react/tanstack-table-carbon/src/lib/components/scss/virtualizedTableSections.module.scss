@@ -1,0 +1,56 @@
+.virtualizedTableBody {
+  display: grid;
+  position: relative;
+}
+
+.virtualizedTableRow {
+  display: flex;
+  position: absolute;
+  width: 100%;
+}
+
+.virtualizedTableHead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.virtualizedHeaderRow {
+  display: flex;
+  width: 100%;
+}
+
+.virtualizedTableHeader {
+  display: flex;
+  align-items: center;
+}
+
+.expandableRow {
+  &:hover {
+    background-color: $layer-hover !important;
+
+    & + .expandedContentRow {
+      background-color: $layer-hover !important;
+    }
+  }
+}
+
+.expandedContentRow {
+  &:hover {
+    background-color: $layer-hover !important;
+  }
+}
+
+.hoveredParent {
+  background-color: $layer-hover !important;
+
+  :global {
+    td.stickyCell {
+      background-color: $layer-hover !important;
+    }
+  }
+}
+
+.hoveredExpanded {
+  background-color: $layer-hover !important;
+}

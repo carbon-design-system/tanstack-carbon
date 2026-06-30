@@ -1,0 +1,32 @@
+.toggleContainer {
+  margin-bottom: $spacing-05;
+}
+
+.customEmptyState {
+  text-align: center;
+  padding: $spacing-10 $spacing-05;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-05;
+}
+
+.icon {
+  color: $blue-60;
+}
+
+.title {
+  @include type-style('heading-05');
+  margin: 0;
+}
+
+.description {
+  @include type-style('body-01');
+  color: $text-secondary;
+  max-width: 400px;
+  margin: 0;
+}
+
+.button {
+  margin-top: $spacing-03;
+}

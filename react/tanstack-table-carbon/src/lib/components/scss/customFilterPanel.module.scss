@@ -1,0 +1,22 @@
+
+.customFilterSection {
+  .filterItem {
+    margin-bottom: $spacing-05;
+  }
+  .customWithoutAcc {
+    padding: 0px $spacing-05;
+  }
+  & > .customWithoutAcc:first-child {
+    padding-top: $spacing-02;
+  }
+
+  :global {
+    // Override Carbon accordion styles for better spacing
+    .cds--accordion__item {
+      border-bottom: none !important;
+    }
+    .cds--accordion__content {
+      padding-right: $spacing-05;
+    }
+  }
+}

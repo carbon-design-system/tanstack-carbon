@@ -1,0 +1,13 @@
+.nestedTableWrapper {
+  padding: $spacing-03 $spacing-07;
+}
+
+.memberDetails {
+  padding: $spacing-04 $spacing-08;
+}
+
+.memberDetailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-03;
+}

@@ -1,0 +1,19 @@
+
+.filter-tags-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: $layer-01;
+  border-bottom: 1px solid $border-subtle-01;
+
+  .filter-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+  }
+  .moreTags {
+    cursor: pointer;
+  }
+}

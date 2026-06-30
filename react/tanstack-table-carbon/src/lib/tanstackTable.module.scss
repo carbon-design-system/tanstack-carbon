@@ -1,0 +1,127 @@
+.tableWrapper {
+  width: 100%;
+
+  :global {
+    .cds--data-table-container {
+      padding-top: 0;
+    }
+
+    .cds--data-table-content {
+      overflow-x: auto;
+      overflow-y: auto;
+
+      thead {
+        overflow: unset !important; // remove default scroll in case of sticky header
+        position: sticky;
+        top: 0;
+        z-index: 4;
+
+        // adjust headerHeight by controling sorting height
+        th {
+          &[aria-sort] {
+            block-size: $spacing-06;
+          }
+          button span.cds--table-sort__flex {
+            min-block-size: $spacing-06;
+          }
+        }
+      }
+    }
+
+    .cds--data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+
+      // used to hide tooltip (options) when we hover on overflowMenu in table
+      :global(.cds--popover--open) {
+        :global(.cds--popover) {
+          display: none;
+        }
+      }
+    }
+
+    // Handle hover CSS on table row for sticky columns
+    :global(tr) {
+      :global(td.stickyCell) {
+        background-color: $layer;
+      }
+      &:hover {
+        td.stickyCell {
+          background-color: inherit !important;
+        }
+      }
+
+      // change color of selected row
+      &:global(.cds--data-table--selected) {
+        td.stickyCell {
+          background-color: inherit !important;
+        }
+      }
+    }
+
+    // overflowMenu icon size handle
+    :global(tr td button.cds--overflow-menu) {
+      block-size: $spacing-06;
+      inline-size: $spacing-06;
+      min-block-size: $spacing-06;
+    }
+
+    // maintain zebraStyle of table
+    .cds--data-table--zebra tr:nth-child(even) {
+      td.stickyCell {
+        background-color: $layer-accent;
+      }
+    }
+
+    :global(.emptyStateDt) {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      padding-left: 3%;
+    }
+
+    .cds--pagination {
+      background-color: $layer-01;
+      border-top: 1px solid $border-subtle-01;
+    }
+  }
+
+  // Virtualized Table CSS Height Adjustment
+  .virtualTbl {
+    th {
+      height: 100% !important;
+      button {
+        height: 100%;
+      }
+    }
+
+    &:global(.cds--data-table--md) {
+      td {
+        padding-block: $spacing-03 $spacing-03;
+      }
+    }
+
+    &:global(.cds--data-table--lg) {
+      td {
+        padding-block: $spacing-04 $spacing-03;
+      }
+    }
+  }
+
+  // adjust height in normal and virtual both scenario for Xl size
+  :global(.cds--data-table--xl) {
+    thead {
+      th {
+        button {
+          padding-top: $spacing-02;
+          padding-bottom: $spacing-05;
+
+          svg {
+            margin-bottom: $spacing-04;
+          }
+        }
+      }
+    }
+  }
+}

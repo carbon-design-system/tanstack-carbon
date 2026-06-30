@@ -1,0 +1,25 @@
+.controlsSection {
+  margin-bottom: $spacing-05;
+}
+
+.sizeInfoBox {
+  margin-top: $spacing-04;
+  padding: $spacing-03;
+  background-color: $blue-10;
+  border: 1px solid $blue-40;
+}
+
+.sizeInfoText {
+  margin: 0;
+  @include type-style('body-01');
+  color: $blue-70;
+}
+
+.usageSection {
+  margin-top: $spacing-05;
+}
+
+.usageTitle {
+  @include type-style('heading-02');
+  margin: 0 0 $spacing-03 0;
+}

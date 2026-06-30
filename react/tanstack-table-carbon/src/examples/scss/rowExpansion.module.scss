@@ -1,0 +1,14 @@
+.expandedRow {
+  padding: $spacing-05 $spacing-10;
+}
+
+.expandedTitle {
+  margin-bottom: $spacing-03;
+  font-weight: 600;
+}
+
+.expandedGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-03;
+}
