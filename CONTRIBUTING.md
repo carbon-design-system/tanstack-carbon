@@ -1,10 +1,13 @@
 # Contributing Examples to TanStack Carbon
 
-Thank you for your interest in contributing examples to the TanStack Carbon repository! This guide will help you add new examples that demonstrate TanStack Table features with Carbon Design System components.
+Thank you for your interest in contributing examples to the TanStack Carbon
+repository! This guide will help you add new examples that demonstrate TanStack
+Table features with Carbon Design System components.
 
 ## 📋 Prerequisites
 
 Before contributing, ensure you have:
+
 - Node.js (v18 or higher)
 - Yarn package manager
 - Basic knowledge of React or Web Components
@@ -13,6 +16,7 @@ Before contributing, ensure you have:
 ## 🎯 What Makes a Good Example?
 
 A good example should:
+
 - Use **Carbon Design System components** for UI
 - Be **self-contained** and easy to understand
 - Include **clear, commented code**
@@ -23,6 +27,7 @@ A good example should:
 ### 1. Choose Your Framework
 
 We accept examples for:
+
 - **React** (`/react` directory)
 - **Web Components** (`/web-components` directory)
 
@@ -64,7 +69,6 @@ cp -r react/sortable react/your-example-name
 cp -r web-components/sortable web-components/your-example-name
 ```
 
-
 ### 4. Code Guidelines
 
 - **Use TypeScript** for type safety
@@ -85,6 +89,7 @@ yarn dev
 ```
 
 Verify that:
+
 - ✅ The example runs without errors
 - ✅ All features work as expected
 - ✅ The UI is responsive
@@ -95,6 +100,7 @@ Verify that:
 ### 1. Update the README
 
 Add your example to the appropriate README:
+
 - For React: Update `/react/README.md`
 - For Web Components: Update `/web-components/README.md`
 
@@ -104,11 +110,10 @@ Add a new row under the **"More Examples (Community Contributed)"** section:
 ```markdown
 ## More Examples (Community Contributed)
 
-| Example                    | Code sandbox                                                                                                                | Stackblitz                                                                                                                |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Your Example Name          | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/react/your-example-name)     | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/react/your-example-name)     |
+| Example           | Code sandbox                                                                                                           | Stackblitz                                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Your Example Name | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/react/your-example-name) | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/react/your-example-name) |
 ```
-
 
 ### 2. Create a Pull Request
 
@@ -121,5 +126,5 @@ Add a new row under the **"More Examples (Community Contributed)"** section:
    - **Description** of what the example demonstrates
    - **Screenshots** or GIFs showing the example in action
 
-
-Thank you for contributing to TanStack Carbon! Your examples help developers learn and build better data tables. 🎉
+Thank you for contributing to TanStack Carbon! Your examples help developers
+learn and build better data tables. 🎉
