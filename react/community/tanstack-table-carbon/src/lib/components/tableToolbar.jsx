@@ -9,7 +9,7 @@ import {
   OverflowMenuItem,
 } from '@carbon/react';
 import { useLabels } from '../contexts/labelsContext.jsx';
-import useResponsiveBatchActions from '../hooks/useResponsiveBatchActions';
+import useResponsiveBatchActions from '../hooks/useResponsiveBatchActions.js';
 import styles from './scss/tableToolbar.module.scss';
 
 const {

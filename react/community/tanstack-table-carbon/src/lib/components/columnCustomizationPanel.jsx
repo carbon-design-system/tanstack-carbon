@@ -4,7 +4,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-ki
 import { Checkbox, Search, Modal, ModalBody, Layer } from '@carbon/react';
 import { useLabels } from '../contexts/labelsContext.jsx';
 import styles from './scss/columnCustomizationPanel.module.scss';
-import SortableColumnItem from './sortableColumnItem';
+import SortableColumnItem from './sortableColumnItem.jsx';
 
 const ColumnCustomizationPanel = ({
   open,

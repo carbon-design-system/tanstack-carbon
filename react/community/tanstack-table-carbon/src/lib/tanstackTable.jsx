@@ -80,18 +80,18 @@ const { Table, TableContainer } = DataTable;
 
 // NOTE: Type definitions for JSDoc IntelliSense support
 /**
- * @typedef {import('./tanstackTable.d.ts').TanstackTableProps} TanstackTableProps
- * @typedef {import('./tanstackTable.d.ts').TableFeatures} TableFeatures
- * @typedef {import('./tanstackTable.d.ts').PaginationFeature} PaginationFeature
- * @typedef {import('./tanstackTable.d.ts').SelectionFeature} SelectionFeature
- * @typedef {import('./tanstackTable.d.ts').SortingFeature} SortingFeature
- * @typedef {import('./tanstackTable.d.ts').SearchFeature} SearchFeature
- * @typedef {import('./tanstackTable.d.ts').VirtualizationFeature} VirtualizationFeature
- * @typedef {import('./tanstackTable.d.ts').ExpansionFeature} ExpansionFeature
- * @typedef {import('./tanstackTable.d.ts').EditingFeature} EditingFeature
- * @typedef {import('./tanstackTable.d.ts').ColumnPinningFeature} ColumnPinningFeature
- * @typedef {import('./tanstackTable.d.ts').ColumnSettingsFeature} ColumnSettingsFeature
- * @typedef {import('./tanstackTable.d.ts').SideFilterPanelFeature} SideFilterPanelFeature
+ * @typedef {import('./tanstackTable.js').TanstackTableProps} TanstackTableProps
+ * @typedef {import('./tanstackTable.js').TableFeatures} TableFeatures
+ * @typedef {import('./tanstackTable.js').PaginationFeature} PaginationFeature
+ * @typedef {import('./tanstackTable.js').SelectionFeature} SelectionFeature
+ * @typedef {import('./tanstackTable.js').SortingFeature} SortingFeature
+ * @typedef {import('./tanstackTable.js').SearchFeature} SearchFeature
+ * @typedef {import('./tanstackTable.js').VirtualizationFeature} VirtualizationFeature
+ * @typedef {import('./tanstackTable.js').ExpansionFeature} ExpansionFeature
+ * @typedef {import('./tanstackTable.js').EditingFeature} EditingFeature
+ * @typedef {import('./tanstackTable.js').ColumnPinningFeature} ColumnPinningFeature
+ * @typedef {import('./tanstackTable.js').ColumnSettingsFeature} ColumnSettingsFeature
+ * @typedef {import('./tanstackTable.js').SideFilterPanelFeature} SideFilterPanelFeature
  */
 
 /**
