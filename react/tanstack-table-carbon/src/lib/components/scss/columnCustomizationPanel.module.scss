@@ -3,6 +3,7 @@
   :global(.colSettingBody) {
     height: 100%; // important to make the scroller work
   }
+
   :global(.cds--modal-content) {
     padding: 0;
     overflow: hidden;
@@ -20,11 +21,11 @@
       display: flex;
       flex-direction: column;
       height: calc(100% - $spacing-13);
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden auto;
       border: 1px solid $border-subtle-01;
     }
   }
+
   :global(.cds--modal-scroll-content) {
     mask-image: none !important;
   }

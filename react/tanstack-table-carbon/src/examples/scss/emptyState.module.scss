@@ -17,11 +17,13 @@
 
 .title {
   @include type-style('heading-05');
+
   margin: 0;
 }
 
 .description {
   @include type-style('body-01');
+
   color: $text-secondary;
   max-width: 400px;
   margin: 0;

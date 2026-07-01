@@ -9,8 +9,7 @@
     }
 
     .cds--data-table-content {
-      overflow-x: auto;
-      overflow-y: auto;
+      overflow: auto;
 
       thead {
         position: sticky;

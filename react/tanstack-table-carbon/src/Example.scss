@@ -67,7 +67,7 @@
 }
 
 // Responsive design
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .examples-wrapper {
     flex-direction: column;
   }
@@ -77,7 +77,6 @@
   }
 
   .examples-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
   }
 }

@@ -21,6 +21,7 @@
               white-space: nowrap;
               padding-left: $spacing-03;
             }
+
             ul.cds--list-box__menu {
               min-width: unset;
             }
@@ -39,11 +40,12 @@
 
     :global(div.cds--dropdown) {
       border-bottom: 0;
+
       ul {
-        width: -moz-fit-content;
         width: fit-content;
       }
     }
+
     :global(.cds--search) {
       min-width: 220px;
     }
@@ -54,8 +56,7 @@
       width: 100%;
       right: 0;
       z-index: 3;
-      overflow-x: auto;
-      overflow-y: hidden;
+      overflow: auto hidden;
       inset-inline-end: 0;
       inset-inline-start: unset;
 
@@ -66,6 +67,7 @@
 
       :global(.cds--batch-summary) {
         position: static;
+
         span {
           white-space: nowrap;
         }
@@ -75,11 +77,13 @@
         .cds--overflow-menu {
           // width adjustment for label in overflow menu
           inline-size: unset !important;
+
           &:hover {
             background-color: $link-primary-hover;
             color: $text-on-color;
           }
         }
+
         .cds--overflow-menu.cds--overflow-menu--open {
           background-color: $link-primary-hover;
           color: $text-on-color;
@@ -106,14 +110,17 @@
 ul.bactActionOverflowMenuUl {
   background-color: $background-brand;
   width: auto;
+
   li {
     :global(.cds--overflow-menu-options__btn) {
       color: $text-on-color;
     }
+
     &:hover {
       background-color: $link-primary-hover;
     }
   }
+
   &::after {
     background-color: $link-primary-hover;
   }

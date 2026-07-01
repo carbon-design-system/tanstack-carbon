@@ -4,9 +4,11 @@
 
   .unorderedList {
     @include type-style('body-01');
+
     margin-top: $spacing-03;
   }
 }
+
 .pageBody {
   padding: 1rem 1rem 1rem 0;
 }
@@ -14,6 +16,7 @@
 // Common status badge styles used across multiple examples
 .statusBadge {
   @include type-style('caption-01');
+
   padding: $spacing-01 $spacing-03;
   border-radius: $spacing-02;
 

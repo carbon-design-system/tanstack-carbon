@@ -3,9 +3,11 @@
   .filterItem {
     margin-bottom: $spacing-05;
   }
+
   .customWithoutAcc {
-    padding: 0px $spacing-05;
+    padding: 0 $spacing-05;
   }
+
   & > .customWithoutAcc:first-child {
     padding-top: $spacing-02;
   }
@@ -15,6 +17,7 @@
     .cds--accordion__item {
       border-bottom: none !important;
     }
+
     .cds--accordion__content {
       padding-right: $spacing-05;
     }

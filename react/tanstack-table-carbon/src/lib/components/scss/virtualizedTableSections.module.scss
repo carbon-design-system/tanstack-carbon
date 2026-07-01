@@ -28,14 +28,15 @@
 .expandableRow {
   &:hover {
     background-color: $layer-hover !important;
+  }
 
-    & + .expandedContentRow {
-      background-color: $layer-hover !important;
-    }
+  &:hover + .expandedContentRow {
+    background-color: $layer-hover !important;
   }
 }
 
 .expandedContentRow {
+  // stylelint-disable-next-line no-descending-specificity
   &:hover {
     background-color: $layer-hover !important;
   }

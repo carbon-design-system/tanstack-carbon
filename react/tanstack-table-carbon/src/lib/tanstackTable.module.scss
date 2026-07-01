@@ -7,8 +7,7 @@
     }
 
     .cds--data-table-content {
-      overflow-x: auto;
-      overflow-y: auto;
+      overflow: auto;
 
       thead {
         overflow: unset !important; // remove default scroll in case of sticky header
@@ -21,6 +20,7 @@
           &[aria-sort] {
             block-size: $spacing-06;
           }
+
           button span.cds--table-sort__flex {
             min-block-size: $spacing-06;
           }
@@ -46,6 +46,7 @@
       :global(td.stickyCell) {
         background-color: $layer;
       }
+
       &:hover {
         td.stickyCell {
           background-color: inherit !important;
@@ -91,6 +92,7 @@
   .virtualTbl {
     th {
       height: 100% !important;
+
       button {
         height: 100%;
       }

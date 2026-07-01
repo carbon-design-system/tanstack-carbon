@@ -12,5 +12,6 @@
 
 .infoTitle {
   @include type-style('heading-02');
-  margin: 0 0 $spacing-03 0;
+
+  margin: 0 0 $spacing-03;
 }

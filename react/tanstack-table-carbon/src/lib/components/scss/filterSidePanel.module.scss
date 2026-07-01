@@ -26,6 +26,7 @@
   top: $spacing-02;
   right: -12px;
   z-index: 1;
+
   span {
     color: white !important;
   }
@@ -81,12 +82,16 @@
     // DateRange picker full width CSS
     .cds--date-picker--range {
       width: 100%;
+
       .cds--date-picker-container {
         width: 50%;
+
         .cds--date-picker-input__wrapper {
           width: 100%;
+
           span {
             width: 100%;
+
             input {
               width: 100%;
             }
@@ -98,12 +103,16 @@
     // Date picker full width CSS
     .cds--date-picker--single {
       width: 100%;
+
       .cds--date-picker-container {
         width: inherit;
+
         .cds--date-picker-input__wrapper {
           width: inherit;
+
           span {
             width: inherit;
+
             input {
               width: inherit;
             }
@@ -115,10 +124,13 @@
     // Radio button full width CSS
     .cds--radio-button-group {
       width: 100%;
+
       .cds--radio-button-wrapper {
         width: 100%;
+
         label {
           width: 100%;
+
           .cds--radio-button__label-text {
             display: flex;
             align-items: center;
@@ -137,6 +149,8 @@
         max-inline-size: unset;
         min-inline-size: unset;
       }
+
+      // stylelint-disable-next-line no-descending-specificity
       input {
         width: auto;
       }
@@ -144,9 +158,11 @@
 
     // timePicker css
     .cds--time-picker {
+      // stylelint-disable-next-line no-descending-specificity
       input {
         width: 106px;
       }
+
       .cds--select {
         width: unset;
       }
@@ -159,6 +175,7 @@
       letter-spacing: 0.32px;
       color: $text-secondary;
     }
+
     .sliderMinMaxValues_filterSidePanel {
       display: flex;
       justify-content: space-between;
