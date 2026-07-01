@@ -1,0 +1,85 @@
+.skeletonWrapper {
+  width: 100%;
+  position: relative;
+
+  :global {
+    .cds--data-table-container {
+      padding-top: 0;
+      position: relative;
+    }
+
+    .cds--data-table-content {
+      overflow: auto;
+
+      thead {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+      }
+    }
+
+    .cds--data-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      position: relative;
+    }
+  }
+
+  // Overlay gradient to fade rows into background
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 240px;
+    pointer-events: none;
+    z-index: 2;
+    background: linear-gradient(to bottom, transparent 0%, $background 100%);
+  }
+}
+
+.paginationSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-05;
+  background-color: $layer-01;
+  border-top: 1px solid $border-subtle-01;
+  min-height: 3rem;
+}
+
+.paginationLeft {
+  display: flex;
+  align-items: center;
+}
+
+.paginationRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-05;
+}
+
+.toolbarSkeleton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-05;
+  padding-top: $spacing-06;
+  background-color: $layer-01;
+  border-bottom: 1px solid $border-subtle-01;
+  height: $spacing-09;
+  min-height: $spacing-09;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-05;
+}

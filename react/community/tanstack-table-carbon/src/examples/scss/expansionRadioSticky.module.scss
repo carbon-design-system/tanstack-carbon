@@ -1,0 +1,97 @@
+// Name cell styling
+.nameCell {
+  font-weight: 600;
+  color: $link-primary;
+}
+
+// Status badge styling
+.statusBadge {
+  padding: $spacing-02 $spacing-04;
+  border-radius: $spacing-04;
+  font-size: $spacing-04;
+  font-weight: 500;
+
+  &.active {
+    background-color: $support-success;
+    color: $text-on-color;
+  }
+
+  &.inactive {
+    background-color: $layer-accent;
+    color: $text-secondary;
+  }
+}
+
+// Salary cell styling
+.salaryCell {
+  font-weight: 500;
+}
+
+// Expanded row container
+.expandedRow {
+  padding: $spacing-05;
+}
+
+// Expanded row title
+.expandedTitle {
+  @include type-style('heading-01');
+}
+
+// Expanded row grid layout
+.expandedGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-05;
+}
+
+// Detail item container
+.detailItem {
+  margin-bottom: $spacing-04;
+}
+
+// Detail label
+.detailLabel {
+  font-size: $spacing-04;
+  color: $text-secondary;
+}
+
+// Detail value
+.detailValue {
+  margin-top: $spacing-02;
+}
+
+// Skills container
+.skillsContainer {
+  margin-top: $spacing-02;
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-02;
+}
+
+// Individual skill tag
+.skillTag {
+  padding: $spacing-01 $spacing-03;
+  background-color: $layer-accent;
+  color: $text-primary;
+  border-radius: $spacing-02;
+  font-size: $spacing-04;
+}
+
+// Projects list
+.projectsList {
+  margin-top: $spacing-02;
+}
+
+// Individual project item
+.projectItem {
+  margin-bottom: $spacing-02;
+}
+
+// Selected row info banner
+.selectedRowInfo {
+  padding: $spacing-04 $spacing-05;
+  margin-bottom: $spacing-05;
+  background-color: $background-brand;
+  color: $text-on-color;
+  border-radius: $spacing-02;
+}

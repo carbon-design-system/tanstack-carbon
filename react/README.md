@@ -28,3 +28,10 @@
 | Tabbed header              | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/react/tabbed-header)          | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/react/tabbed-header)          |
 | Mix and match              | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/react/mix-and-match)          | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/react/mix-and-match)          |
 | Virtualized                | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/react/virtual)                | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/react/virtual)                |
+| TanStack Table Carbon      | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/react/tanstack-table-carbon)  | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/react/tanstack-table-carbon)  |
+
+## More Examples (Community contributed)
+
+| Example                                | Code sandbox                                                                                                                         | Stackblitz                                                                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Examples using `TanstackTable` wrapper | [View example](https://codesandbox.io/s/github/carbon-design-system/tanstack-carbon/tree/main/react/community/tanstack-table-carbon) | [View example](https://stackblitz.com/github/carbon-design-system/tanstack-carbon/tree/main/react/community/tanstack-table-carbon) |

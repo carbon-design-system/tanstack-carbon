@@ -1,0 +1,266 @@
+
+.filterSidePanel {
+  position: absolute;
+  height: calc(100% - $spacing-09);
+  min-height: 490px;
+  background-color: $layer-01;
+  border-right: 1px solid $border-subtle-01;
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+  left: 0;
+  clip-path: inset(0 100% 0 0); /* fully hidden from left */
+  opacity: 0;
+  transition:
+    clip-path 0.3s ease,
+    opacity 0.3s ease;
+
+  &.open {
+    clip-path: inset(0 0 0 0); /* fully visible */
+    opacity: 1;
+  }
+}
+
+.closePanelBtn {
+  position: absolute;
+  top: $spacing-02;
+  right: -12px;
+  z-index: 1;
+
+  span {
+    color: white !important;
+  }
+}
+
+.sidePanelHeader {
+  min-height: $spacing-09;
+  padding-bottom: $spacing-05;
+  padding-right: $spacing-05;
+  padding-left: $spacing-05;
+}
+
+.headerText {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $spacing-03;
+  padding-top: $spacing-05;
+  height: $spacing-09;
+
+  span {
+    font-size: $spacing-05;
+    font-weight: 600;
+    color: $text-primary;
+  }
+}
+
+.searchWrapper {
+  padding-top: $spacing-03;
+}
+
+.sidePanelBody {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidePanelActions {
+  display: flex;
+
+  button {
+    flex: 1;
+  }
+}
+
+.filterSidePanelContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-05;
+  padding-bottom: $spacing-05;
+
+  // make the element take full width of the panel
+  :global {
+    // DateRange picker full width CSS
+    .cds--date-picker--range {
+      width: 100%;
+
+      .cds--date-picker-container {
+        width: 50%;
+
+        .cds--date-picker-input__wrapper {
+          width: 100%;
+
+          span {
+            width: 100%;
+
+            input {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+
+    // Date picker full width CSS
+    .cds--date-picker--single {
+      width: 100%;
+
+      .cds--date-picker-container {
+        width: inherit;
+
+        .cds--date-picker-input__wrapper {
+          width: inherit;
+
+          span {
+            width: inherit;
+
+            input {
+              width: inherit;
+            }
+          }
+        }
+      }
+    }
+
+    // Radio button full width CSS
+    .cds--radio-button-group {
+      width: 100%;
+
+      .cds--radio-button-wrapper {
+        width: 100%;
+
+        label {
+          width: 100%;
+
+          .cds--radio-button__label-text {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: space-between;
+          }
+        }
+      }
+    }
+
+    // slider textbox width
+    .cds--slider-container {
+      width: 100%;
+
+      :global(.cds--slider) {
+        max-inline-size: unset;
+        min-inline-size: unset;
+      }
+
+      // stylelint-disable-next-line no-descending-specificity
+      input {
+        width: auto;
+      }
+    }
+
+    // timePicker css
+    .cds--time-picker {
+      // stylelint-disable-next-line no-descending-specificity
+      input {
+        width: 106px;
+      }
+
+      .cds--select {
+        width: unset;
+      }
+    }
+
+    // Slider component common CSS
+    .filterSliderLabel_filterSidePanel {
+      font-size: 0.75rem;
+      line-height: 1rem;
+      letter-spacing: 0.32px;
+      color: $text-secondary;
+    }
+
+    .sliderMinMaxValues_filterSidePanel {
+      display: flex;
+      justify-content: space-between;
+      margin-top: $spacing-03;
+      font-size: 0.75rem;
+      color: $text-secondary;
+    }
+
+    .count_filterSidePanel {
+      font-size: $spacing-04;
+      color: $text-secondary;
+    }
+  }
+}
+
+.filterCheckboxGroupLabel {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  letter-spacing: 0.32px;
+  color: $text-secondary;
+  margin-bottom: $spacing-03;
+}
+
+.filterError {
+  font-size: 0.75rem;
+  color: $support-error;
+  margin-bottom: $spacing-03;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-02;
+
+  :global {
+    .cds--checkbox-wrapper {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.checkboxWithCount {
+  display: flex;
+  align-items: center;
+  gap: $spacing-03;
+}
+
+.radioCount {
+  display: flex;
+  align-items: center;
+  gap: $spacing-03;
+}
+
+.checkboxCount {
+  font-size: 0.75rem;
+  color: $text-secondary;
+  margin-left: auto;
+}
+
+.noFilters {
+  color: $text-secondary;
+  font-size: 0.875rem;
+  text-align: center;
+  padding: $spacing-05;
+}
+
+.optionSearch {
+  margin-bottom: $spacing-03;
+
+  :global {
+    .cds--search-input {
+      background-color: $field-01;
+    }
+  }
+}
+
+.noResults {
+  color: $text-secondary;
+  font-size: 0.75rem;
+  font-style: italic;
+  padding: $spacing-03;
+  text-align: center;
+}
+
+.filterItem {
+  padding-left: $spacing-05;
+  padding-right: $spacing-05;
+}

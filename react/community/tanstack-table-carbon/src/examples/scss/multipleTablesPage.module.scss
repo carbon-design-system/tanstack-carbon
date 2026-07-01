@@ -1,0 +1,18 @@
+.tablesGrid {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-07;
+}
+
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-04;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  color: $text-primary;
+  margin: 0;
+}

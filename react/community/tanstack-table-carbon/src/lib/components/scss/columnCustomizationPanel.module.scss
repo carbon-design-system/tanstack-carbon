@@ -1,0 +1,96 @@
+
+.colSettingModal {
+  :global(.colSettingBody) {
+    height: 100%; // important to make the scroller work
+  }
+
+  :global(.cds--modal-content) {
+    padding: 0;
+    overflow: hidden;
+
+    .description {
+      padding: $spacing-05;
+    }
+
+    .selectAllContainer {
+      padding: $spacing-04;
+      padding-left: $spacing-09;
+    }
+
+    .columnsContainer {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - $spacing-13);
+      overflow: hidden auto;
+      border: 1px solid $border-subtle-01;
+    }
+  }
+
+  :global(.cds--modal-scroll-content) {
+    mask-image: none !important;
+  }
+}
+
+.columnItem {
+  display: flex;
+  align-items: center;
+  padding: $spacing-03;
+  padding-left: $spacing-04;
+  background-color: $layer-01;
+  border-bottom: 1px solid $border-subtle-01;
+  cursor: grab;
+  transition: background-color 0.11s cubic-bezier(0.2, 0, 0.38, 0.9);
+  position: relative;
+  min-height: $spacing-09;
+
+  &:hover {
+    background-color: $layer-hover-01;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  // Being dragged state - @dnd-kit applies transform
+  &.dragging {
+    opacity: 0.5;
+    z-index: 999;
+    cursor: grabbing;
+  }
+
+  // Pinned column state - not draggable
+  &.pinned {
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    &:hover {
+      background-color: $layer-01;
+    }
+
+    &:active {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.dragIcon {
+  margin-right: $spacing-05;
+  color: $icon-secondary;
+  flex-shrink: 0;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  // Disabled state for pinned columns
+  &.disabled {
+    color: $icon-disabled;
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:active {
+      cursor: not-allowed;
+    }
+  }
+}

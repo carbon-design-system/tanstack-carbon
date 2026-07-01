@@ -1,0 +1,62 @@
+
+@use '@carbon/react/scss/utilities';
+
+// support focus on table cell using keyboard arrow for editable cell
+.editableTbl {
+  td[role='gridcell']:focus,
+  td[role='gridcell'] *:focus,
+  &[role='grid'] [tabindex='0']:focus {
+    @include utilities.focus-outline('outline');
+
+    .editableCellIcon {
+      opacity: 1;
+    }
+  }
+}
+
+.editable-cell {
+  cursor: pointer;
+  position: relative;
+
+  // datePicker position handling top and bottom based on position
+  :global(.flatpickr-calendar) {
+    top: auto !important;
+    bottom: 100% !important;
+  }
+}
+
+.editableCellInput input,
+.editableCellDatePicker input,
+.editableCellDropdown .cds--dropdown {
+  height: $spacing-09;
+}
+
+.editableCellDropdown .cds--dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.editableCellContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+// stylelint-disable-next-line no-descending-specificity
+.editableCellIcon {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+  color: $icon-secondary;
+}
+
+// stylelint-disable-next-line no-descending-specificity
+.editable-cell:hover .editableCellIcon {
+  opacity: 1;
+}
+
+.editingCell {
+  padding: 0;
+}

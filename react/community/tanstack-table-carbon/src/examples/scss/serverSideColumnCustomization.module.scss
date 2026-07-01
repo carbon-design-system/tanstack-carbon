@@ -1,0 +1,17 @@
+.notification {
+  margin-bottom: $spacing-04;
+}
+
+.resetToDefault {
+  margin-bottom: $spacing-06;
+}
+
+.infoSection {
+  margin-top: $spacing-05;
+}
+
+.infoTitle {
+  @include type-style('heading-02');
+
+  margin: 0 0 $spacing-03;
+}

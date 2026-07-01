@@ -1,0 +1,131 @@
+.tblToolbar {
+  :global(.cds--table-toolbar) {
+    border-bottom: 1px solid $border-subtle-01;
+    z-index: 9;
+    display: block; // important for batchActions to be on top of the table
+    block-size: unset; // used to move batcchAction bar below
+
+    :global(.cds--toolbar-content) {
+      overflow: unset;
+
+      @include breakpoint-down(md) {
+        overflow: auto;
+        justify-content: unset;
+      }
+
+      // Adjust inline dropdown css in toolbar
+      :global {
+        .cds--dropdown__wrapper {
+          &.cds--list-box__wrapper--inline {
+            label {
+              white-space: nowrap;
+              padding-left: $spacing-03;
+            }
+
+            ul.cds--list-box__menu {
+              min-width: unset;
+            }
+          }
+        }
+      }
+    }
+
+    // control the height adjustment for the table toolbar button Icons
+    :global(.cds--btn--icon-only) {
+      padding-block-start: unset;
+      min-height: $spacing-09;
+      padding-left: $spacing-06;
+      padding-right: $spacing-06;
+    }
+
+    :global(div.cds--dropdown) {
+      border-bottom: 0;
+
+      ul {
+        width: fit-content;
+      }
+    }
+
+    :global(.cds--search) {
+      min-width: 220px;
+    }
+
+    :global(.cds--batch-actions) {
+      position: relative;
+      height: 0; // remove unnecessary height if batchActionBar is not active
+      width: 100%;
+      right: 0;
+      z-index: 3;
+      overflow: auto hidden;
+      inset-inline-end: 0;
+      inset-inline-start: unset;
+
+      &:global(.cds--batch-actions--active) {
+        height: $spacing-09 !important;
+        border-top: 0.9px solid $text-on-color;
+      }
+
+      :global(.cds--batch-summary) {
+        position: static;
+
+        span {
+          white-space: nowrap;
+        }
+      }
+
+      :global {
+        .cds--overflow-menu {
+          // width adjustment for label in overflow menu
+          inline-size: unset !important;
+
+          &:hover {
+            background-color: $link-primary-hover;
+            color: $text-on-color;
+          }
+        }
+
+        .cds--overflow-menu.cds--overflow-menu--open {
+          background-color: $link-primary-hover;
+          color: $text-on-color;
+        }
+      }
+    }
+
+    :global(.cds--batch-actions--active)
+      ~ :global(.cds--toolbar-search-container),
+    :global(.cds--batch-actions--active) ~ :global(.cds--toolbar-content) {
+      transform: none;
+      clip-path: none;
+      transition: none;
+    }
+  }
+}
+
+// full length of overflow menu do not crop the width
+.settingsMenu {
+  width: auto !important;
+}
+
+// Style dropdowns inside batch actions to match the blue bar
+ul.bactActionOverflowMenuUl {
+  background-color: $background-brand;
+  width: auto;
+
+  li {
+    :global(.cds--overflow-menu-options__btn) {
+      color: $text-on-color;
+    }
+
+    &:hover {
+      background-color: $link-primary-hover;
+    }
+  }
+
+  &::after {
+    background-color: $link-primary-hover;
+  }
+}
+
+.overflowMenuLabel {
+  @include type-style('body-01');
+}

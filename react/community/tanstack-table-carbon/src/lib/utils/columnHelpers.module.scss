@@ -1,0 +1,22 @@
+.expandButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.expandIcon {
+  transition: transform 0.2s ease;
+}
+
+.expandIconExpanded {
+  transform: rotate(-90deg);
+}
+
+.expandIconCollapsed {
+  transform: rotate(90deg);
+}
