@@ -268,6 +268,8 @@ export interface TanstackTableLabels {
   filterDropdownLabel?: string;
   filterMultiSelectLabel?: string;
   filterDatePlaceholder?: string;
+  filterDateRangeStartLabel?: string;
+  filterDateRangeEndLabel?: string;
   filterTimeAM?: string;
   filterTimePM?: string;
 

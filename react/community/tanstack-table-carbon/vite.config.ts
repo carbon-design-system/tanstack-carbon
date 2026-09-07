@@ -9,9 +9,6 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         additionalData: `
-          @use '@carbon/styles/scss/config' with (
-            $font-path: '@ibm/plex'
-          );
           @use '@carbon/styles/scss/spacing' as *;
           @use '@carbon/styles/scss/theme' as *;
           @use '@carbon/styles/scss/colors' as *;
@@ -24,6 +21,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '~@ibm/plex': path.resolve(__dirname, './node_modules/@ibm/plex'),
     },
   },
   server: {

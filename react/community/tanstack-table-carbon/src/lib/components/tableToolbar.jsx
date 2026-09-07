@@ -91,6 +91,7 @@ const TableToolbar = ({
   selectedCount = 0,
   totalCount = 0,
   onCancelSelection,
+  onSelectAll,
   batchActions = [],
   table, // NOTE: Table instance to get selected rows
   toolbar,
@@ -460,6 +461,7 @@ const TableToolbar = ({
               shouldShowBatchActions={shouldShowBatchActions}
               totalSelected={selectedCount}
               onCancel={onCancelSelection}
+              onSelectAll={onSelectAll}
               totalCount={totalCount}
               inert={!shouldShowBatchActions ? '' : undefined}>
               {renderBatchActions()}

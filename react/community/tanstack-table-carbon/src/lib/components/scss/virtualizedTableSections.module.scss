@@ -32,6 +32,10 @@
 
   &:hover + .expandedContentRow {
     background-color: $layer-hover !important;
+
+    td {
+      border-top: 1px solid $border-subtle-01;
+    }
   }
 }
 

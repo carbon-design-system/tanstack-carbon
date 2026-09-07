@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import { DEFAULT_LABELS } from '../constants/defaultLabels';
 import TanstackTable from '../tanstackTable';
 
 // NOTE: Mock data for testing
@@ -321,7 +322,9 @@ describe('Column Filtering', () => {
     );
 
     // NOTE: Check if filter button is rendered
-    const filterButton = screen.getByLabelText('Toggle filter panel');
+    const filterButton = screen.getByLabelText(
+      DEFAULT_LABELS.toolbarFilterTooltip
+    );
     expect(filterButton).toBeInTheDocument();
   });
 });

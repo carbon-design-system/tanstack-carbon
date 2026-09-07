@@ -215,6 +215,7 @@ const LocalizedTable = () => {
       filterFieldNoOptionsText: t('table.filterPanel.fieldNoOptions'),
       filterDropdownLabel: t('table.filterPanel.dropdownLabel'),
       filterMultiSelectLabel: t('table.filterPanel.multiSelectLabel'),
+      filterDateRangeStartLabel: t('table.filterPanel.dateRangeStartLabel'),
       filterDateRangeEndLabel: t('table.filterPanel.dateRangeEndLabel'),
       filterNumberInvalidError: t('table.filterPanel.numberInvalidError'),
       filterSliderNoValuesText: t('table.filterPanel.sliderNoValues'),

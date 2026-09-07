@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { DEFAULT_LABELS } from '../../constants/defaultLabels';
 import useResponsiveBatchActions from '../../hooks/useResponsiveBatchActions';
 import TableToolbar from '../tableToolbar';
 
@@ -172,7 +173,9 @@ describe('TableToolbar', () => {
 
     render(<TableToolbar {...props} />);
 
-    expect(screen.getByLabelText('Toggle filter panel')).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(DEFAULT_LABELS.toolbarFilterTooltip)
+    ).toBeInTheDocument();
     expect(screen.getByLabelText('Search table')).toBeInTheDocument();
     expect(screen.getByText('Export')).toBeInTheDocument();
     expect(screen.getByText('Columns')).toBeInTheDocument();
@@ -185,7 +188,7 @@ describe('TableToolbar', () => {
 
     render(<TableToolbar {...props} />);
 
-    fireEvent.click(screen.getByLabelText('Toggle filter panel'));
+    fireEvent.click(screen.getByLabelText(DEFAULT_LABELS.toolbarFilterTooltip));
     expect(props.onToggleFilterPanel).toHaveBeenCalledTimes(1);
 
     const search = screen.getByLabelText('Search table');

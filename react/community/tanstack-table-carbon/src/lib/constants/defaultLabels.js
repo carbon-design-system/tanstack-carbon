@@ -1,6 +1,6 @@
 export const DEFAULT_LABELS = {
   // NOTE: Toolbar
-  toolbarFilterTooltip: 'Toggle filter panel',
+  toolbarFilterTooltip: 'Filters',
   toolbarSettingsTooltip: 'Settings',
   toolbarSettingsAriaLabel: 'Settings',
   toolbarSearchPlaceholder: 'Search table',
@@ -59,6 +59,7 @@ export const DEFAULT_LABELS = {
   filterDropdownLabel: 'Choose an option',
   filterMultiSelectLabel: 'Choose options',
   filterDatePlaceholder: 'yyyy-mm-dd',
+  filterDateRangeStartLabel: 'Start date',
   filterDateRangeEndLabel: 'End date',
   filterTimeAM: 'AM',
   filterTimePM: 'PM',

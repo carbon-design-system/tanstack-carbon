@@ -57,7 +57,9 @@ const SimpleFilterField = ({
   const filterPlaceholder = getFilterPlaceholder(filterLabel, labels);
   const facetedUniqueValues = column.getFacetedUniqueValues();
 
-  const allUniqueValues = Array.from(facetedUniqueValues.keys()).sort().slice(0, 5000);
+  const allUniqueValues = Array.from(facetedUniqueValues.keys())
+    .sort()
+    .slice(0, 5000);
 
   const sortedUniqueValues =
     searchTerm && !matchedByLabel
@@ -68,8 +70,13 @@ const SimpleFilterField = ({
 
   const getValueCount = (value) => facetedUniqueValues.get(value) || 0;
   const currentFilterValue = getFilterValue(columnId);
-  const selectedCheckboxValues = localFilters.find((item) => item.id === columnId)?.value || [];
-  const noResultsMessage = getNoResultsMessage(searchTerm, matchedByLabel, labels);
+  const selectedCheckboxValues =
+    localFilters.find((item) => item.id === columnId)?.value || [];
+  const noResultsMessage = getNoResultsMessage(
+    searchTerm,
+    matchedByLabel,
+    labels
+  );
 
   switch (filterVariant) {
     case 'select':
@@ -163,7 +170,9 @@ const SimpleFilterField = ({
                 <>
                   <span>{value}</span>
                   {getValueCount(value) ? (
-                    <span className="count_filterSidePanel">({getValueCount(value)})</span>
+                    <span className="count_filterSidePanel">
+                      ({getValueCount(value)})
+                    </span>
                   ) : null}
                 </>
               ),
@@ -191,7 +200,10 @@ const SimpleFilterField = ({
             }))}
             onChange={(selectedItems) => {
               const values = selectedItems.map((item) => item.id);
-              updateLocalFilter(columnId, values.length > 0 ? values : undefined);
+              updateLocalFilter(
+                columnId,
+                values.length > 0 ? values : undefined
+              );
             }}
           />
           {searchTerm && !matchedByLabel && sortedUniqueValues.length === 0 && (
@@ -205,16 +217,23 @@ const SimpleFilterField = ({
         .map((value) => Number(value))
         .filter((value) => !isNaN(value) && isFinite(value));
 
-      const minValue = numericValues.length > 0 ? Math.min(...numericValues) : 0;
-      const maxValue = numericValues.length > 0 ? Math.max(...numericValues) : 100;
-      const currentValue = currentFilterValue || { min: minValue, max: maxValue };
+      const minValue =
+        numericValues.length > 0 ? Math.min(...numericValues) : 0;
+      const maxValue =
+        numericValues.length > 0 ? Math.max(...numericValues) : 100;
+      const currentValue = currentFilterValue || {
+        min: minValue,
+        max: maxValue,
+      };
 
       if (numericValues.length === 0) {
         return (
           <div key={columnId} className={styles.filterItem}>
             <Layer level={1}>
               <p className={styles.filterCheckboxGroupLabel}>{filterLabel}</p>
-              <p className={styles.noResults}>{labels.filterSliderNoValuesText}</p>
+              <p className={styles.noResults}>
+                {labels.filterSliderNoValuesText}
+              </p>
             </Layer>
           </div>
         );
@@ -265,10 +284,11 @@ const SimpleFilterField = ({
 
       return (
         <div key={columnId} className={styles.filterItem}>
+          <p className={styles.dateRangeFilterLabel}>{filterLabel}</p>
           <DateRangeFilterField
             startId={`filter-${columnId}-start`}
             endId={`filter-${columnId}-end`}
-            startLabel={`${filterLabel} (Start)`}
+            startLabel={labels.filterDateRangeStartLabel}
             endLabel={labels.filterDateRangeEndLabel}
             value={dateRangeValue}
             onChange={(value) => {

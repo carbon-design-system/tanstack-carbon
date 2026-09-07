@@ -9,13 +9,22 @@ vi.mock('@carbon/react', () => ({
 }));
 
 vi.mock('../fields', () => ({
-  CheckboxGroupFilterField: ({ legend, items, selectedValues, onChange, emptyMessage }) => (
+  CheckboxGroupFilterField: ({
+    legend,
+    items,
+    selectedValues,
+    onChange,
+    emptyMessage,
+  }) => (
     <div>
       <div>{legend}</div>
       <div>{emptyMessage}</div>
       <div>{selectedValues.join(',')}</div>
       {items.map((item) => (
-        <button key={item.id} type="button" onClick={() => onChange(item.value, true)}>
+        <button
+          key={item.id}
+          type="button"
+          onClick={() => onChange(item.value, true)}>
           {`${item.label}:${item.count}`}
         </button>
       ))}
@@ -26,8 +35,7 @@ vi.mock('../fields', () => ({
       type="button"
       data-testid="date-filter-field"
       data-date-format={dateFormat || ''}
-      onClick={() => onChange(value ? '' : '2026-05-25')}
-    >
+      onClick={() => onChange(value ? '' : '2026-05-25')}>
       {label}
     </button>
   ),
@@ -36,8 +44,7 @@ vi.mock('../fields', () => ({
       type="button"
       data-testid="date-range-filter-field"
       data-date-format={dateFormat || ''}
-      onClick={() => onChange({ start: '2026-01-01', end: '2026-01-31' })}
-    >
+      onClick={() => onChange({ start: '2026-01-01', end: '2026-01-31' })}>
       {`${startLabel} ${endLabel}`}
     </button>
   ),
@@ -82,7 +89,10 @@ vi.mock('../fields', () => ({
       <div>{legend}</div>
       <div>{emptyMessage}</div>
       {items.map((item) => (
-        <button key={item.id} type="button" onClick={() => onChange(item.value)}>
+        <button
+          key={item.id}
+          type="button"
+          onClick={() => onChange(item.value)}>
           {item.value}
         </button>
       ))}
@@ -196,7 +206,11 @@ describe('SimpleFilterField', () => {
     render(<SimpleFilterField {...props} />);
 
     fireEvent.click(screen.getByText('Closed:1'));
-    expect(props.handleCheckboxChange).toHaveBeenCalledWith('status', 'Closed', true);
+    expect(props.handleCheckboxChange).toHaveBeenCalledWith(
+      'status',
+      'Closed',
+      true
+    );
   });
 
   it('renders number filter and handles empty, invalid, and valid values', () => {
@@ -298,7 +312,9 @@ describe('SimpleFilterField', () => {
 
     render(<SimpleFilterField {...props} />);
 
-    expect(screen.getByText('No numeric values available for slider')).toBeInTheDocument();
+    expect(
+      screen.getByText('No numeric values available for slider')
+    ).toBeInTheDocument();
     expect(screen.getByTestId('layer')).toBeInTheDocument();
   });
 
@@ -330,7 +346,10 @@ describe('SimpleFilterField', () => {
     fireEvent.click(screen.getByText('release'));
 
     expect(sliderValuesRef.current.score).toBe(55);
-    expect(updateLocalFilter).toHaveBeenCalledWith('score', { min: 10, max: 60 });
+    expect(updateLocalFilter).toHaveBeenCalledWith('score', {
+      min: 10,
+      max: 60,
+    });
   });
 
   it('forwards dateFormat from column meta to DateFilterField', () => {
@@ -350,7 +369,10 @@ describe('SimpleFilterField', () => {
       />
     );
 
-    expect(screen.getByTestId('date-filter-field')).toHaveAttribute('data-date-format', 'Y-m-d');
+    expect(screen.getByTestId('date-filter-field')).toHaveAttribute(
+      'data-date-format',
+      'Y-m-d'
+    );
   });
 
   it('forwards dateFormat from column meta to DateRangeFilterField', () => {
@@ -413,7 +435,8 @@ describe('SimpleFilterField', () => {
         })}
       />
     );
-    fireEvent.click(screen.getByText('Range (Start) End date'));
+    expect(screen.getByText('Range')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Start date End date'));
     expect(updateLocalFilter).toHaveBeenCalledWith('range', {
       start: '2026-01-01',
       end: '2026-01-31',

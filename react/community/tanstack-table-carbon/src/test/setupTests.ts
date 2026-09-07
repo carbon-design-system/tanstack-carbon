@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+import './testGlobals'; // NOTE: Browser API polyfills
 
 // Mock react-i18next globally for all tests
 vi.mock('react-i18next', () => ({
