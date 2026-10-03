@@ -254,7 +254,7 @@ export class MyFilterTable extends LitElement {
           this.popoverOpen
         } id="popover-two" align="bottom-right">
           <cds-icon-button
-            class="filter--flyout__toggle"
+            class="filter--flyout__toggle ${this.popoverOpen ? 'filter--flyout__toggle--open' : ''}"
             align="top"
             kind="ghost"
             size="lg"
