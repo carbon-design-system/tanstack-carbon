@@ -12,6 +12,7 @@ export const getTanstackToolbarProps = ({
   immediateSearchValue,
   filterPanel,
   customization,
+  showBatchSelectAll,
 }) => ({
   enableSelection: selection.enableSelection,
   selectionType,
@@ -19,7 +20,7 @@ export const getTanstackToolbarProps = ({
   selectedCount: selection.selectedCount,
   totalCount: dataLength,
   onCancelSelection: () => table.resetRowSelection(),
-  onSelectAll: () => table.toggleAllRowsSelected(true),
+  onSelectAll: showBatchSelectAll ? () => table.toggleAllRowsSelected(true) : undefined,
   batchActions,
   table,
   toolbar,

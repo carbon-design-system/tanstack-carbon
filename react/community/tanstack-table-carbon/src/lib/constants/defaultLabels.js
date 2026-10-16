@@ -14,6 +14,10 @@ export const DEFAULT_LABELS = {
   batchActionsMenuAriaLabel: 'Batch actions',
   batchActionsMenuLabel: 'Actions',
   batchActionsOverflowFallback: 'More actions',
+  batchActionsCancel: 'Cancel',
+  batchActionsItemSelected: 'item selected',
+  batchActionsItemsSelected: 'items selected',
+  batchActionsSelectAll: 'Select all',
 
   // NOTE: Pagination
   paginationPreviousTooltip: 'Previous page',

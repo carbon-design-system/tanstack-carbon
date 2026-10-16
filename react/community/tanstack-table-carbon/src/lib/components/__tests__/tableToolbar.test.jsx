@@ -60,11 +60,35 @@ vi.mock('@carbon/react', () => {
   );
 
   const TableToolbar = ({ children }) => <div>{children}</div>;
-  const TableBatchActions = ({ children, onCancel }) => (
+  const TableBatchActions = ({
+    children,
+    onCancel,
+    onSelectAll,
+    totalCount,
+    totalSelected,
+    translateWithId: t = (id, { totalCount: tc, totalSelected: ts } = {}) => {
+      if (id === 'carbon.table.batch.selectAll') {
+        return `Select all (${tc})`;
+      }
+      if (id === 'carbon.table.batch.items.selected') {
+        return `${ts} items selected`;
+      }
+      if (id === 'carbon.table.batch.item.selected') {
+        return `${ts} item selected`;
+      }
+      return id;
+    },
+  }) => (
     <div data-testid="batch-actions">
       <button type="button" onClick={onCancel}>
-        Cancel
+        {t('carbon.table.batch.cancel')}
       </button>
+      {onSelectAll && (
+        <button type="button" onClick={onSelectAll}>
+          {t('carbon.table.batch.selectAll', { totalCount })}
+        </button>
+      )}
+      <span>{t('carbon.table.batch.items.selected', { totalSelected })}</span>
       {children}
     </div>
   );
@@ -332,5 +356,22 @@ describe('TableToolbar', () => {
     render(<TableToolbar {...props} />);
 
     expect(screen.queryByTestId('batch-actions')).not.toBeInTheDocument();
+  });
+
+  it('renders the Select all button only when onSelectAll is provided', () => {
+    useResponsiveBatchActions.mockReturnValue({ shouldUseOverflow: false });
+    const batchActions = [{ label: 'Delete', icon: () => null, onClick: vi.fn() }];
+    const { totalCount } = baseProps();
+    const selectAllLabel = `${DEFAULT_LABELS.batchActionsSelectAll} (${totalCount})`;
+
+    const { unmount } = render(
+      <TableToolbar {...baseProps()} onSelectAll={undefined} batchActions={batchActions} />
+    );
+    expect(screen.queryByText(selectAllLabel)).not.toBeInTheDocument();
+
+    unmount();
+
+    render(<TableToolbar {...baseProps()} batchActions={batchActions} />);
+    expect(screen.getByRole('button', { name: selectAllLabel })).toBeInTheDocument();
   });
 });

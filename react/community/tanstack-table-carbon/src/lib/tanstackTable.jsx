@@ -153,6 +153,7 @@ const TanstackTable = ({
     type: selectionType,
     batchActions,
     onChange: selectionOnChange,
+    showBatchSelectAll,
   } = getSelectionFeatureConfig(selectionFeature);
 
   const { enabled: enableEditableCells, onDataChange } =
@@ -500,6 +501,7 @@ const TanstackTable = ({
     immediateSearchValue,
     filterPanel,
     customization,
+    showBatchSelectAll,
   });
 
   const filterPanelProps = getTanstackFilterPanelProps({

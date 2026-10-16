@@ -34,6 +34,7 @@ export const getSelectionFeatureConfig = (selectionFeature = null) => ({
   type: selectionFeature?.type ?? null,
   batchActions: selectionFeature?.batchActions ?? [],
   onChange: selectionFeature?.onChange,
+  showBatchSelectAll: selectionFeature?.showBatchSelectAll ?? false,
 });
 
 export const getEditingFeatureConfig = (editingFeature = null) => ({

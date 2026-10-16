@@ -564,6 +564,7 @@ const MixTable = ({ toggleHeaderContent, isHeaderContentVisible }) => {
               type: 'checkbox',
               batchActions,
               onChange: handleSelectionChange,
+              showBatchSelectAll: true,
             },
             sorting: {
               sorting,

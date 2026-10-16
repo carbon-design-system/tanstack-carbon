@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { TanstackTable } from '@/lib';
 import { useTranslation } from 'react-i18next';
 import { Dropdown } from '@carbon/react';
+import { TrashCan, Download } from '@carbon/icons-react';
 import commonStyles from './scss/common.module.scss';
 
 const LocalizedTable = () => {
@@ -220,6 +221,12 @@ const LocalizedTable = () => {
       filterNumberInvalidError: t('table.filterPanel.numberInvalidError'),
       filterSliderNoValuesText: t('table.filterPanel.sliderNoValues'),
 
+      // Batch Actions
+      batchActionsCancel: t('table.batchActions.cancel'),
+      batchActionsItemSelected: t('table.batchActions.itemSelected'),
+      batchActionsItemsSelected: t('table.batchActions.itemsSelected'),
+      batchActionsSelectAll: t('table.batchActions.selectAll'),
+
       // Column Customization
       columnCustomizationHeading:
         t('table.columnCustomization.title') + ' ({visible}/{total})',
@@ -284,6 +291,22 @@ const LocalizedTable = () => {
           columns={columns}
           labels={labels}
           features={{
+            selection: {
+              type: 'checkbox',
+              showBatchSelectAll: true,
+              batchActions: [
+                {
+                  label: t('buttons.delete'),
+                  icon: TrashCan,
+                  onClick: () => {}, // demo only
+                },
+                {
+                  label: t('buttons.export'),
+                  icon: Download,
+                  onClick: () => {}, // demo only
+                },
+              ],
+            },
             pagination: {
               pageSize: 10,
               pageSizeOptions: [5, 10, 20, 50],
