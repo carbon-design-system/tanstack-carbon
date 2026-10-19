@@ -218,7 +218,6 @@ export const getSkeletonProps = ({
   initialPageSize,
   useZebraStyles,
   showPagination,
-  height,
 }) => {
   return {
     columns,
@@ -226,6 +225,5 @@ export const getSkeletonProps = ({
     tableSize,
     useZebraStyles,
     showPagination,
-    height,
   };
 };

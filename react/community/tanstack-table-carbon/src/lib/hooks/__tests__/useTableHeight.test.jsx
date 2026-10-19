@@ -1,0 +1,231 @@
+import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import useTableHeight from '../useTableHeight';
+
+// NOTE: jsdom has no layout, so every element reports 0 for offsetHeight / clientHeight.
+// Sizes are provided per test id instead.
+const sizes = { parent: 500, thead: 40, pagination: 50, toolbar: 30 };
+
+const Harness = ({ height, dataLength = 10, content = 'table', hasEmptyState = false }) => {
+  const { wrapperRef } = useTableHeight(height, dataLength);
+
+  return (
+    <div data-testid="parent">
+      <div ref={wrapperRef} data-testid="wrapper">
+        <div className="cds--table-toolbar" data-testid="toolbar" />
+        {content === 'table' && (
+          <div className="cds--data-table-content" data-testid="scrollArea">
+            <table>
+              <thead data-testid="thead" />
+            </table>
+            {hasEmptyState && <div className="emptyStateDt" data-testid="emptyState" />}
+            <div className="cds--pagination" data-testid="pagination" />
+          </div>
+        )}
+        {content === 'skeleton' && (
+          <section className="cds--data-table-container" data-testid="skeletonArea">
+            <table>
+              <thead data-testid="thead" />
+            </table>
+            <div data-skeleton-pagination="true" data-testid="skeletonPagination" />
+          </section>
+        )}
+      </div>
+    </div>
+  );
+};
+
+describe('useTableHeight', () => {
+  const originalOffsetHeight = Object.getOwnPropertyDescriptor(
+    HTMLElement.prototype,
+    'offsetHeight'
+  );
+  const originalClientHeight = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight');
+
+  beforeEach(() => {
+    sizes.parent = 500;
+
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+      configurable: true,
+      get() {
+        const testId = this.dataset.testid;
+        if (this.tagName === 'THEAD') {
+          return sizes.thead;
+        }
+        if (testId === 'pagination' || testId === 'skeletonPagination') {
+          return sizes.pagination;
+        }
+        if (testId === 'toolbar') {
+          return sizes.toolbar;
+        }
+        return 0;
+      },
+    });
+
+    Object.defineProperty(Element.prototype, 'clientHeight', {
+      configurable: true,
+      get() {
+        return this.dataset?.testid === 'parent' ? sizes.parent : 0;
+      },
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', originalOffsetHeight);
+    Object.defineProperty(Element.prototype, 'clientHeight', originalClientHeight);
+    vi.unstubAllGlobals();
+  });
+
+  describe('height="100%"', () => {
+    it('should fit the table to the parent minus header, toolbar and pagination', () => {
+      render(<Harness height="100%" />);
+
+      const scrollArea = screen.getByTestId('scrollArea');
+      // 500 (parent) - 40 (thead) - 50 (pagination) - 30 (toolbar)
+      expect(scrollArea.style.maxHeight).toBe('380px');
+      expect(scrollArea.style.overflow).toBe('auto');
+      expect(scrollArea.style.position).toBe('relative');
+      // The wrapper is hidden only while measuring the parent
+      expect(screen.getByTestId('wrapper').style.display).toBe('');
+    });
+
+    it('should size the loading skeleton and count its pagination placeholder', () => {
+      render(<Harness height="100%" content="skeleton" />);
+
+      expect(screen.getByTestId('skeletonArea').style.maxHeight).toBe('380px');
+    });
+
+    it('should size the empty state container when there is no data', () => {
+      render(<Harness height="100%" dataLength={0} hasEmptyState />);
+
+      // contentHeight (380) - header (40) - 3
+      expect(screen.getByTestId('emptyState').style.height).toBe('337px');
+    });
+
+    it('should not set a height when the parent has no height', () => {
+      sizes.parent = 0;
+      render(<Harness height="100%" />);
+
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('');
+    });
+
+    it('should never set a negative height', () => {
+      sizes.parent = 50;
+      render(<Harness height="100%" />);
+
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('0px');
+    });
+  });
+
+  describe('pixel height', () => {
+    it('should subtract header and pagination from a numeric height', () => {
+      render(<Harness height={400} />);
+
+      const scrollArea = screen.getByTestId('scrollArea');
+      // 400 - 40 (thead) - 50 (pagination); the toolbar is not part of the pixel height
+      expect(scrollArea.style.maxHeight).toBe('310px');
+      expect(scrollArea.style.overflow).toBe('auto');
+    });
+
+    it('should parse a "px" string and size the empty state container', () => {
+      render(<Harness height="400px" dataLength={0} hasEmptyState />);
+
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('310px');
+      expect(screen.getByTestId('emptyState').style.height).toBe('267px');
+    });
+
+    it('should ignore a height that is not a number', () => {
+      render(<Harness height="auto" />);
+
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('');
+    });
+  });
+
+  describe('natural height', () => {
+    it('should clear a previously applied height when height becomes null', () => {
+      const { rerender } = render(<Harness height={400} dataLength={0} hasEmptyState />);
+
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('310px');
+
+      rerender(<Harness height={null} dataLength={0} hasEmptyState />);
+
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('');
+      expect(screen.getByTestId('emptyState').style.height).toBe('');
+
+      // Also works when there is no empty state container to reset
+      rerender(<Harness height={400} />);
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('310px');
+
+      rerender(<Harness height={null} />);
+      expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('');
+    });
+  });
+
+  it('should do nothing when there is no table or skeleton to size', () => {
+    expect(() => render(<Harness height="100%" content="none" />)).not.toThrow();
+
+    // No inline style may be written anywhere, including the temporary display: none used to measure
+    expect(screen.getByTestId('wrapper')).not.toHaveAttribute('style');
+    expect(screen.getByTestId('toolbar')).not.toHaveAttribute('style');
+    expect(screen.getByTestId('parent')).not.toHaveAttribute('style');
+  });
+
+  describe('observers', () => {
+    it('should re-measure when the parent is resized and disconnect on unmount', () => {
+      const instances = [];
+      class MockResizeObserver {
+        constructor(callback) {
+          this.callback = callback;
+          this.observe = vi.fn();
+          this.disconnect = vi.fn();
+          instances.push(this);
+        }
+      }
+      vi.stubGlobal('ResizeObserver', MockResizeObserver);
+
+      const { unmount } = render(<Harness height="100%" />);
+      const scrollArea = screen.getByTestId('scrollArea');
+
+      expect(scrollArea.style.maxHeight).toBe('380px');
+      expect(instances[0].observe).toHaveBeenCalledWith(screen.getByTestId('parent'));
+
+      sizes.parent = 300;
+      instances[0].callback();
+
+      expect(scrollArea.style.maxHeight).toBe('180px');
+
+      unmount();
+
+      expect(instances[0].disconnect).toHaveBeenCalled();
+    });
+
+    it('should not observe the parent for a pixel height', () => {
+      const instances = [];
+      class MockResizeObserver {
+        constructor() {
+          this.observe = vi.fn();
+          this.disconnect = vi.fn();
+          instances.push(this);
+        }
+      }
+      vi.stubGlobal('ResizeObserver', MockResizeObserver);
+
+      render(<Harness height={400} />);
+
+      expect(instances).toHaveLength(0);
+    });
+
+    it('should re-measure when the table content changes', async () => {
+      render(<Harness height="100%" />);
+      const scrollArea = screen.getByTestId('scrollArea');
+
+      expect(scrollArea.style.maxHeight).toBe('380px');
+
+      // e.g. skeleton <-> table swap: layout of the wrapper changed
+      sizes.parent = 300;
+      scrollArea.appendChild(document.createElement('span'));
+
+      await waitFor(() => expect(scrollArea.style.maxHeight).toBe('180px'));
+    });
+  });
+});

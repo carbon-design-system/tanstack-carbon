@@ -16,7 +16,6 @@ const defaultProps = {
   tableSize: 'md',
   useZebraStyles: false,
   showPagination: false,
-  height: null,
 };
 
 describe('CustomTableSkeleton', () => {
@@ -197,37 +196,14 @@ describe('CustomTableSkeleton', () => {
   });
 
   describe('Height / container style', () => {
-    it('should not apply maxHeight when height is null', () => {
-      const { container } = render(
-        <CustomTableSkeleton {...defaultProps} height={null} />
-      );
+    it('should never apply an inline maxHeight (height is managed by useTableHeight)', () => {
+      // The skeleton no longer receives or applies a height prop — useTableHeight
+      // sets maxHeight on .cds--data-table-container directly via the wrapperRef.
+      const { container } = render(<CustomTableSkeleton {...defaultProps} />);
 
-      const tableContainer = container.querySelector(
-        '.cds--data-table-container'
-      );
+      const tableContainer = container.querySelector('.cds--data-table-container');
       expect(tableContainer.style.maxHeight).toBe('');
-    });
-
-    it('should apply numeric height directly as maxHeight', () => {
-      const { container } = render(
-        <CustomTableSkeleton {...defaultProps} height={600} />
-      );
-
-      const tableContainer = container.querySelector(
-        '.cds--data-table-container'
-      );
-      expect(tableContainer.style.maxHeight).toBe('600px');
-    });
-
-    it('should apply string height as-is', () => {
-      const { container } = render(
-        <CustomTableSkeleton {...defaultProps} height="calc(100vh - 200px)" />
-      );
-
-      const tableContainer = container.querySelector(
-        '.cds--data-table-container'
-      );
-      expect(tableContainer.style.maxHeight).toBe('calc(100vh - 200px)');
+      expect(tableContainer.style.overflow).toBe('');
     });
   });
 

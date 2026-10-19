@@ -18,21 +18,12 @@ const CustomTableSkeleton = ({
   tableSize,
   useZebraStyles,
   showPagination,
-  height,
 }) => {
   const skeletonRows = Array.from({ length: rowCount }, (_, i) => i);
 
   return (
     <div className={styles.skeletonWrapper}>
-      <TableContainer
-        style={
-          height
-            ? {
-                maxHeight: typeof height === 'number' ? `${height}px` : height,
-                overflow: 'auto',
-              }
-            : undefined
-        }>
+      <TableContainer>
         <Table size={tableSize} useZebraStyles={useZebraStyles}>
           <TableHead>
             <TableRow>
@@ -76,7 +67,7 @@ const CustomTableSkeleton = ({
           </TableBody>
         </Table>
         {showPagination && (
-          <div className={styles.paginationSkeleton}>
+          <div className={styles.paginationSkeleton} data-skeleton-pagination="true">
             <div className={styles.paginationLeft}>
               <SkeletonText width="120px" />
             </div>

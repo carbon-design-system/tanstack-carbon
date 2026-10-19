@@ -3,13 +3,17 @@
   position: relative;
 
   :global {
+    // !important: useTableHeight and the container's inline style set overflow: auto inline;
+    // the skeleton is a placeholder, so it must never show a vertical scrollbar
     .cds--data-table-container {
       padding-top: 0;
       position: relative;
+      overflow-y: hidden !important;
     }
 
     .cds--data-table-content {
       overflow: auto;
+      overflow-y: hidden !important;
 
       thead {
         position: sticky;
@@ -41,13 +45,20 @@
 }
 
 .paginationSkeleton {
+  // Sit above the .skeletonWrapper::after fade overlay so the pagination bar is not blurred
+  position: relative;
+  z-index: 3;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: $spacing-05;
   background-color: $layer-01;
   border-top: 1px solid $border-subtle-01;
-  min-height: 3rem;
+  min-height: $spacing-08;
+
+  :global(.cds--skeleton__text) {
+    margin-block-end: 0;
+  }
 }
 
 .paginationLeft {

@@ -596,7 +596,6 @@ const TanstackTable = ({
     initialPageSize: paginationFeature.initialPageSize,
     useZebraStyles,
     showPagination: paginationFeature.enabled,
-    height,
   });
 
   return (

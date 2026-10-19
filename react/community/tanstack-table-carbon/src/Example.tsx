@@ -23,6 +23,7 @@ import Virtualization from '@/examples/virtualization';
 import ThemedTable from '@/examples/themedTable';
 import MultipleTablesPage from '@/examples/multipleTablesPage';
 import NestedTableExpansion from '@/examples/nestedTableExpansion';
+import TableHeight from '@/examples/tableHeight';
 
 type ExampleType =
   | 'basic'
@@ -43,7 +44,8 @@ type ExampleType =
   | 'tableSizes'
   | 'themedTable'
   | 'virtualization'
-  | 'multipleTablesPage';
+  | 'multipleTablesPage'
+  | 'tableHeight';
 
 const examples = [
   { id: 'basic', label: 'Basic Table', component: BasicTable },
@@ -78,6 +80,11 @@ const examples = [
     component: ServerSideColumnCustomization,
   },
   { id: 'tableSizes', label: 'Table Sizes', component: TableSizes },
+  {
+    id: 'tableHeight',
+    label: 'Table Height',
+    component: TableHeight,
+  },
   { id: 'themedTable', label: 'Themed Table', component: ThemedTable },
   { id: 'virtualization', label: 'Virtualization', component: Virtualization },
   {
