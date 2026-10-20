@@ -20,7 +20,9 @@ export const getTanstackToolbarProps = ({
   selectedCount: selection.selectedCount,
   totalCount: dataLength,
   onCancelSelection: () => table.resetRowSelection(),
-  onSelectAll: showBatchSelectAll ? () => table.toggleAllRowsSelected(true) : undefined,
+  onSelectAll: showBatchSelectAll
+    ? () => table.toggleAllRowsSelected(true)
+    : undefined,
   batchActions,
   table,
   toolbar,
@@ -141,7 +143,6 @@ export const getVirtualizedTableBodyProps = ({
   virtualRows,
   rowVirtualizer,
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -155,7 +156,6 @@ export const getVirtualizedTableBodyProps = ({
   virtualRows,
   rowVirtualizer,
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -168,7 +168,6 @@ export const getVirtualizedTableBodyProps = ({
 
 export const getStandardTableBodyProps = ({
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -176,13 +175,11 @@ export const getStandardTableBodyProps = ({
   isRowExpansionEnabled,
   expansion,
   expansionFeature,
-  finalTableColumns,
   emptyStateRender,
   emptyStateTitle,
   emptyStateSubtitle,
 }) => ({
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -190,7 +187,6 @@ export const getStandardTableBodyProps = ({
   isRowExpansionEnabled,
   expansion,
   expansionFeature,
-  finalTableColumns,
   emptyStateRender,
   emptyStateTitle,
   emptyStateSubtitle,

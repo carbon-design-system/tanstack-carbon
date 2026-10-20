@@ -171,7 +171,6 @@ export const VirtualizedTableHead = ({
 
 export const StandardTableBody = ({
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -179,12 +178,12 @@ export const StandardTableBody = ({
   isRowExpansionEnabled,
   expansion,
   expansionFeature,
-  finalTableColumns,
   emptyStateRender,
   emptyStateTitle,
   emptyStateSubtitle,
 }) => {
   const rows = table.getRowModel().rows;
+  const visibleColumnCount = table.getVisibleLeafColumns().length;
 
   const handleParentRowHover = React.useCallback((event, isHovering) => {
     const parentRow = event.currentTarget;
@@ -215,7 +214,7 @@ export const StandardTableBody = ({
       {rows.length === 0 ? (
         <TableRow>
           <TableCell
-            colSpan={tableColumns.length}
+            colSpan={visibleColumnCount}
             className="emptyCell_tanstackTable">
             <div className="emptyStateDt">
               {emptyStateRender || (
@@ -265,7 +264,7 @@ export const StandardTableBody = ({
                 data-parent-row-id={row.id}
                 onMouseEnter={(e) => handleExpandedRowHover(e, true)}
                 onMouseLeave={(e) => handleExpandedRowHover(e, false)}>
-                <TableCell colSpan={finalTableColumns.length}>
+                <TableCell colSpan={visibleColumnCount}>
                   {expansionFeature?.renderExpandedRow?.(row.original)}
                 </TableCell>
               </TableRow>
@@ -282,7 +281,6 @@ export const VirtualizedTableBody = ({
   virtualRows,
   rowVirtualizer,
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -292,6 +290,8 @@ export const VirtualizedTableBody = ({
   emptyStateSubtitle,
   totalSize,
 }) => {
+  const visibleColumnCount = table.getVisibleLeafColumns().length;
+
   return (
     <TableBody
       className={styles.virtualizedTableBody}
@@ -301,7 +301,7 @@ export const VirtualizedTableBody = ({
       {bodyRows.length === 0 ? (
         <TableRow>
           <TableCell
-            colSpan={tableColumns.length}
+            colSpan={visibleColumnCount}
             className="emptyCell_tanstackTable">
             <div className="emptyStateDt">
               {emptyStateRender || (

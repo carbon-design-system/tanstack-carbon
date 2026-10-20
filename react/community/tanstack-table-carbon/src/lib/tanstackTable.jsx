@@ -553,7 +553,6 @@ const TanstackTable = ({
     virtualRows,
     rowVirtualizer: virtualizationState.rowVirtualizer,
     table,
-    tableColumns,
     enableStickyColumns,
     enableEditableCells,
     editableCell,
@@ -566,7 +565,6 @@ const TanstackTable = ({
 
   const standardBodyProps = getStandardTableBodyProps({
     table,
-    tableColumns,
     enableStickyColumns,
     enableEditableCells,
     editableCell,
@@ -574,7 +572,6 @@ const TanstackTable = ({
     isRowExpansionEnabled,
     expansion,
     expansionFeature,
-    finalTableColumns,
     emptyStateRender,
     emptyStateTitle,
     emptyStateSubtitle,
