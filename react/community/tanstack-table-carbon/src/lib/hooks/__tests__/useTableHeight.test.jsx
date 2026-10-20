@@ -6,8 +6,8 @@ import useTableHeight from '../useTableHeight';
 // Sizes are provided per test id instead.
 const sizes = { parent: 500, thead: 40, pagination: 50, toolbar: 30 };
 
-const Harness = ({ height, dataLength = 10, content = 'table', hasEmptyState = false }) => {
-  const { wrapperRef } = useTableHeight(height, dataLength);
+const Harness = ({ height, content = 'table', hasEmptyState = false }) => {
+  const { wrapperRef } = useTableHeight(height);
 
   return (
     <div data-testid="parent">
@@ -96,7 +96,7 @@ describe('useTableHeight', () => {
     });
 
     it('should size the empty state container when there is no data', () => {
-      render(<Harness height="100%" dataLength={0} hasEmptyState />);
+      render(<Harness height="100%" hasEmptyState />);
 
       // contentHeight (380) - header (40) - 3
       expect(screen.getByTestId('emptyState').style.height).toBe('337px');
@@ -128,7 +128,7 @@ describe('useTableHeight', () => {
     });
 
     it('should parse a "px" string and size the empty state container', () => {
-      render(<Harness height="400px" dataLength={0} hasEmptyState />);
+      render(<Harness height="400px" hasEmptyState />);
 
       expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('310px');
       expect(screen.getByTestId('emptyState').style.height).toBe('267px');
@@ -143,11 +143,11 @@ describe('useTableHeight', () => {
 
   describe('natural height', () => {
     it('should clear a previously applied height when height becomes null', () => {
-      const { rerender } = render(<Harness height={400} dataLength={0} hasEmptyState />);
+      const { rerender } = render(<Harness height={400} hasEmptyState />);
 
       expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('310px');
 
-      rerender(<Harness height={null} dataLength={0} hasEmptyState />);
+      rerender(<Harness height={null} hasEmptyState />);
 
       expect(screen.getByTestId('scrollArea').style.maxHeight).toBe('');
       expect(screen.getByTestId('emptyState').style.height).toBe('');
@@ -226,6 +226,18 @@ describe('useTableHeight', () => {
       scrollArea.appendChild(document.createElement('span'));
 
       await waitFor(() => expect(scrollArea.style.maxHeight).toBe('180px'));
+    });
+
+    it('should size the empty state when it appears after the first render (e.g. search with no results)', async () => {
+      render(<Harness height="100%" />);
+      const scrollArea = screen.getByTestId('scrollArea');
+
+      const emptyState = document.createElement('div');
+      emptyState.className = 'emptyStateDt';
+      scrollArea.appendChild(emptyState);
+
+      // contentHeight (380) - header (40) - 3
+      await waitFor(() => expect(emptyState.style.height).toBe('337px'));
     });
   });
 });

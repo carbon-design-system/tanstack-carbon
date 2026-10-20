@@ -175,7 +175,7 @@ const TanstackTable = ({
   const tableContainerRef = useRef(null);
 
   // NOTE: Use custom hook for dynamic height management
-  const { wrapperRef, skeletonRef } = useTableHeight(height, data.length);
+  const { wrapperRef, skeletonRef } = useTableHeight(height);
 
   // NOTE: Use editable cell hook for keyboard navigation
   const editableCell = useEditableCell(tableContainerRef);

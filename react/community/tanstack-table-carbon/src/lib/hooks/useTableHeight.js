@@ -7,10 +7,9 @@ const PAGINATION_SELECTOR = ':scope .cds--pagination, :scope [data-skeleton-pagi
  * Custom hook to manage table, skeleton & emptyState container height
  *
  * @param {string|number|null} height - Explicit height value (e.g. 500, "500px", or "100%")
- * @param {number} dataLength - Length of data array to detect empty state
  * @returns {Object} - { wrapperRef, skeletonRef } - Refs to attach to wrapper and skeleton divs
  */
-const useTableHeight = (height, dataLength) => {
+const useTableHeight = (height) => {
   const wrapperRef = useRef(null);
   const skeletonRef = useRef(null);
 
@@ -57,7 +56,7 @@ const useTableHeight = (height, dataLength) => {
         targetEl.style.overflow = 'auto';
         targetEl.style.position = 'relative';
 
-        if (emptyStateDiv && dataLength === 0) {
+        if (emptyStateDiv) {
           const emptyStateHeight = Math.max(0, contentHeight - headerHeight - 3);
           emptyStateDiv.style.height = `${emptyStateHeight}px`;
         }
@@ -82,7 +81,7 @@ const useTableHeight = (height, dataLength) => {
         targetEl.style.overflow = 'auto';
         targetEl.style.position = 'relative';
 
-        if (emptyStateDiv && dataLength === 0) {
+        if (emptyStateDiv) {
           const emptyStateHeight = Math.max(0, contentHeight - headerHeight - 3);
           emptyStateDiv.style.height = `${emptyStateHeight}px`;
         }
@@ -94,7 +93,7 @@ const useTableHeight = (height, dataLength) => {
         emptyStateDiv.style.height = '';
       }
     }
-  }, [height, dataLength]);
+  }, [height]);
 
   // Layout effect so the height is applied before the browser paints (no flash of full height)
   useLayoutEffect(() => {
@@ -134,7 +133,7 @@ const useTableHeight = (height, dataLength) => {
         mutationObserver.disconnect();
       }
     };
-  }, [updateHeight, height, dataLength]);
+  }, [updateHeight, height]);
 
   return { wrapperRef, skeletonRef };
 };
