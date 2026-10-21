@@ -141,13 +141,15 @@ function MyTable() {
 
 ### Batch Actions Labels
 
-| Label Key                     | Default Value   | Usage                         |
-| ----------------------------- | --------------- | ----------------------------- |
-| `batchActionsMenuTooltip`     | "Batch actions" | Batch actions menu tooltip    |
-| `batchActionsMenuAriaLabel`   | "Batch actions" | Batch actions menu aria-label |
-| `batchActionsMenuLabel`       | "Actions"       | Batch actions dropdown label  |
-| `batchActionsSelectAllButton` | "Select all"    | Select all button text        |
-| `batchActionsCancelButton`    | "Cancel"        | Cancel selection button text  |
+| Label Key                      | Default Value    | Usage                                          |
+| ------------------------------ | ---------------- | ---------------------------------------------- |
+| `batchActionsMenuTooltip`      | "Batch actions"  | Batch actions menu tooltip                     |
+| `batchActionsMenuAriaLabel`    | "Batch actions"  | Batch actions menu aria-label                  |
+| `batchActionsMenuLabel`        | "Actions"        | Batch actions dropdown label                   |
+| `batchActionsSelectAll`        | "Select all"     | Select all button text (Carbon appends " (N)") |
+| `batchActionsCancel`           | "Cancel"         | Cancel selection button text                   |
+| `batchActionsItemSelected`     | "item selected"  | Singular selected count label                  |
+| `batchActionsItemsSelected`    | "items selected" | Plural selected count label                    |
 
 ### Pagination Labels
 

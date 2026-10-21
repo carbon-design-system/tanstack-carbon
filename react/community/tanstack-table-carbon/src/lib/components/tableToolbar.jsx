@@ -102,6 +102,21 @@ const TableToolbar = ({
   isLoading = false,
 }) => {
   const labels = useLabels();
+
+  const batchActionsTranslateWithId = (id, { totalCount: count, totalSelected } = {}) => {
+    switch (id) {
+      case 'carbon.table.batch.cancel':
+        return labels.batchActionsCancel;
+      case 'carbon.table.batch.item.selected':
+        return `${totalSelected} ${labels.batchActionsItemSelected}`;
+      case 'carbon.table.batch.items.selected':
+        return `${totalSelected} ${labels.batchActionsItemsSelected}`;
+      case 'carbon.table.batch.selectAll':
+        return `${labels.batchActionsSelectAll} (${count})`;
+      default:
+        return id;
+    }
+  };
   // NOTE: Derive enableCustomizeColumn from toolbar configuration
   const enableCustomizeColumn =
     toolbar?.some(
@@ -463,7 +478,8 @@ const TableToolbar = ({
               onCancel={onCancelSelection}
               onSelectAll={onSelectAll}
               totalCount={totalCount}
-              inert={!shouldShowBatchActions ? '' : undefined}>
+              inert={!shouldShowBatchActions ? '' : undefined}
+              translateWithId={batchActionsTranslateWithId}>
               {renderBatchActions()}
             </TableBatchActions>
           )}

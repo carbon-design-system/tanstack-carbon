@@ -38,6 +38,8 @@ export interface SelectionFeature {
   type?: 'checkbox' | 'radio';
   onChange?: (selectedRows: any[]) => void;
   batchActions?: ReactElement;
+  /** When true, shows the "Select all" button in the batch action bar. Defaults to false. */
+  showBatchSelectAll?: boolean;
 }
 
 export interface EditingFeature {
@@ -233,6 +235,10 @@ export interface TanstackTableLabels {
   batchActionsMenuTooltip?: string;
   batchActionsMenuAriaLabel?: string;
   batchActionsMenuLabel?: string;
+  batchActionsCancel?: string;
+  batchActionsItemSelected?: string;
+  batchActionsItemsSelected?: string;
+  batchActionsSelectAll?: string;
 
   // NOTE: Pagination
   paginationPreviousTooltip?: string;

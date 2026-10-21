@@ -1,0 +1,22 @@
+.controlsSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $spacing-07;
+  margin-bottom: $spacing-05;
+}
+
+.heightInfoBox {
+  margin-bottom: $spacing-05;
+  padding: $spacing-03;
+  background-color: $blue-10;
+  border: 1px solid $blue-40;
+}
+
+.heightInfoText {
+  margin: 0;
+
+  @include type-style('body-01');
+
+  color: $blue-70;
+}

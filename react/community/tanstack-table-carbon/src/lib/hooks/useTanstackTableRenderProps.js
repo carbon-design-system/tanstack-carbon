@@ -12,6 +12,7 @@ export const getTanstackToolbarProps = ({
   immediateSearchValue,
   filterPanel,
   customization,
+  showBatchSelectAll,
 }) => ({
   enableSelection: selection.enableSelection,
   selectionType,
@@ -19,7 +20,9 @@ export const getTanstackToolbarProps = ({
   selectedCount: selection.selectedCount,
   totalCount: dataLength,
   onCancelSelection: () => table.resetRowSelection(),
-  onSelectAll: () => table.toggleAllRowsSelected(true),
+  onSelectAll: showBatchSelectAll
+    ? () => table.toggleAllRowsSelected(true)
+    : undefined,
   batchActions,
   table,
   toolbar,
@@ -140,7 +143,6 @@ export const getVirtualizedTableBodyProps = ({
   virtualRows,
   rowVirtualizer,
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -154,7 +156,6 @@ export const getVirtualizedTableBodyProps = ({
   virtualRows,
   rowVirtualizer,
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -167,7 +168,6 @@ export const getVirtualizedTableBodyProps = ({
 
 export const getStandardTableBodyProps = ({
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -175,13 +175,11 @@ export const getStandardTableBodyProps = ({
   isRowExpansionEnabled,
   expansion,
   expansionFeature,
-  finalTableColumns,
   emptyStateRender,
   emptyStateTitle,
   emptyStateSubtitle,
 }) => ({
   table,
-  tableColumns,
   enableStickyColumns,
   enableEditableCells,
   editableCell,
@@ -189,7 +187,6 @@ export const getStandardTableBodyProps = ({
   isRowExpansionEnabled,
   expansion,
   expansionFeature,
-  finalTableColumns,
   emptyStateRender,
   emptyStateTitle,
   emptyStateSubtitle,
@@ -217,7 +214,6 @@ export const getSkeletonProps = ({
   initialPageSize,
   useZebraStyles,
   showPagination,
-  height,
 }) => {
   return {
     columns,
@@ -225,6 +221,5 @@ export const getSkeletonProps = ({
     tableSize,
     useZebraStyles,
     showPagination,
-    height,
   };
 };

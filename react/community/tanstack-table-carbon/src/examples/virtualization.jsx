@@ -132,9 +132,7 @@ const ExampleVirtualization = () => {
             disabled.
           </p>
         </div>
-      </div>
 
-      <div className={commonStyles.pageBody}>
         <div className={styles.sizeSelector}>
           <RadioButtonGroup
             legendText="Table Size"
@@ -157,6 +155,9 @@ const ExampleVirtualization = () => {
             />
           </RadioButtonGroup>
         </div>
+      </div>
+
+      <div className={commonStyles.pageBody}>
         <TanstackTable
           data={mockData}
           columns={columns}

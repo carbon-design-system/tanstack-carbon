@@ -167,13 +167,13 @@ describe('virtualizedTableSections', () => {
       getRowModel: () => ({
         rows: [],
       }),
+      getVisibleLeafColumns: () => [{ id: 'c1' }],
     };
 
     render(
       <table>
         <StandardTableBody
           table={table}
-          tableColumns={[{ id: 'one' }, { id: 'two' }]}
           enableStickyColumns={false}
           enableEditableCells={false}
           editableCell={{ editingId: null, setEditingId: vi.fn() }}
@@ -181,7 +181,6 @@ describe('virtualizedTableSections', () => {
           isRowExpansionEnabled={false}
           expansion={{ expanded: {} }}
           expansionFeature={{}}
-          finalTableColumns={[{ id: 'one' }, { id: 'two' }]}
           emptyStateTitle="No records"
           emptyStateSubtitle="Try again later"
         />
@@ -226,13 +225,13 @@ describe('virtualizedTableSections', () => {
       getRowModel: () => ({
         rows: [row],
       }),
+      getVisibleLeafColumns: () => [{ id: 'c1' }],
     };
 
     render(
       <table>
         <StandardTableBody
           table={table}
-          tableColumns={[{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }]}
           enableStickyColumns={false}
           enableEditableCells
           editableCell={{ editingId: 'text-cell', setEditingId: vi.fn() }}
@@ -242,7 +241,6 @@ describe('virtualizedTableSections', () => {
           expansionFeature={{
             renderExpandedRow: (original) => <div>{original.name}</div>,
           }}
-          finalTableColumns={[{ id: 'c1' }, { id: 'c2' }, { id: 'c3' }]}
           emptyStateTitle="unused"
           emptyStateSubtitle="unused"
         />
@@ -282,8 +280,7 @@ describe('virtualizedTableSections', () => {
             { index: 1, start: 40 },
           ]}
           rowVirtualizer={{ measureElement }}
-          table={{}}
-          tableColumns={[{ id: 'c1' }]}
+          table={{ getVisibleLeafColumns: () => [{ id: 'c1' }] }}
           enableStickyColumns
           enableEditableCells={false}
           editableCell={{ editingId: null, setEditingId: vi.fn() }}
@@ -304,8 +301,7 @@ describe('virtualizedTableSections', () => {
           bodyRows={[]}
           virtualRows={[]}
           rowVirtualizer={{ measureElement }}
-          table={{}}
-          tableColumns={[{ id: 'c1' }]}
+          table={{ getVisibleLeafColumns: () => [{ id: 'c1' }] }}
           enableStickyColumns={false}
           enableEditableCells={false}
           editableCell={{ editingId: null, setEditingId: vi.fn() }}
@@ -332,8 +328,10 @@ describe('virtualizedTableSections', () => {
     const { container } = render(
       <table>
         <StandardTableBody
-          table={{ getRowModel: () => ({ rows: [row] }) }}
-          tableColumns={[{ id: 'c1' }]}
+          table={{
+            getRowModel: () => ({ rows: [row] }),
+            getVisibleLeafColumns: () => [{ id: 'c1' }],
+          }}
           enableStickyColumns={false}
           enableEditableCells={false}
           editableCell={{ editingId: null, setEditingId: vi.fn() }}
@@ -341,7 +339,6 @@ describe('virtualizedTableSections', () => {
           isRowExpansionEnabled={false}
           expansion={{ expanded: {} }}
           expansionFeature={{}}
-          finalTableColumns={[{ id: 'c1' }]}
           emptyStateTitle="unused"
           emptyStateSubtitle="unused"
         />
@@ -363,8 +360,10 @@ describe('virtualizedTableSections', () => {
     render(
       <table>
         <StandardTableBody
-          table={{ getRowModel: () => ({ rows: [row] }) }}
-          tableColumns={[{ id: 'c1' }]}
+          table={{
+            getRowModel: () => ({ rows: [row] }),
+            getVisibleLeafColumns: () => [{ id: 'c1' }],
+          }}
           enableStickyColumns={false}
           enableEditableCells
           editableCell={{ editingId: null, setEditingId: vi.fn() }}
@@ -372,7 +371,6 @@ describe('virtualizedTableSections', () => {
           isRowExpansionEnabled={false}
           expansion={{ expanded: {} }}
           expansionFeature={{}}
-          finalTableColumns={[{ id: 'c1' }]}
           emptyStateTitle="unused"
           emptyStateSubtitle="unused"
         />
@@ -395,8 +393,10 @@ describe('virtualizedTableSections', () => {
     const { container } = render(
       <table>
         <StandardTableBody
-          table={{ getRowModel: () => ({ rows: [row] }) }}
-          tableColumns={[{ id: 'c1' }]}
+          table={{
+            getRowModel: () => ({ rows: [row] }),
+            getVisibleLeafColumns: () => [{ id: 'c1' }],
+          }}
           enableStickyColumns={false}
           enableEditableCells={false}
           editableCell={{ editingId: null, setEditingId: vi.fn() }}
@@ -404,7 +404,6 @@ describe('virtualizedTableSections', () => {
           isRowExpansionEnabled
           expansion={{ expanded: { 'hover-row': true } }}
           expansionFeature={{ renderExpandedRow: () => <div>expanded</div> }}
-          finalTableColumns={[{ id: 'c1' }]}
           emptyStateTitle="unused"
           emptyStateSubtitle="unused"
         />
@@ -440,8 +439,10 @@ describe('virtualizedTableSections', () => {
     const { container } = render(
       <table>
         <StandardTableBody
-          table={{ getRowModel: () => ({ rows: [row] }) }}
-          tableColumns={[{ id: 'c1' }]}
+          table={{
+            getRowModel: () => ({ rows: [row] }),
+            getVisibleLeafColumns: () => [{ id: 'c1' }],
+          }}
           enableStickyColumns={false}
           enableEditableCells={false}
           editableCell={{ editingId: null, setEditingId: vi.fn() }}
@@ -449,7 +450,6 @@ describe('virtualizedTableSections', () => {
           isRowExpansionEnabled
           expansion={{ expanded: { 'hover-row-2': true } }}
           expansionFeature={{ renderExpandedRow: () => <div>expanded</div> }}
-          finalTableColumns={[{ id: 'c1' }]}
           emptyStateTitle="unused"
           emptyStateSubtitle="unused"
         />
@@ -489,8 +489,7 @@ describe('virtualizedTableSections', () => {
           bodyRows={[row]}
           virtualRows={[{ index: 0, start: 0 }]}
           rowVirtualizer={null}
-          table={{}}
-          tableColumns={[{ id: 'c1' }]}
+          table={{ getVisibleLeafColumns: () => [{ id: 'c1' }] }}
           enableStickyColumns={false}
           enableEditableCells={false}
           editableCell={{ editingId: null, setEditingId: vi.fn() }}

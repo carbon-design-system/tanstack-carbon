@@ -73,6 +73,12 @@ const resources = {
           numberInvalidError: 'Invalid number',
           sliderNoValues: 'No values available',
         },
+        batchActions: {
+          cancel: 'Cancel',
+          itemSelected: 'item selected',
+          itemsSelected: 'items selected',
+          selectAll: 'Select all',
+        },
         columnCustomization: {
           title: 'Customize Columns',
           description: 'Select columns to display',
@@ -81,6 +87,10 @@ const resources = {
           apply: 'Apply',
           cancel: 'Cancel',
         },
+      },
+      buttons: {
+        delete: 'Delete',
+        export: 'Export',
       },
     },
   },
@@ -154,6 +164,12 @@ const resources = {
           numberInvalidError: 'Ungültige Nummer',
           sliderNoValues: 'Keine Werte verfügbar',
         },
+        batchActions: {
+          cancel: 'Abbrechen',
+          itemSelected: 'Element ausgewählt',
+          itemsSelected: 'Elemente ausgewählt',
+          selectAll: 'Alle auswählen',
+        },
         columnCustomization: {
           title: 'Spalten anpassen',
           description: 'Spalten zum Anzeigen auswählen',
@@ -162,6 +178,10 @@ const resources = {
           apply: 'Anwenden',
           cancel: 'Abbrechen',
         },
+      },
+      buttons: {
+        delete: 'Löschen',
+        export: 'Exportieren',
       },
     },
   },

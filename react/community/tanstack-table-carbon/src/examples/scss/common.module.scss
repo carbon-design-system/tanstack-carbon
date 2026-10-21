@@ -1,6 +1,9 @@
 .pageHeader {
   width: 100%;
-  padding-right: 16px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 12px;
+  border-bottom: 1px solid #dedede;
 
   .unorderedList {
     @include type-style('body-01');
@@ -10,7 +13,8 @@
 }
 
 .pageBody {
-  padding: 1rem 1rem 1rem 0;
+  padding: 1rem;
+  flex: 1;
 }
 
 // Common status badge styles used across multiple examples

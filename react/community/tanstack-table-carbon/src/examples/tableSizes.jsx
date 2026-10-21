@@ -91,9 +91,7 @@ const ExampleTableSizes = () => {
             sm, md, lg, and xl sizes.
           </p>
         </div>
-      </div>
 
-      <div className={commonStyles.pageBody}>
         <div className={styles.controlsSection}>
           <RadioButtonGroup
             legendText="Select table size"
@@ -119,6 +117,9 @@ const ExampleTableSizes = () => {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className={commonStyles.pageBody}>
         <TanstackTable
           data={mockData}
           columns={columns}

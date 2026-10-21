@@ -153,6 +153,7 @@ const TanstackTable = ({
     type: selectionType,
     batchActions,
     onChange: selectionOnChange,
+    showBatchSelectAll,
   } = getSelectionFeatureConfig(selectionFeature);
 
   const { enabled: enableEditableCells, onDataChange } =
@@ -174,7 +175,7 @@ const TanstackTable = ({
   const tableContainerRef = useRef(null);
 
   // NOTE: Use custom hook for dynamic height management
-  const { wrapperRef, skeletonRef } = useTableHeight(height, data.length);
+  const { wrapperRef, skeletonRef } = useTableHeight(height);
 
   // NOTE: Use editable cell hook for keyboard navigation
   const editableCell = useEditableCell(tableContainerRef);
@@ -500,6 +501,7 @@ const TanstackTable = ({
     immediateSearchValue,
     filterPanel,
     customization,
+    showBatchSelectAll,
   });
 
   const filterPanelProps = getTanstackFilterPanelProps({
@@ -551,7 +553,6 @@ const TanstackTable = ({
     virtualRows,
     rowVirtualizer: virtualizationState.rowVirtualizer,
     table,
-    tableColumns,
     enableStickyColumns,
     enableEditableCells,
     editableCell,
@@ -564,7 +565,6 @@ const TanstackTable = ({
 
   const standardBodyProps = getStandardTableBodyProps({
     table,
-    tableColumns,
     enableStickyColumns,
     enableEditableCells,
     editableCell,
@@ -572,7 +572,6 @@ const TanstackTable = ({
     isRowExpansionEnabled,
     expansion,
     expansionFeature,
-    finalTableColumns,
     emptyStateRender,
     emptyStateTitle,
     emptyStateSubtitle,
@@ -594,7 +593,6 @@ const TanstackTable = ({
     initialPageSize: paginationFeature.initialPageSize,
     useZebraStyles,
     showPagination: paginationFeature.enabled,
-    height,
   });
 
   return (

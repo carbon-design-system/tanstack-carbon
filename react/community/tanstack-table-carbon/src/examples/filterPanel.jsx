@@ -192,6 +192,7 @@ const ExampleWithFilterPanel = () => {
             selection: {
               type: 'checkbox',
               batchActions,
+              showBatchSelectAll: true,
             },
             sideFilterPanel: {
               onAdvancedFilterClick: () => {
