@@ -68,7 +68,15 @@
   inline-size: unset;
   block-size: unset;
   box-shadow: none;
-  background: transparent;
+  background: $layer-01;
+}
+
+.filter--flyout__toggle--open {
+  background: var(--cds-layer-02);
+}
+
+::part(content) {
+  max-inline-size: none;
 }
 
 .filter-flyout-button-set {
@@ -85,6 +93,7 @@
     max-inline-size: 50%;
   }
 }
+
 
 .empty-table-body {
   height: 14rem;
