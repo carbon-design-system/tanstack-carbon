@@ -14,10 +14,14 @@ import { useDebounce } from './useDebounce';
  * @param {Function} options.onSearchChange - Optional callback for server-side search
  * @param {number}   options.debounceDelay  - Debounce delay in ms (default 500)
  */
-export const useTableSearch = ({ onSearchChange, debounceDelay = 500 }) => {
-  const [immediateSearchValue, setImmediateSearchValue] = useState('');
+export const useTableSearch = ({
+  initialSearchValue = '',
+  onSearchChange,
+  debounceDelay = 500,
+}) => {
+  const [immediateSearchValue, setImmediateSearchValue] = useState(initialSearchValue);
   const debouncedSearchValue = useDebounce(immediateSearchValue, debounceDelay);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState(initialSearchValue);
 
   // NOTE: Sync TanStack globalFilter state after debounce + fire server-side callback
   useEffect(() => {

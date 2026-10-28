@@ -115,6 +115,8 @@ const SimpleFilterField = ({
               handleCheckboxChange(columnId, value, checked);
             }}
             emptyMessage={noResultsMessage}
+            viewAllLabel={labels.filterCheckboxViewAll}
+            showLessLabel={labels.filterCheckboxShowLess}
           />
         </div>
       );

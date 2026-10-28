@@ -15,6 +15,7 @@ export const getTanstackTableFeatures = (features = null) => {
   const editing = features?.editing ?? null;
   const expansion = features?.expansion ?? null;
   const sideFilterPanel = features?.sideFilterPanel ?? null;
+  const statePersistence = features?.statePersistence ?? null;
 
   return {
     pagination,
@@ -27,8 +28,17 @@ export const getTanstackTableFeatures = (features = null) => {
     editing,
     expansion,
     sideFilterPanel,
+    statePersistence,
   };
 };
+
+export const getStatePersistenceFeatureConfig = (statePersistenceFeature = null) => ({
+  enabled:
+    statePersistenceFeature?.enabled !== false &&
+    typeof statePersistenceFeature?.onStateChange === 'function',
+  initialState: statePersistenceFeature?.initialState ?? null,
+  onStateChange: statePersistenceFeature?.onStateChange,
+});
 
 export const getSelectionFeatureConfig = (selectionFeature = null) => ({
   type: selectionFeature?.type ?? null,

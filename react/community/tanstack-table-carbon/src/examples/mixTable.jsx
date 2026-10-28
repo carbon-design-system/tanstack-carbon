@@ -590,7 +590,7 @@ const MixTable = ({ toggleHeaderContent, isHeaderContentVisible }) => {
             },
           }}
           tableSize="md"
-          height={600}
+          height={'100%'}
           emptyState={{
             title: 'No users found',
             subtitle:

@@ -216,6 +216,16 @@
   }
 }
 
+.checkboxViewMoreBtn {
+  align-self: flex-start;
+  padding: 0;
+  min-height: $spacing-06;
+
+  @include type-style('label-01');
+
+  color: $link-primary;
+}
+
 .checkboxWithCount {
   display: flex;
   align-items: center;

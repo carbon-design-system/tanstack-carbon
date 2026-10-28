@@ -203,6 +203,22 @@ export interface SideFilterPanelFeature {
   hideSearch?: boolean;
 }
 
+export interface TableStateSnapshot {
+  pagination?: {
+    pageIndex: number;
+    pageSize: number;
+  };
+  search?: string;
+  filters?: Array<{ id: string; value: any }>;
+  sorting?: Array<{ id: string; desc: boolean }>;
+}
+
+export interface StatePersistenceFeature {
+  enabled?: boolean;
+  initialState?: TableStateSnapshot;
+  onStateChange?: (state: TableStateSnapshot) => void;
+}
+
 export interface TableFeatures {
   pagination?: PaginationFeature;
   virtualization?: VirtualizationFeature;
@@ -214,6 +230,7 @@ export interface TableFeatures {
   columnPinning?: ColumnPinningFeature;
   columnSettings?: ColumnSettingsFeature;
   sideFilterPanel?: SideFilterPanelFeature;
+  statePersistence?: StatePersistenceFeature;
 }
 
 export interface EmptyState {
@@ -273,6 +290,8 @@ export interface TanstackTableLabels {
   filterFieldNoOptionsText?: string;
   filterDropdownLabel?: string;
   filterMultiSelectLabel?: string;
+  filterCheckboxViewAll?: string;
+  filterCheckboxShowLess?: string;
   filterDatePlaceholder?: string;
   filterDateRangeStartLabel?: string;
   filterDateRangeEndLabel?: string;

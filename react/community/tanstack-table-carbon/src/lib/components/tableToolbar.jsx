@@ -3,8 +3,8 @@ import React, { Fragment, useMemo, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Filter, Settings } from '@carbon/icons-react';
 import {
+  Button,
   DataTable,
-  IconButton,
   OverflowMenu,
   OverflowMenuItem,
 } from '@carbon/react';
@@ -204,20 +204,24 @@ const TableToolbar = ({
   }, [isLoading]);
 
   // NOTE: Helper function to render toolbar elements based on configuration
-  const renderToolbarElement = (item, index) => {
+  const renderToolbarElement = (item, index, isFirst, isLast) => {
     const key = `toolbar-${item.type}-${index}`;
+    const tooltipAlignment = isFirst ? 'start' : isLast ? 'end' : undefined;
 
     switch (item.type) {
       case 'filter':
         return (
-          <IconButton
+          <Button
             key={key}
+            hasIconOnly
             kind="ghost"
-            label={labels.toolbarFilterTooltip}
+            renderIcon={Filter}
+            iconDescription={labels.toolbarFilterTooltip}
             onClick={onToggleFilterPanel}
-            size="lg">
-            <Filter />
-          </IconButton>
+            size="lg"
+            tooltipAlignment={tooltipAlignment}
+            data-testid={`table-toolbar-filter-btn-${index}`}
+          />
         );
 
       case 'search':
@@ -238,7 +242,7 @@ const TableToolbar = ({
           />
         );
 
-      case 'settings':
+      case 'settings': {
         // NOTE: Build settings menu items array based on configuration
         const settingsMenuItems = item.menuItems || [];
 
@@ -265,6 +269,7 @@ const TableToolbar = ({
             aria-label={labels.toolbarSettingsAriaLabel}
             size="md"
             flipped
+            align={isLast ? 'top-end' : undefined}
             menuOptionsClass={styles.settingsMenu}>
             {menuToRender.map((menuItem, menuIndex) => {
               const menuKey = `settings-menu-${menuItem.type || menuIndex}`;
@@ -298,6 +303,7 @@ const TableToolbar = ({
             })}
           </OverflowMenu>
         );
+      }
 
       case 'custom':
         return item.element ? (
@@ -464,7 +470,12 @@ const TableToolbar = ({
           className={styles.tblToolbarContent}>
           {/* NOTE: Render toolbar elements based on configuration */}
           {toolbarElementsToRender.map((item, index) =>
-            renderToolbarElement(item, index)
+            renderToolbarElement(
+              item,
+              index,
+              index === 0,
+              index === toolbarElementsToRender.length - 1
+            )
           )}
         </TableToolbarContent>
 

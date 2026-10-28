@@ -4,15 +4,16 @@ import useTableHeight from '../useTableHeight';
 
 // NOTE: jsdom has no layout, so every element reports 0 for offsetHeight / clientHeight.
 // Sizes are provided per test id instead.
-const sizes = { parent: 500, thead: 40, pagination: 50, toolbar: 30 };
+const sizes = { parent: 500, thead: 40, pagination: 50, toolbar: 30, filterTags: 35 };
 
-const Harness = ({ height, content = 'table', hasEmptyState = false }) => {
+const Harness = ({ height, content = 'table', hasEmptyState = false, hasFilterTags = false }) => {
   const { wrapperRef } = useTableHeight(height);
 
   return (
     <div data-testid="parent">
       <div ref={wrapperRef} data-testid="wrapper">
         <div className="cds--table-toolbar" data-testid="toolbar" />
+        {hasFilterTags && <div data-filter-tags-summary="true" data-testid="filterTags" />}
         {content === 'table' && (
           <div className="cds--data-table-content" data-testid="scrollArea">
             <table>
@@ -58,6 +59,9 @@ describe('useTableHeight', () => {
         if (testId === 'toolbar') {
           return sizes.toolbar;
         }
+        if (testId === 'filterTags') {
+          return sizes.filterTags;
+        }
         return 0;
       },
     });
@@ -87,6 +91,14 @@ describe('useTableHeight', () => {
       expect(scrollArea.style.position).toBe('relative');
       // The wrapper is hidden only while measuring the parent
       expect(screen.getByTestId('wrapper').style.display).toBe('');
+    });
+
+    it('should subtract filter tags summary height when tags are present', () => {
+      render(<Harness height="100%" hasFilterTags />);
+
+      const scrollArea = screen.getByTestId('scrollArea');
+      // 500 (parent) - 40 (thead) - 50 (pagination) - 30 (toolbar) - 35 (filterTags) = 345
+      expect(scrollArea.style.maxHeight).toBe('345px');
     });
 
     it('should size the loading skeleton and count its pagination placeholder', () => {
@@ -125,6 +137,14 @@ describe('useTableHeight', () => {
       // 400 - 40 (thead) - 50 (pagination); the toolbar is not part of the pixel height
       expect(scrollArea.style.maxHeight).toBe('310px');
       expect(scrollArea.style.overflow).toBe('auto');
+    });
+
+    it('should subtract filter tags summary height from numeric height when present', () => {
+      render(<Harness height={400} hasFilterTags />);
+
+      const scrollArea = screen.getByTestId('scrollArea');
+      // 400 - 40 (thead) - 50 (pagination) - 35 (filterTags) = 275
+      expect(scrollArea.style.maxHeight).toBe('275px');
     });
 
     it('should parse a "px" string and size the empty state container', () => {

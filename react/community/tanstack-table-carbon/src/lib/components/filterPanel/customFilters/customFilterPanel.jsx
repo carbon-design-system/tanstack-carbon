@@ -1,5 +1,6 @@
 import React, { useMemo, memo } from 'react';
 import PropTypes from 'prop-types';
+import { useLabels } from '../../../contexts/labelsContext.jsx';
 import useCustomFilters from '../../../hooks/useCustomFilters';
 import styles from '../../scss/customFilterPanel.module.scss';
 import FilterSection from './filterSection';
@@ -16,6 +17,7 @@ const CustomFilterPanel = ({
   onValidationChange,
   onStateChange,
 }) => {
+  const labels = useLabels();
   const {
     filters: filterValues,
     updateFilter,
@@ -137,6 +139,7 @@ const CustomFilterPanel = ({
       error,
       size,
       searchTerm: filterSearchTerm,
+      labels,
     });
 
     if (!renderedFilter) {

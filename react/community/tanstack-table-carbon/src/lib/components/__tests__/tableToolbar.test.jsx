@@ -28,14 +28,38 @@ vi.mock('@carbon/icons-react', () => ({
 vi.mock('@carbon/react', () => {
   const React = require('react');
 
+  const Button = ({
+    children,
+    renderIcon: RenderIcon,
+    iconDescription,
+    'aria-label': ariaLabel,
+    onClick,
+    tooltipAlignment,
+    'data-testid': testId,
+  }) => (
+    <button
+      type="button"
+      aria-label={iconDescription || ariaLabel}
+      onClick={onClick}
+      data-tooltip-alignment={tooltipAlignment}
+      data-testid={testId}>
+      {RenderIcon && <RenderIcon />}
+      {children}
+    </button>
+  );
+
   const OverflowMenu = ({
     children,
     ariaLabel,
     'aria-label': ariaLabelProp,
     iconDescription,
+    align,
   }) => (
     <div>
-      <button type="button">
+      <button
+        type="button"
+        aria-label={ariaLabelProp || ariaLabel || iconDescription}
+        data-align={align}>
         {ariaLabelProp || ariaLabel || iconDescription}
       </button>
       <div>{children}</div>
@@ -127,13 +151,9 @@ vi.mock('@carbon/react', () => {
       onChange={(event) => onChange(event)}
     />
   );
-  const IconButton = ({ children, label, onClick }) => (
-    <button type="button" aria-label={label} onClick={onClick}>
-      {children}
-    </button>
-  );
 
   return {
+    Button,
     DataTable: {
       TableToolbar,
       TableBatchActions,
@@ -141,7 +161,6 @@ vi.mock('@carbon/react', () => {
       TableToolbarContent,
       TableToolbarSearch,
     },
-    IconButton,
     OverflowMenu,
     OverflowMenuItem,
   };
@@ -197,9 +216,13 @@ describe('TableToolbar', () => {
 
     render(<TableToolbar {...props} />);
 
-    expect(
-      screen.getByLabelText(DEFAULT_LABELS.toolbarFilterTooltip)
-    ).toBeInTheDocument();
+    const filterBtn = screen.getByTestId('table-toolbar-filter-btn-0');
+    expect(filterBtn).toBeInTheDocument();
+    expect(filterBtn).toHaveAttribute(
+      'aria-label',
+      DEFAULT_LABELS.toolbarFilterTooltip
+    );
+    expect(filterBtn).toHaveAttribute('data-tooltip-alignment', 'start');
     expect(screen.getByLabelText('Search table')).toBeInTheDocument();
     expect(screen.getByText('Export')).toBeInTheDocument();
     expect(screen.getByText('Columns')).toBeInTheDocument();
@@ -212,7 +235,7 @@ describe('TableToolbar', () => {
 
     render(<TableToolbar {...props} />);
 
-    fireEvent.click(screen.getByLabelText(DEFAULT_LABELS.toolbarFilterTooltip));
+    fireEvent.click(screen.getByTestId('table-toolbar-filter-btn-0'));
     expect(props.onToggleFilterPanel).toHaveBeenCalledTimes(1);
 
     const search = screen.getByLabelText('Search table');
@@ -269,6 +292,35 @@ describe('TableToolbar', () => {
     );
 
     expect(screen.queryByText('Column settings')).not.toBeInTheDocument();
+  });
+
+  it('sets align="top-end" when settings menu is the last item and omits it when not last', () => {
+    useResponsiveBatchActions.mockReturnValue({ shouldUseOverflow: false });
+    const props = baseProps();
+    props.toolbar = [
+      { type: 'search' },
+      {
+        type: 'settings',
+        menuItems: [{ label: 'Export', onClick: vi.fn() }],
+      },
+    ];
+
+    const { unmount } = render(<TableToolbar {...props} />);
+    const settingsBtn = screen.getByLabelText(DEFAULT_LABELS.toolbarSettingsAriaLabel);
+    expect(settingsBtn).toHaveAttribute('data-align', 'top-end');
+
+    unmount();
+
+    props.toolbar = [
+      {
+        type: 'settings',
+        menuItems: [{ label: 'Export', onClick: vi.fn() }],
+      },
+      { type: 'search' },
+    ];
+    render(<TableToolbar {...props} />);
+    const settingsBtnNotLast = screen.getByLabelText(DEFAULT_LABELS.toolbarSettingsAriaLabel);
+    expect(settingsBtnNotLast).not.toHaveAttribute('data-align');
   });
 
   it('renders batch actions as direct buttons and custom elements on large screens', () => {

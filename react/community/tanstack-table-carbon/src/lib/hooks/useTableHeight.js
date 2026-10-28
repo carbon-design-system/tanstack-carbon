@@ -2,6 +2,7 @@ import { useRef, useLayoutEffect, useCallback } from 'react';
 
 // The loading skeleton renders its own pagination placeholder instead of .cds--pagination
 const PAGINATION_SELECTOR = ':scope .cds--pagination, :scope [data-skeleton-pagination]';
+const FILTER_TAGS_SELECTOR = ':scope [data-filter-tags-summary]';
 
 /**
  * Custom hook to manage table, skeleton & emptyState container height
@@ -44,11 +45,13 @@ const useTableHeight = (height) => {
         const headerElement = wrapperRef.current.querySelector(':scope thead');
         const paginationElement = wrapperRef.current.querySelector(PAGINATION_SELECTOR);
         const toolbarElement = wrapperRef.current.querySelector(':scope .cds--table-toolbar');
+        const filterTagsElement = wrapperRef.current.querySelector(FILTER_TAGS_SELECTOR);
 
         const headerHeight = headerElement?.offsetHeight || 0;
         const paginationHeight = paginationElement?.offsetHeight || 0;
         const toolbarHeight = toolbarElement?.offsetHeight || 0;
-        const totalOffset = headerHeight + paginationHeight + toolbarHeight;
+        const filterTagsHeight = filterTagsElement?.offsetHeight || 0;
+        const totalOffset = headerHeight + paginationHeight + toolbarHeight + filterTagsHeight;
 
         const contentHeight = Math.max(0, parentHeight - totalOffset);
 
@@ -70,10 +73,12 @@ const useTableHeight = (height) => {
       if (!Number.isNaN(parsedValue)) {
         const headerElement = wrapperRef.current.querySelector(':scope thead');
         const paginationElement = wrapperRef.current.querySelector(PAGINATION_SELECTOR);
+        const filterTagsElement = wrapperRef.current.querySelector(FILTER_TAGS_SELECTOR);
 
         const headerHeight = headerElement?.offsetHeight || 0;
         const paginationHeight = paginationElement?.offsetHeight || 0;
-        const totalOffset = headerHeight + paginationHeight;
+        const filterTagsHeight = filterTagsElement?.offsetHeight || 0;
+        const totalOffset = headerHeight + paginationHeight + filterTagsHeight;
 
         const contentHeight = Math.max(0, parsedValue - totalOffset);
 

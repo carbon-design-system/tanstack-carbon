@@ -3,6 +3,7 @@ import { DEFAULT_PAGINATION } from '../constants';
 
 export const usePaginationFeature = ({
   pagination,
+  initialPaginationState,
   enableVirtualization,
   dataLength,
   isServerSidePagination,
@@ -16,8 +17,9 @@ export const usePaginationFeature = ({
   );
 
   const [paginationState, setPaginationState] = useState({
-    pageIndex: pagination?.pageIndex ?? 0,
-    pageSize: pagination?.pageSize ?? DEFAULT_PAGINATION.pageSize,
+    pageIndex: initialPaginationState?.pageIndex ?? pagination?.pageIndex ?? 0,
+    pageSize:
+      initialPaginationState?.pageSize ?? pagination?.pageSize ?? DEFAULT_PAGINATION.pageSize,
   });
 
   const handlePaginationChange = useCallback(
@@ -58,7 +60,8 @@ export const usePaginationFeature = ({
 
   const paginationConfig = pagination || null;
   const enablePagination = !enableVirtualization && !!paginationConfig;
-  const initialPageSize = paginationConfig?.pageSize ?? DEFAULT_PAGINATION.pageSize;
+  const initialPageSize =
+    initialPaginationState?.pageSize ?? paginationConfig?.pageSize ?? DEFAULT_PAGINATION.pageSize;
   const pageSizeOptions = paginationConfig?.pageSizeOptions ?? DEFAULT_PAGINATION.pageSizeOptions;
 
   return {

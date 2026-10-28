@@ -203,9 +203,16 @@ export const getColumnCustomizationPanelProps = ({ customization, table }) => ({
   onReorder: customization.reorderColumns,
 });
 
-export const getPaginationSectionFeature = ({ paginationFeature, table }) => ({
+export const getPaginationSectionFeature = ({
+  paginationFeature,
+  table,
+  pagination,
+  isServerSidePagination,
+}) => ({
   ...paginationFeature,
-  totalItems: table.getFilteredRowModel().rows.length,
+  totalItems: isServerSidePagination
+    ? (pagination?.rowCount ?? table.getFilteredRowModel().rows.length)
+    : table.getFilteredRowModel().rows.length,
 });
 
 export const getSkeletonProps = ({
