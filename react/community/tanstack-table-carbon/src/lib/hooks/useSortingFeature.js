@@ -5,7 +5,9 @@ export const useSortingFeature = (sortingFeature, initialSorting) => {
   const onChange = sortingFeature?.onChange;
   const isControlledSorting = typeof onChange === 'function';
 
-  const [sorting, setSorting] = useState(controlledSorting ?? initialSorting ?? []);
+  const [sorting, setSorting] = useState(
+    controlledSorting ?? initialSorting ?? []
+  );
 
   useEffect(() => {
     if (controlledSorting !== undefined) {

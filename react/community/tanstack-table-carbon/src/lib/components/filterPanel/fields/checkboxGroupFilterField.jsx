@@ -24,8 +24,12 @@ const CheckboxGroupFilterField = ({
 
   const shouldShowToggle = items.length > CHECKBOX_SHOW_ALL_THRESHOLD;
   const visibleItems =
-    shouldShowToggle && !isExpanded ? items.slice(0, CHECKBOX_COLLAPSED_COUNT) : items;
-  const hiddenCount = items.length - CHECKBOX_COLLAPSED_COUNT;
+    shouldShowToggle && !isExpanded
+      ? items.slice(0, CHECKBOX_COLLAPSED_COUNT)
+      : items;
+  const hiddenCount = shouldShowToggle
+    ? items.length - CHECKBOX_COLLAPSED_COUNT
+    : 0;
 
   const resolvedViewAll = viewAllLabel || labels.filterCheckboxViewAll;
   const resolvedShowLess = showLessLabel || labels.filterCheckboxShowLess;
@@ -34,7 +38,9 @@ const CheckboxGroupFilterField = ({
     ? resolvedShowLess
     : resolvedViewAll.replace('{count}', String(hiddenCount));
 
-  const buttonTestId = `${String(legend).toLowerCase().replace(/\s+/g, '-')}-view-all-btn`;
+  const buttonTestId = `${String(legend)
+    .toLowerCase()
+    .replace(/\s+/g, '-')}-view-all-btn`;
 
   const content = (
     <Layer level={1}>
@@ -57,7 +63,9 @@ const CheckboxGroupFilterField = ({
             </div>
           ))
         ) : (
-          <p className={styles.noResults}>{emptyMessage || labels.filterFieldNoOptionsText}</p>
+          <p className={styles.noResults}>
+            {emptyMessage || labels.filterFieldNoOptionsText}
+          </p>
         )}
         {shouldShowToggle && (
           <Button
@@ -65,8 +73,7 @@ const CheckboxGroupFilterField = ({
             size="xs"
             data-testid={buttonTestId}
             className={styles.checkboxViewMoreBtn}
-            onClick={() => setIsExpanded((prev) => !prev)}
-          >
+            onClick={() => setIsExpanded((prev) => !prev)}>
             {toggleButtonText}
           </Button>
         )}

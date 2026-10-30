@@ -306,7 +306,9 @@ describe('TableToolbar', () => {
     ];
 
     const { unmount } = render(<TableToolbar {...props} />);
-    const settingsBtn = screen.getByLabelText(DEFAULT_LABELS.toolbarSettingsAriaLabel);
+    const settingsBtn = screen.getByLabelText(
+      DEFAULT_LABELS.toolbarSettingsAriaLabel
+    );
     expect(settingsBtn).toHaveAttribute('data-align', 'top-end');
 
     unmount();
@@ -319,7 +321,9 @@ describe('TableToolbar', () => {
       { type: 'search' },
     ];
     render(<TableToolbar {...props} />);
-    const settingsBtnNotLast = screen.getByLabelText(DEFAULT_LABELS.toolbarSettingsAriaLabel);
+    const settingsBtnNotLast = screen.getByLabelText(
+      DEFAULT_LABELS.toolbarSettingsAriaLabel
+    );
     expect(settingsBtnNotLast).not.toHaveAttribute('data-align');
   });
 
@@ -412,18 +416,26 @@ describe('TableToolbar', () => {
 
   it('renders the Select all button only when onSelectAll is provided', () => {
     useResponsiveBatchActions.mockReturnValue({ shouldUseOverflow: false });
-    const batchActions = [{ label: 'Delete', icon: () => null, onClick: vi.fn() }];
+    const batchActions = [
+      { label: 'Delete', icon: () => null, onClick: vi.fn() },
+    ];
     const { totalCount } = baseProps();
     const selectAllLabel = `${DEFAULT_LABELS.batchActionsSelectAll} (${totalCount})`;
 
     const { unmount } = render(
-      <TableToolbar {...baseProps()} onSelectAll={undefined} batchActions={batchActions} />
+      <TableToolbar
+        {...baseProps()}
+        onSelectAll={undefined}
+        batchActions={batchActions}
+      />
     );
     expect(screen.queryByText(selectAllLabel)).not.toBeInTheDocument();
 
     unmount();
 
     render(<TableToolbar {...baseProps()} batchActions={batchActions} />);
-    expect(screen.getByRole('button', { name: selectAllLabel })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: selectAllLabel })
+    ).toBeInTheDocument();
   });
 });

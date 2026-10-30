@@ -103,7 +103,10 @@ const TableToolbar = ({
 }) => {
   const labels = useLabels();
 
-  const batchActionsTranslateWithId = (id, { totalCount: count, totalSelected } = {}) => {
+  const batchActionsTranslateWithId = (
+    id,
+    { totalCount: count, totalSelected } = {}
+  ) => {
     switch (id) {
       case 'carbon.table.batch.cancel':
         return labels.batchActionsCancel;

@@ -198,10 +198,17 @@ const getSavedState = () => {
     if (stored) {
       const parsed = JSON.parse(stored);
       return {
-        filters: Array.isArray(parsed.filters) ? parsed.filters : DEFAULT_STATE.filters,
-        search: typeof parsed.search === 'string' ? parsed.search : DEFAULT_STATE.search,
+        filters: Array.isArray(parsed.filters)
+          ? parsed.filters
+          : DEFAULT_STATE.filters,
+        search:
+          typeof parsed.search === 'string'
+            ? parsed.search
+            : DEFAULT_STATE.search,
         pagination: parsed.pagination ?? DEFAULT_STATE.pagination,
-        sorting: Array.isArray(parsed.sorting) ? parsed.sorting : DEFAULT_STATE.sorting,
+        sorting: Array.isArray(parsed.sorting)
+          ? parsed.sorting
+          : DEFAULT_STATE.sorting,
       };
     }
   } catch {
@@ -256,7 +263,12 @@ const PersistentFilters = () => {
       },
       cell: (info) => {
         const value = info.getValue();
-        const type = value === 'Active' ? 'green' : value === 'Pending' ? 'warm-gray' : 'red';
+        const type =
+          value === 'Active'
+            ? 'green'
+            : value === 'Pending'
+            ? 'warm-gray'
+            : 'red';
         return <Tag type={type}>{value}</Tag>;
       },
     },
@@ -346,10 +358,10 @@ const PersistentFilters = () => {
           <p className="example-description">
             Demonstrates all side panel filter variants working with state
             persistence: Text, Checkbox, Select, MultiSelect, Radio, Slider,
-            Number, Date, Date Range, and Time. The search text, the sorting, the
-            current page and the page size are persisted too. Apply any filters,
-            search, change the page or the page size, reload the page, and
-            everything is restored without having to click &quot;Apply&quot;
+            Number, Date, Date Range, and Time. The search text, the sorting,
+            the current page and the page size are persisted too. Apply any
+            filters, search, change the page or the page size, reload the page,
+            and everything is restored without having to click &quot;Apply&quot;
             again.
           </p>
         </div>

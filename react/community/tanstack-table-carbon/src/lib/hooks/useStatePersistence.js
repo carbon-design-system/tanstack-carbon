@@ -43,7 +43,9 @@ export const useStatePersistence = ({
 
   const onStateChange = statePersistence?.onStateChange;
   const isEnabled = Boolean(
-    statePersistence && statePersistence.enabled !== false && typeof onStateChange === 'function'
+    statePersistence &&
+      statePersistence.enabled !== false &&
+      typeof onStateChange === 'function'
   );
 
   useEffect(() => {
@@ -57,12 +59,15 @@ export const useStatePersistence = ({
       last.pagination?.pageSize === paginationState?.pageSize;
     const isSearchEqual = (last.search ?? '') === (searchValue ?? '');
     const isFiltersEqual = isEqualFilterValue(last.filters, columnFilters);
-    const isSortingEqual = isEqualFilterValue(last.sorting, sorting);
+    const isSortingEqual = isEqualFilterValue(
+      last.sorting ?? [],
+      sorting ?? []
+    );
 
-    if (isPaginationEqual && isSearchEqual && isFiltersEqual && isSortingEqual) {
-      return;
-    }
-
+    // Always keep the ref current so that if isEnabled later flips true→false→true,
+    // the snapshot reflects the most recent state rather than the initial mount values.
+    // Without this, re-enabling persistence fires a spurious onStateChange even when
+    // nothing has actually changed since the last reported snapshot.
     lastReportedStateRef.current = {
       pagination: paginationState,
       search: searchValue,
@@ -70,13 +75,29 @@ export const useStatePersistence = ({
       sorting,
     };
 
+    if (
+      isPaginationEqual &&
+      isSearchEqual &&
+      isFiltersEqual &&
+      isSortingEqual
+    ) {
+      return;
+    }
+
     onStateChange({
       pagination: paginationState,
       search: searchValue,
       filters: columnFilters,
       sorting,
     });
-  }, [isEnabled, onStateChange, paginationState, searchValue, columnFilters, sorting]);
+  }, [
+    isEnabled,
+    onStateChange,
+    paginationState,
+    searchValue,
+    columnFilters,
+    sorting,
+  ]);
 };
 
 export default useStatePersistence;

@@ -75,6 +75,7 @@ export const useFilterSidePanelController = ({
 
     onApplyFilters(nextFilters);
     onSidePanelApply?.({
+      allFilters: cloneFilterPayload(nextFilters),
       changedFilters,
     });
   }, [localFilters, onApplyFilters, onSidePanelApply]);
@@ -86,6 +87,7 @@ export const useFilterSidePanelController = ({
     appliedFiltersRef.current = [];
 
     onSidePanelReset?.({
+      allFilters: [],
       changedFilters: [],
     });
   }, [onClearFilters, onSidePanelReset]);

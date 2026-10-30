@@ -40,9 +40,11 @@ describe('useFilterSidePanelController', () => {
     ]);
     expect(onClearFilters).toHaveBeenCalledTimes(1);
     expect(onSidePanelApply).toHaveBeenCalledWith({
+      allFilters: [{ id: 'status', value: 'active' }],
       changedFilters: [{ id: 'status', value: 'active' }],
     });
     expect(onSidePanelReset).toHaveBeenCalledWith({
+      allFilters: [],
       changedFilters: [],
     });
   });

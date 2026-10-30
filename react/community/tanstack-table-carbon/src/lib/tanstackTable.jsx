@@ -151,7 +151,9 @@ const TanstackTable = ({
   } = getTanstackTableFeatures(features);
 
   const initialTableState = statePersistenceFeature?.initialState;
-  const [columnFilters, setColumnFilters] = useState(initialTableState?.filters ?? []);
+  const [columnFilters, setColumnFilters] = useState(
+    initialTableState?.filters ?? []
+  );
 
   const {
     type: selectionType,

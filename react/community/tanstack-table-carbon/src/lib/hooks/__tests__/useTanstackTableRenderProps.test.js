@@ -6,7 +6,9 @@ describe('getPaginationSectionFeature', () => {
   const paginationFeature = { shouldRender: true };
 
   it('uses the filtered row count for client-side pagination and rowCount for server-side pagination', () => {
-    expect(getPaginationSectionFeature({ paginationFeature, table }).totalItems).toBe(10);
+    expect(
+      getPaginationSectionFeature({ paginationFeature, table }).totalItems
+    ).toBe(10);
 
     expect(
       getPaginationSectionFeature({

@@ -1,4 +1,4 @@
-import { ReactNode, ReactElement } from 'react';
+import { ReactNode, ReactElement, ComponentType, FC } from 'react';
 import { ColumnDef, Row } from '@tanstack/react-table';
 
 export interface SettingsMenuItem {
@@ -17,10 +17,14 @@ export type ToolbarItem =
   | { type: 'custom'; element: ReactElement };
 
 export interface PaginationFeature {
+  /** Current page index (0-based). Used for server-side pagination. */
+  pageIndex?: number;
   pageSize?: number;
   pageSizeOptions?: number[];
-  onChange?: (pageIndex: number, pageSize: number) => void;
-  totalRows?: number;
+  /** Providing this switches the table to server-side pagination. */
+  onChange?: (pagination: { pageIndex: number; pageSize: number }) => void;
+  /** Server-side pagination: total number of rows across all pages. */
+  rowCount?: number;
 }
 
 export interface VirtualizationFeature {
@@ -34,10 +38,38 @@ export interface ExpansionFeature {
   expandColumnPosition?: 'first' | 'afterSelection' | 'last';
 }
 
+export interface BatchActionOption {
+  id: string;
+  label: string;
+  isDelete?: boolean;
+  hasDivider?: boolean;
+  disabled?: boolean;
+}
+
+export type BatchAction =
+  | {
+      /** Regular action button (default when `type` is omitted) */
+      type?: 'button';
+      label: string;
+      icon?: ComponentType<any>;
+      onClick: (selectedRows: any[]) => void;
+    }
+  | {
+      type: 'overflow';
+      label?: string;
+      options: BatchActionOption[];
+      onOptionClick: (optionId: string, selectedRows: any[]) => void;
+    }
+  | {
+      type: 'custom';
+      /** Element, or a function that receives the selected rows and returns an element */
+      element: ReactNode | ((selectedRows: any[]) => ReactNode);
+    };
+
 export interface SelectionFeature {
   type?: 'checkbox' | 'radio';
   onChange?: (selectedRows: any[]) => void;
-  batchActions?: ReactElement;
+  batchActions?: BatchAction[];
   /** When true, shows the "Select all" button in the batch action bar. Defaults to false. */
   showBatchSelectAll?: boolean;
 }
@@ -53,6 +85,9 @@ export interface SearchFeature {
 }
 
 export interface SortingFeature {
+  /** Controlled sorting state. Use together with `onChange` for server-side sorting. */
+  sorting?: Array<{ id: string; desc: boolean }>;
+  /** Providing this switches the table to server-side sorting. */
   onChange?: (sorting: Array<{ id: string; desc: boolean }>) => void;
 }
 
@@ -77,6 +112,7 @@ export interface FilterOption {
 }
 
 export interface FilterValidation {
+  required?: boolean;
   min?: number;
   max?: number;
   custom?: (value: any, allFilters: Record<string, any>) => boolean;
@@ -176,32 +212,67 @@ export interface CustomFilterSection {
 /** A config entry is either a standalone filter item or an accordion section */
 export type CustomFilterConfigEntry = CustomFilterItem | CustomFilterSection;
 
-export interface SideFilterPanelFeature {
+/** A column filter entry (`id` is the column id) */
+export interface ChangedFilter {
+  id: string;
+  value: any;
+}
+
+/** Payload passed to `onApply` / `onReset` in column filter mode */
+export interface SideFilterPanelColumnPayload {
+  /** The full set of currently applied filters — use this to build a server-side request. */
+  allFilters: ChangedFilter[];
+  /** Only the filters that changed since the last Apply/Reset. */
+  changedFilters: ChangedFilter[];
+}
+
+interface SideFilterPanelBase {
   /** Panel width in pixels (default: 350) */
   width?: number;
   /** Called when "Advanced filters" link is clicked */
   onAdvancedFilterClick?: () => void;
-  /**
-   * Called when Apply is clicked in custom-filter mode.
-   * Receives the flat map of all filter values.
-   */
-  onApply?: (
-    filterValues: Record<string, any>,
-    meta?: { changedFilters: string[] }
-  ) => void;
-  /** Called when Clear/Reset is clicked in custom-filter mode */
-  onReset?: (
-    filterValues: Record<string, any>,
-    meta?: { changedFilters: string[] }
-  ) => void;
-  /**
-   * Custom filter configuration — array of filter items and/or accordion sections.
-   * When provided, the panel renders these instead of column-based filters.
-   */
-  config?: CustomFilterConfigEntry[];
   /** Hide the search box at the top of the filter panel (default: false) */
   hideSearch?: boolean;
 }
+
+/**
+ * Custom filter mode — `config` is provided and the panel renders it instead of
+ * column-based filters. `onApply` and `onReset` are both required in this mode.
+ */
+export interface SideFilterPanelCustomMode extends SideFilterPanelBase {
+  /** Custom filter configuration — array of filter items and/or accordion sections. */
+  config: CustomFilterConfigEntry[];
+  /**
+   * Called when Apply is clicked.
+   * `filterValues` is the flat map of all filter values; `meta.changedFilters` lists the
+   * filters that changed since the last Apply/Reset.
+   */
+  onApply: (
+    filterValues: Record<string, any>,
+    meta: { changedFilters: ChangedFilter[] }
+  ) => void;
+  /** Called when Clear/Reset is clicked. `filterValues` is the reset state of the filters. */
+  onReset: (
+    filterValues: Record<string, any>,
+    meta: { changedFilters: ChangedFilter[] }
+  ) => void;
+}
+
+/**
+ * Column filter mode — `config` is omitted and the panel builds filters from the columns.
+ * Callbacks are optional notifications and receive a single payload object.
+ */
+export interface SideFilterPanelColumnMode extends SideFilterPanelBase {
+  config?: undefined;
+  /** Called after Apply. */
+  onApply?: (payload: SideFilterPanelColumnPayload) => void;
+  /** Called after Clear/Reset. `allFilters` and `changedFilters` are both empty arrays. */
+  onReset?: (payload: SideFilterPanelColumnPayload) => void;
+}
+
+export type SideFilterPanelFeature =
+  | SideFilterPanelCustomMode
+  | SideFilterPanelColumnMode;
 
 export interface TableStateSnapshot {
   pagination?: {
@@ -352,7 +423,7 @@ export interface TanstackTableProps {
   /** Empty state configuration */
   emptyState?: EmptyState;
 
-  /** Explicit height (e.g., "500px" or 500). If null, auto-calculates from parent */
+  /** Explicit height in pixels (e.g. 500, "500px"), "100%" to fit parent container, or null for natural height */
   height?: string | number | null;
 
   /** Table size: "xs", "sm", "md", "lg", "xl" */
@@ -365,6 +436,6 @@ export interface TanstackTableProps {
   labels?: TanstackTableLabels;
 }
 
-declare const TanstackTable: React.FC<TanstackTableProps>;
+declare const TanstackTable: FC<TanstackTableProps>;
 
 export default TanstackTable;

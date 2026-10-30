@@ -32,7 +32,9 @@ export const getTanstackTableFeatures = (features = null) => {
   };
 };
 
-export const getStatePersistenceFeatureConfig = (statePersistenceFeature = null) => ({
+export const getStatePersistenceFeatureConfig = (
+  statePersistenceFeature = null
+) => ({
   enabled:
     statePersistenceFeature?.enabled !== false &&
     typeof statePersistenceFeature?.onStateChange === 'function',

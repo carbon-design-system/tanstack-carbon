@@ -19,7 +19,8 @@ export const useTableSearch = ({
   onSearchChange,
   debounceDelay = 500,
 }) => {
-  const [immediateSearchValue, setImmediateSearchValue] = useState(initialSearchValue);
+  const [immediateSearchValue, setImmediateSearchValue] =
+    useState(initialSearchValue);
   const debouncedSearchValue = useDebounce(immediateSearchValue, debounceDelay);
   const [globalFilter, setGlobalFilter] = useState(initialSearchValue);
 

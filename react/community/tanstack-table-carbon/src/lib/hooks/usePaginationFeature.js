@@ -19,7 +19,9 @@ export const usePaginationFeature = ({
   const [paginationState, setPaginationState] = useState({
     pageIndex: initialPaginationState?.pageIndex ?? pagination?.pageIndex ?? 0,
     pageSize:
-      initialPaginationState?.pageSize ?? pagination?.pageSize ?? DEFAULT_PAGINATION.pageSize,
+      initialPaginationState?.pageSize ??
+      pagination?.pageSize ??
+      DEFAULT_PAGINATION.pageSize,
   });
 
   const handlePaginationChange = useCallback(
@@ -29,7 +31,8 @@ export const usePaginationFeature = ({
           pageIndex: pagination?.pageIndex ?? 0,
           pageSize: pagination?.pageSize ?? DEFAULT_PAGINATION.pageSize,
         };
-        const newPagination = typeof updater === 'function' ? updater(baseState) : updater;
+        const newPagination =
+          typeof updater === 'function' ? updater(baseState) : updater;
 
         if (
           baseState.pageIndex === newPagination.pageIndex &&
@@ -43,7 +46,8 @@ export const usePaginationFeature = ({
       }
 
       setPaginationState((prev) => {
-        const newPagination = typeof updater === 'function' ? updater(prev) : updater;
+        const newPagination =
+          typeof updater === 'function' ? updater(prev) : updater;
 
         if (
           prev.pageIndex === newPagination.pageIndex &&
@@ -61,14 +65,19 @@ export const usePaginationFeature = ({
   const paginationConfig = pagination || null;
   const enablePagination = !enableVirtualization && !!paginationConfig;
   const initialPageSize =
-    initialPaginationState?.pageSize ?? paginationConfig?.pageSize ?? DEFAULT_PAGINATION.pageSize;
-  const pageSizeOptions = paginationConfig?.pageSizeOptions ?? DEFAULT_PAGINATION.pageSizeOptions;
+    initialPaginationState?.pageSize ??
+    paginationConfig?.pageSize ??
+    DEFAULT_PAGINATION.pageSize;
+  const pageSizeOptions =
+    paginationConfig?.pageSizeOptions ?? DEFAULT_PAGINATION.pageSizeOptions;
 
   return {
     enabled: enablePagination,
     initialPageSize,
     pageSizeOptions,
-    paginationState: isServerSidePagination ? controlledPaginationState : paginationState,
+    paginationState: isServerSidePagination
+      ? controlledPaginationState
+      : paginationState,
     handlePaginationChange,
     tableOptions: {
       onPaginationChange: handlePaginationChange,

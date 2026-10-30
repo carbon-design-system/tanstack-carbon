@@ -259,15 +259,29 @@ useEffect(() => {
   });
 }, []);
 
-2. Pass controlled props
+2. Pass controlled props via features.columnSettings
 <TanstackTable
-  columnSettings={columnSettings}
-  onColumnSettingsChange={async (newSettings) => {
-    await saveUserPreferences({
-      columnVisibility: newSettings.visibility,
-      columnOrder: newSettings.order
-    });
-    setColumnSettings(newSettings);
+  features={{
+    columnSettings: {
+      visibility: columnSettings.visibility,
+      order: columnSettings.order,
+      onVisibilityChange: async (visibility) => {
+        const updated = { ...columnSettings, visibility };
+        await saveUserPreferences({
+          columnVisibility: updated.visibility,
+          columnOrder: updated.order
+        });
+        setColumnSettings(updated);
+      },
+      onOrderChange: async (order) => {
+        const updated = { ...columnSettings, order };
+        await saveUserPreferences({
+          columnVisibility: updated.visibility,
+          columnOrder: updated.order
+        });
+        setColumnSettings(updated);
+      }
+    }
   }}
 />`}
           </CodeSnippet>

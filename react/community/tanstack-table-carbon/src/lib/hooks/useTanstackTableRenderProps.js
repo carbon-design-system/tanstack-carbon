@@ -211,7 +211,7 @@ export const getPaginationSectionFeature = ({
 }) => ({
   ...paginationFeature,
   totalItems: isServerSidePagination
-    ? (pagination?.rowCount ?? table.getFilteredRowModel().rows.length)
+    ? pagination?.rowCount ?? table.getFilteredRowModel().rows.length
     : table.getFilteredRowModel().rows.length,
 });
 

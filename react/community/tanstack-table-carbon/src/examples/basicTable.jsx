@@ -347,7 +347,6 @@ const ExampleTanstack = () => {
           ]}
           tableSize="md" // "xs", "sm", "md", "lg", "xl"
           useZebraStyles={false}
-          onSelectionChange={() => {}}
           features={{
             selection: {
               type: 'checkbox',

@@ -4,31 +4,51 @@ import useTableHeight from '../useTableHeight';
 
 // NOTE: jsdom has no layout, so every element reports 0 for offsetHeight / clientHeight.
 // Sizes are provided per test id instead.
-const sizes = { parent: 500, thead: 40, pagination: 50, toolbar: 30, filterTags: 35 };
+const sizes = {
+  parent: 500,
+  thead: 40,
+  pagination: 50,
+  toolbar: 30,
+  filterTags: 35,
+};
 
-const Harness = ({ height, content = 'table', hasEmptyState = false, hasFilterTags = false }) => {
+const Harness = ({
+  height,
+  content = 'table',
+  hasEmptyState = false,
+  hasFilterTags = false,
+}) => {
   const { wrapperRef } = useTableHeight(height);
 
   return (
     <div data-testid="parent">
       <div ref={wrapperRef} data-testid="wrapper">
         <div className="cds--table-toolbar" data-testid="toolbar" />
-        {hasFilterTags && <div data-filter-tags-summary="true" data-testid="filterTags" />}
+        {hasFilterTags && (
+          <div data-filter-tags-summary="true" data-testid="filterTags" />
+        )}
         {content === 'table' && (
           <div className="cds--data-table-content" data-testid="scrollArea">
             <table>
               <thead data-testid="thead" />
             </table>
-            {hasEmptyState && <div className="emptyStateDt" data-testid="emptyState" />}
+            {hasEmptyState && (
+              <div className="emptyStateDt" data-testid="emptyState" />
+            )}
             <div className="cds--pagination" data-testid="pagination" />
           </div>
         )}
         {content === 'skeleton' && (
-          <section className="cds--data-table-container" data-testid="skeletonArea">
+          <section
+            className="cds--data-table-container"
+            data-testid="skeletonArea">
             <table>
               <thead data-testid="thead" />
             </table>
-            <div data-skeleton-pagination="true" data-testid="skeletonPagination" />
+            <div
+              data-skeleton-pagination="true"
+              data-testid="skeletonPagination"
+            />
           </section>
         )}
       </div>
@@ -41,7 +61,10 @@ describe('useTableHeight', () => {
     HTMLElement.prototype,
     'offsetHeight'
   );
-  const originalClientHeight = Object.getOwnPropertyDescriptor(Element.prototype, 'clientHeight');
+  const originalClientHeight = Object.getOwnPropertyDescriptor(
+    Element.prototype,
+    'clientHeight'
+  );
 
   beforeEach(() => {
     sizes.parent = 500;
@@ -75,8 +98,16 @@ describe('useTableHeight', () => {
   });
 
   afterEach(() => {
-    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', originalOffsetHeight);
-    Object.defineProperty(Element.prototype, 'clientHeight', originalClientHeight);
+    Object.defineProperty(
+      HTMLElement.prototype,
+      'offsetHeight',
+      originalOffsetHeight
+    );
+    Object.defineProperty(
+      Element.prototype,
+      'clientHeight',
+      originalClientHeight
+    );
     vi.unstubAllGlobals();
   });
 
@@ -182,7 +213,9 @@ describe('useTableHeight', () => {
   });
 
   it('should do nothing when there is no table or skeleton to size', () => {
-    expect(() => render(<Harness height="100%" content="none" />)).not.toThrow();
+    expect(() =>
+      render(<Harness height="100%" content="none" />)
+    ).not.toThrow();
 
     // No inline style may be written anywhere, including the temporary display: none used to measure
     expect(screen.getByTestId('wrapper')).not.toHaveAttribute('style');
@@ -207,7 +240,9 @@ describe('useTableHeight', () => {
       const scrollArea = screen.getByTestId('scrollArea');
 
       expect(scrollArea.style.maxHeight).toBe('380px');
-      expect(instances[0].observe).toHaveBeenCalledWith(screen.getByTestId('parent'));
+      expect(instances[0].observe).toHaveBeenCalledWith(
+        screen.getByTestId('parent')
+      );
 
       sizes.parent = 300;
       instances[0].callback();

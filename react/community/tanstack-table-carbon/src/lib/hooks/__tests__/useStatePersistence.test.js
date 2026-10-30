@@ -20,7 +20,13 @@ describe('useStatePersistence', () => {
     const onStateChange = vi.fn();
 
     const { rerender } = renderHook(
-      ({ statePersistence, paginationState, searchValue, columnFilters, sorting }) =>
+      ({
+        statePersistence,
+        paginationState,
+        searchValue,
+        columnFilters,
+        sorting,
+      }) =>
         useStatePersistence({
           statePersistence,
           paginationState,
@@ -69,7 +75,13 @@ describe('useStatePersistence', () => {
     const onStateChange = vi.fn();
 
     const { rerender } = renderHook(
-      ({ statePersistence, paginationState, searchValue, columnFilters, sorting }) =>
+      ({
+        statePersistence,
+        paginationState,
+        searchValue,
+        columnFilters,
+        sorting,
+      }) =>
         useStatePersistence({
           statePersistence,
           paginationState,

@@ -1233,9 +1233,9 @@ describe('State Persistence Tests', () => {
     );
 
     // Initial state restored: Search input contains 'John', only 'John Doe' is rendered
-    expect(screen.getByPlaceholderText(DEFAULT_LABELS.toolbarSearchPlaceholder)).toHaveValue(
-      'John'
-    );
+    expect(
+      screen.getByPlaceholderText(DEFAULT_LABELS.toolbarSearchPlaceholder)
+    ).toHaveValue('John');
     expect(screen.getByText(mockData[0].name)).toBeInTheDocument();
     expect(screen.queryByText(mockData[1].name)).not.toBeInTheDocument();
     expect(onStateChange).not.toHaveBeenCalled();
@@ -1258,7 +1258,9 @@ describe('State Persistence Tests', () => {
       />
     );
 
-    const searchInput = screen.getByPlaceholderText(DEFAULT_LABELS.toolbarSearchPlaceholder);
+    const searchInput = screen.getByPlaceholderText(
+      DEFAULT_LABELS.toolbarSearchPlaceholder
+    );
     await user.type(searchInput, 'Jane');
 
     await waitFor(() => {

@@ -28,7 +28,11 @@ vi.mock('@carbon/react', () => ({
   Checkbox: (props) => mockCheckbox(props),
   Layer: (props) => mockLayer(props),
   Button: ({ children, onClick, className, 'data-testid': testId }) => (
-    <button type="button" onClick={onClick} className={className} data-testid={testId}>
+    <button
+      type="button"
+      onClick={onClick}
+      className={className}
+      data-testid={testId}>
       {children}
     </button>
   ),
@@ -116,7 +120,9 @@ describe('CheckboxGroupFilterField', () => {
       />
     );
 
-    expect(screen.getByText(DEFAULT_LABELS.filterFieldNoOptionsText)).toBeInTheDocument();
+    expect(
+      screen.getByText(DEFAULT_LABELS.filterFieldNoOptionsText)
+    ).toBeInTheDocument();
   });
 
   it('renders custom empty message when provided', () => {
@@ -171,7 +177,9 @@ describe('CheckboxGroupFilterField', () => {
 
     expect(screen.getByLabelText('Option 1')).toBeInTheDocument();
     expect(screen.getByLabelText('Option 9')).toBeInTheDocument();
-    expect(screen.queryByTestId('options-view-all-btn')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('options-view-all-btn')
+    ).not.toBeInTheDocument();
   });
 
   it('collapses to 7 checkboxes with View all button when items count is 10 or more, and toggles Show less', () => {
@@ -198,7 +206,10 @@ describe('CheckboxGroupFilterField', () => {
 
     const viewAllButton = screen.getByTestId('options-view-all-btn');
     expect(viewAllButton).toBeInTheDocument();
-    const expectedViewAllText = DEFAULT_LABELS.filterCheckboxViewAll.replace('{count}', '4');
+    const expectedViewAllText = DEFAULT_LABELS.filterCheckboxViewAll.replace(
+      '{count}',
+      '4'
+    );
     expect(viewAllButton).toHaveTextContent(expectedViewAllText);
 
     // Click View all (4) -> Expands all

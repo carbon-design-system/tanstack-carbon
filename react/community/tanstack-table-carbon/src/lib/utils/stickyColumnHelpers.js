@@ -22,15 +22,21 @@ export const getCommonPinningStyles = (column, isHeader = false) => {
     right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
     opacity: isPinned ? 0.95 : 1,
     position: isPinned ? 'sticky' : 'relative',
-    /* NOTE: Only set explicit width when the developer defined a size on the column.
-      TanStack defaults to 150 when no size is set — applying that blindly forces
-      every pinned column to 150px even when the developer never specified a width. 
+    /* NOTE: Pinned (sticky) columns always need an explicit width and min-width so that:
+      1. The cell does not grow/shrink with its content — sticky cells must be fixed-size.
+      2. column.getStart('left') / column.getAfter('right') stay accurate — TanStack
+         computes those offsets from column.getSize(), so the DOM width and TanStack's
+         internal value must agree. If the DOM width is content-driven, the next pinned
+         column's left/right offset will be wrong (overlap or gap).
+      When no size is set by the developer, column.getSize() returns TanStack's default
+      of 150px — a known fixed value that keeps offsets correct.
     */
-    ...(column.columnDef?.size !== undefined && {
+    ...(isPinned && {
       width: `${column.getSize()}px`,
+      minWidth: `${column.getSize()}px`,
     }),
     zIndex: isPinned ? (isHeader ? 4 : 3) : 0,
-    backgroundColor: isHeader ? 'var(--cds-layer-accent)' : 'null',
+    ...(isHeader && isPinned && { backgroundColor: 'var(--cds-layer-accent)' }),
   };
 };
 
