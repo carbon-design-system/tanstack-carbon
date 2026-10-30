@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { getCommonPinningStyles, processColumnPinning } from '../stickyColumnHelpers';
+import {
+  getCommonPinningStyles,
+  processColumnPinning,
+} from '../stickyColumnHelpers';
 
 describe('stickyColumnHelpers', () => {
   it('returns left pinned header styles for the last left pinned column', () => {
@@ -23,6 +26,7 @@ describe('stickyColumnHelpers', () => {
       opacity: 0.95,
       position: 'sticky',
       width: '180px',
+      minWidth: '180px',
       zIndex: 4,
       backgroundColor: 'var(--cds-layer-accent)',
     });
@@ -49,8 +53,8 @@ describe('stickyColumnHelpers', () => {
       opacity: 0.95,
       position: 'sticky',
       width: '120px',
+      minWidth: '120px',
       zIndex: 3,
-      backgroundColor: 'null',
     });
   });
 
@@ -74,7 +78,6 @@ describe('stickyColumnHelpers', () => {
       opacity: 1,
       position: 'relative',
       zIndex: 0,
-      backgroundColor: 'null',
     });
   });
 
@@ -91,7 +94,9 @@ describe('stickyColumnHelpers', () => {
       right: ['actions'],
     });
 
-    expect(processColumnPinning({ left: ['name'], right: ['actions'] })).toEqual({
+    expect(
+      processColumnPinning({ left: ['name'], right: ['actions'] })
+    ).toEqual({
       left: ['name'],
       right: ['actions'],
     });

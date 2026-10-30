@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export const useSortingFeature = (sortingFeature) => {
+export const useSortingFeature = (sortingFeature, initialSorting) => {
   const controlledSorting = sortingFeature?.sorting;
   const onChange = sortingFeature?.onChange;
   const isControlledSorting = typeof onChange === 'function';
 
-  const [sorting, setSorting] = useState(controlledSorting ?? []);
+  const [sorting, setSorting] = useState(
+    controlledSorting ?? initialSorting ?? []
+  );
 
   useEffect(() => {
     if (controlledSorting !== undefined) {

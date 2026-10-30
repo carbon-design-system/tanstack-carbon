@@ -583,14 +583,10 @@ const MixTable = ({ toggleHeaderContent, isHeaderContentVisible }) => {
             },
             sideFilterPanel: {
               onAdvancedFilterClick: () => alert('advanceFilterClick'),
-              onApply: (filters) => {
-                // eslint-disable-next-line no-console
-                console.log('Column filters changed:', filters);
-              },
             },
           }}
           tableSize="md"
-          height={600}
+          height={'100%'}
           emptyState={{
             title: 'No users found',
             subtitle:

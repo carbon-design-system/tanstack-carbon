@@ -18,9 +18,13 @@ const PaginationSection = ({ feature, table }) => {
           .replace('{max}', max)
           .replace('{total}', total)
       }
-      itemText={(min, max) => labels.paginationItemText.replace('{min}', min).replace('{max}', max)}
+      itemText={(min, max) =>
+        labels.paginationItemText.replace('{min}', min).replace('{max}', max)
+      }
       pageRangeText={(current, total) =>
-        labels.paginationPageRangeText.replace('{current}', current).replace('{total}', total)
+        labels.paginationPageRangeText
+          .replace('{current}', current)
+          .replace('{total}', total)
       }
       pageText={(page, pagesUnknown) =>
         pagesUnknown
@@ -32,8 +36,12 @@ const PaginationSection = ({ feature, table }) => {
       pageSizes={feature.pageSizeOptions}
       totalItems={feature.totalItems}
       onChange={({ page, pageSize }) => {
-        table.setPageSize(Number(pageSize));
-        table.setPageIndex(page - 1);
+        // NOTE: Single update — separate setPageSize/setPageIndex calls each derive from stale
+        // props in server-side mode, so the second call overwrote the new pageSize.
+        table.setPagination({
+          pageIndex: page - 1,
+          pageSize: Number(pageSize),
+        });
       }}
     />
   );

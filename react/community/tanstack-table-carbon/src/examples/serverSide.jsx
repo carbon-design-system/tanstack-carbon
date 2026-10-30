@@ -78,14 +78,12 @@ const fetchServerData = async ({
 
   // Apply server-side pagination
   const totalRows = filteredData.length;
-  const totalPages = Math.ceil(totalRows / pageSize);
   const start = pageIndex * pageSize;
   const end = start + pageSize;
   const paginatedData = filteredData.slice(start, end);
 
   return {
     data: paginatedData,
-    pageCount: totalPages,
     rowCount: totalRows,
   };
 };
@@ -93,7 +91,6 @@ const fetchServerData = async ({
 const ServerSideUserTable = () => {
   const [tableData, setTableData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
   const [rowCount, setRowCount] = useState(0);
 
   // Server-side state
@@ -121,7 +118,6 @@ const ServerSideUserTable = () => {
           columnFilters,
         });
         setTableData(result.data);
-        setPageCount(result.pageCount);
         setRowCount(result.rowCount);
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -332,7 +328,6 @@ const ServerSideUserTable = () => {
             pagination: {
               ...pagination,
               onChange: handlePaginationChange,
-              pageCount,
               rowCount,
             },
             sorting: {
@@ -350,8 +345,16 @@ const ServerSideUserTable = () => {
               onOrderChange: handleOrderChange,
             },
             sideFilterPanel: {
-              onApply: ({ changedFilters }) => {
-                handleColumnFiltersChange(changedFilters);
+              // NOTE: Both payload values are available for reference:
+              // - allFilters: full set of applied filters — use this to build the server request
+              // - changedFilters: only the delta since the last Apply/Reset
+              onApply: ({ allFilters, changedFilters }) => {
+                // eslint-disable-next-line no-console
+                console.log('Server side filter apply:', {
+                  allFilters,
+                  changedFilters,
+                });
+                handleColumnFiltersChange(allFilters);
               },
               onReset: ({ allFilters, changedFilters }) => {
                 // eslint-disable-next-line no-console
@@ -359,7 +362,7 @@ const ServerSideUserTable = () => {
                   allFilters,
                   changedFilters,
                 });
-                handleColumnFiltersChange(changedFilters);
+                handleColumnFiltersChange(allFilters);
               },
             },
           }}

@@ -1,7 +1,9 @@
 import { useRef, useLayoutEffect, useCallback } from 'react';
 
 // The loading skeleton renders its own pagination placeholder instead of .cds--pagination
-const PAGINATION_SELECTOR = ':scope .cds--pagination, :scope [data-skeleton-pagination]';
+const PAGINATION_SELECTOR =
+  ':scope .cds--pagination, :scope [data-skeleton-pagination]';
+const FILTER_TAGS_SELECTOR = ':scope [data-filter-tags-summary]';
 
 /**
  * Custom hook to manage table, skeleton & emptyState container height
@@ -18,9 +20,15 @@ const useTableHeight = (height) => {
       return;
     }
 
-    const scrollDiv = wrapperRef.current.querySelector(':scope div.cds--data-table-content');
-    const skeletonDiv = wrapperRef.current.querySelector(':scope .cds--data-table-container');
-    const emptyStateDiv = wrapperRef.current.querySelector(':scope .emptyStateDt');
+    const scrollDiv = wrapperRef.current.querySelector(
+      ':scope div.cds--data-table-content'
+    );
+    const skeletonDiv = wrapperRef.current.querySelector(
+      ':scope .cds--data-table-container'
+    );
+    const emptyStateDiv = wrapperRef.current.querySelector(
+      ':scope .emptyStateDt'
+    );
 
     const targetEl = scrollDiv || skeletonDiv;
     if (!targetEl) {
@@ -42,13 +50,20 @@ const useTableHeight = (height) => {
 
       if (parentHeight > 0) {
         const headerElement = wrapperRef.current.querySelector(':scope thead');
-        const paginationElement = wrapperRef.current.querySelector(PAGINATION_SELECTOR);
-        const toolbarElement = wrapperRef.current.querySelector(':scope .cds--table-toolbar');
+        const paginationElement =
+          wrapperRef.current.querySelector(PAGINATION_SELECTOR);
+        const toolbarElement = wrapperRef.current.querySelector(
+          ':scope .cds--table-toolbar'
+        );
+        const filterTagsElement =
+          wrapperRef.current.querySelector(FILTER_TAGS_SELECTOR);
 
         const headerHeight = headerElement?.offsetHeight || 0;
         const paginationHeight = paginationElement?.offsetHeight || 0;
         const toolbarHeight = toolbarElement?.offsetHeight || 0;
-        const totalOffset = headerHeight + paginationHeight + toolbarHeight;
+        const filterTagsHeight = filterTagsElement?.offsetHeight || 0;
+        const totalOffset =
+          headerHeight + paginationHeight + toolbarHeight + filterTagsHeight;
 
         const contentHeight = Math.max(0, parentHeight - totalOffset);
 
@@ -57,7 +72,10 @@ const useTableHeight = (height) => {
         targetEl.style.position = 'relative';
 
         if (emptyStateDiv) {
-          const emptyStateHeight = Math.max(0, contentHeight - headerHeight - 3);
+          const emptyStateHeight = Math.max(
+            0,
+            contentHeight - headerHeight - 3
+          );
           emptyStateDiv.style.height = `${emptyStateHeight}px`;
         }
       }
@@ -66,14 +84,19 @@ const useTableHeight = (height) => {
 
     // When numeric / pixel height is provided (e.g. 500, "500px")
     if (height) {
-      const parsedValue = typeof height === 'number' ? height : parseInt(height, 10);
+      const parsedValue =
+        typeof height === 'number' ? height : parseInt(height, 10);
       if (!Number.isNaN(parsedValue)) {
         const headerElement = wrapperRef.current.querySelector(':scope thead');
-        const paginationElement = wrapperRef.current.querySelector(PAGINATION_SELECTOR);
+        const paginationElement =
+          wrapperRef.current.querySelector(PAGINATION_SELECTOR);
+        const filterTagsElement =
+          wrapperRef.current.querySelector(FILTER_TAGS_SELECTOR);
 
         const headerHeight = headerElement?.offsetHeight || 0;
         const paginationHeight = paginationElement?.offsetHeight || 0;
-        const totalOffset = headerHeight + paginationHeight;
+        const filterTagsHeight = filterTagsElement?.offsetHeight || 0;
+        const totalOffset = headerHeight + paginationHeight + filterTagsHeight;
 
         const contentHeight = Math.max(0, parsedValue - totalOffset);
 
@@ -82,7 +105,10 @@ const useTableHeight = (height) => {
         targetEl.style.position = 'relative';
 
         if (emptyStateDiv) {
-          const emptyStateHeight = Math.max(0, contentHeight - headerHeight - 3);
+          const emptyStateHeight = Math.max(
+            0,
+            contentHeight - headerHeight - 3
+          );
           emptyStateDiv.style.height = `${emptyStateHeight}px`;
         }
       }
@@ -106,7 +132,8 @@ const useTableHeight = (height) => {
     // 1. Observe parent element resizing when height === '100%'
     let resizeObserver = null;
     if (height === '100%' && typeof ResizeObserver !== 'undefined') {
-      const targetToObserve = wrapperRef.current.parentElement || wrapperRef.current;
+      const targetToObserve =
+        wrapperRef.current.parentElement || wrapperRef.current;
       resizeObserver = new ResizeObserver(() => {
         updateHeight();
       });

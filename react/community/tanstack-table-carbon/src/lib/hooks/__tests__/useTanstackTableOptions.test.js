@@ -192,13 +192,12 @@ describe('useTanstackTableOptions helpers', () => {
         isServerSideFiltering: false,
         isServerSideSearch: true,
         isServerSidePagination: true,
-        pagination: { pageCount: 9, rowCount: 123 },
+        pagination: { rowCount: 123 },
       })
     ).toEqual({
       manualPagination: true,
       manualSorting: true,
       manualFiltering: true,
-      pageCount: 9,
       rowCount: 123,
       enableSortingRemoval: true,
       sortDescFirst: false,

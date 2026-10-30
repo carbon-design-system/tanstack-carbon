@@ -62,6 +62,8 @@ export const DEFAULT_LABELS = {
   // NOTE: Filter Panel - Field Types
   filterDropdownLabel: 'Choose an option',
   filterMultiSelectLabel: 'Choose options',
+  filterCheckboxViewAll: 'View all ({count})',
+  filterCheckboxShowLess: 'Show less',
   filterDatePlaceholder: 'yyyy-mm-dd',
   filterDateRangeStartLabel: 'Start date',
   filterDateRangeEndLabel: 'End date',

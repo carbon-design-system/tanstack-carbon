@@ -152,7 +152,9 @@ const FilterTagsSummary = ({
   };
 
   return (
-    <div className={styles['filter-tags-summary']}>
+    <div
+      className={styles['filter-tags-summary']}
+      data-filter-tags-summary="true">
       <div className={styles['filter-tags-container']}>
         {visibleTags.map((tag) => (
           <DismissibleTag

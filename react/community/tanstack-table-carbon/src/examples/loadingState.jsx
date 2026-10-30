@@ -95,10 +95,11 @@ const ExampleLoadingState = () => {
             { type: 'search' },
             { type: 'custom', element: toolbarContent },
           ]}
-          pagination={{
-            enabled: true,
-            pageSize: 10,
-            pageSizeOptions: [10, 20, 50],
+          features={{
+            pagination: {
+              pageSize: 10,
+              pageSizeOptions: [10, 20, 50],
+            },
           }}
           emptyState={{
             title: 'No users found',

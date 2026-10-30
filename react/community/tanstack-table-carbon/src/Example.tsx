@@ -24,6 +24,7 @@ import ThemedTable from '@/examples/themedTable';
 import MultipleTablesPage from '@/examples/multipleTablesPage';
 import NestedTableExpansion from '@/examples/nestedTableExpansion';
 import TableHeight from '@/examples/tableHeight';
+import PersistentFilters from '@/examples/persistentFilters';
 
 type ExampleType =
   | 'basic'
@@ -45,7 +46,8 @@ type ExampleType =
   | 'themedTable'
   | 'virtualization'
   | 'multipleTablesPage'
-  | 'tableHeight';
+  | 'tableHeight'
+  | 'persistentFilters';
 
 const examples = [
   { id: 'basic', label: 'Basic Table', component: BasicTable },
@@ -84,6 +86,11 @@ const examples = [
     id: 'tableHeight',
     label: 'Table Height',
     component: TableHeight,
+  },
+  {
+    id: 'persistentFilters',
+    label: 'Persistent Filters',
+    component: PersistentFilters,
   },
   { id: 'themedTable', label: 'Themed Table', component: ThemedTable },
   { id: 'virtualization', label: 'Virtualization', component: Virtualization },

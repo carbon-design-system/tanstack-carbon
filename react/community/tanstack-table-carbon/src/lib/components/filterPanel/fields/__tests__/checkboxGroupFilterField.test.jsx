@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { DEFAULT_LABELS } from '../../../../constants/defaultLabels';
 import CheckboxGroupFilterField from '../checkboxGroupFilterField';
 
 const mockCheckbox = vi.fn(({ id, labelText, checked, onChange, disabled }) => (
@@ -26,6 +27,15 @@ const mockLayer = vi.fn(({ children, level }) => (
 vi.mock('@carbon/react', () => ({
   Checkbox: (props) => mockCheckbox(props),
   Layer: (props) => mockLayer(props),
+  Button: ({ children, onClick, className, 'data-testid': testId }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      className={className}
+      data-testid={testId}>
+      {children}
+    </button>
+  ),
 }));
 
 vi.mock('../../scss/filterSidePanel.module.scss', () => ({
@@ -35,6 +45,7 @@ vi.mock('../../scss/filterSidePanel.module.scss', () => ({
     checkboxGroup: 'checkboxGroup',
     checkboxWithCount: 'checkboxWithCount',
     checkboxCount: 'checkboxCount',
+    checkboxViewMoreBtn: 'checkboxViewMoreBtn',
     noResults: 'noResults',
   },
 }));
@@ -109,7 +120,9 @@ describe('CheckboxGroupFilterField', () => {
       />
     );
 
-    expect(screen.getByText('No options available')).toBeInTheDocument();
+    expect(
+      screen.getByText(DEFAULT_LABELS.filterFieldNoOptionsText)
+    ).toBeInTheDocument();
   });
 
   it('renders custom empty message when provided', () => {
@@ -144,5 +157,76 @@ describe('CheckboxGroupFilterField', () => {
     fireEvent.click(screen.getByText('Status'));
 
     expect(outerClickHandler).not.toHaveBeenCalled();
+  });
+
+  it('shows all checkboxes and no toggle button when items count is 9 or less', () => {
+    const nineItems = Array.from({ length: 9 }, (_, i) => ({
+      id: `item-${i + 1}`,
+      label: `Option ${i + 1}`,
+      value: `option-${i + 1}`,
+    }));
+
+    render(
+      <CheckboxGroupFilterField
+        legend="Options"
+        items={nineItems}
+        selectedValues={[]}
+        onChange={onChange}
+      />
+    );
+
+    expect(screen.getByLabelText('Option 1')).toBeInTheDocument();
+    expect(screen.getByLabelText('Option 9')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('options-view-all-btn')
+    ).not.toBeInTheDocument();
+  });
+
+  it('collapses to 7 checkboxes with View all button when items count is 10 or more, and toggles Show less', () => {
+    const elevenItems = Array.from({ length: 11 }, (_, i) => ({
+      id: `item-${i + 1}`,
+      label: `Option ${i + 1}`,
+      value: `option-${i + 1}`,
+    }));
+
+    render(
+      <CheckboxGroupFilterField
+        legend="Options"
+        items={elevenItems}
+        selectedValues={[]}
+        onChange={onChange}
+      />
+    );
+
+    // Initial collapsed state: shows 1-7, hides 8-11
+    expect(screen.getByLabelText('Option 1')).toBeInTheDocument();
+    expect(screen.getByLabelText('Option 7')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Option 8')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Option 11')).not.toBeInTheDocument();
+
+    const viewAllButton = screen.getByTestId('options-view-all-btn');
+    expect(viewAllButton).toBeInTheDocument();
+    const expectedViewAllText = DEFAULT_LABELS.filterCheckboxViewAll.replace(
+      '{count}',
+      '4'
+    );
+    expect(viewAllButton).toHaveTextContent(expectedViewAllText);
+
+    // Click View all (4) -> Expands all
+    fireEvent.click(viewAllButton);
+    expect(screen.getByLabelText('Option 8')).toBeInTheDocument();
+    expect(screen.getByLabelText('Option 11')).toBeInTheDocument();
+
+    const showLessButton = screen.getByRole('button', {
+      name: DEFAULT_LABELS.filterCheckboxShowLess,
+    });
+    expect(showLessButton).toBeInTheDocument();
+
+    // Click Show less -> Collapses back to 7
+    fireEvent.click(showLessButton);
+    expect(screen.getByLabelText('Option 1')).toBeInTheDocument();
+    expect(screen.getByLabelText('Option 7')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Option 8')).not.toBeInTheDocument();
+    expect(screen.getByTestId('options-view-all-btn')).toBeInTheDocument();
   });
 });

@@ -31,6 +31,7 @@ import useMenuCloseOnScroll from './hooks/useMenuCloseOnScroll.js';
 import { usePaginationFeature } from './hooks/usePaginationFeature.js';
 import { useRowExpansion } from './hooks/useRowExpansion.js';
 import { useSortingFeature } from './hooks/useSortingFeature.js';
+import useStatePersistence from './hooks/useStatePersistence.js';
 import useTableHeight from './hooks/useTableHeight.js';
 import { useTableSearch } from './hooks/useTableSearch.js';
 import { useTableSelection } from './hooks/useTableSelection.js';
@@ -134,7 +135,6 @@ const TanstackTable = ({
   labels = {},
 }) => {
   const tableId = useId();
-  const [columnFilters, setColumnFilters] = useState([]);
 
   const {
     pagination,
@@ -147,7 +147,13 @@ const TanstackTable = ({
     editing: editingFeature,
     expansion: expansionFeature,
     sideFilterPanel: sideFilterPanelFeature,
+    statePersistence: statePersistenceFeature,
   } = getTanstackTableFeatures(features);
+
+  const initialTableState = statePersistenceFeature?.initialState;
+  const [columnFilters, setColumnFilters] = useState(
+    initialTableState?.filters ?? []
+  );
 
   const {
     type: selectionType,
@@ -183,7 +189,10 @@ const TanstackTable = ({
   // NOTE: Close overflow menus on scroll
   useMenuCloseOnScroll(tableContainerRef);
 
-  const sortingState = useSortingFeature(sortingFeature);
+  const sortingState = useSortingFeature(
+    sortingFeature,
+    statePersistenceFeature?.initialState?.sorting
+  );
   const { sorting, handleSortingChange, isServerSideSorting } = sortingState;
 
   const { onChange: searchOnChange, debounceDelay: searchDebounceDelay } =
@@ -251,6 +260,7 @@ const TanstackTable = ({
   // row.getValue() reads from _valuesCache (O(1)) — no custom filterFn needed.
   const { globalFilter, immediateSearchValue, handleSearchChange } =
     useTableSearch({
+      initialSearchValue: initialTableState?.search ?? '',
       onSearchChange: searchOnChange,
       debounceDelay: searchDebounceDelay,
     });
@@ -290,9 +300,18 @@ const TanstackTable = ({
 
   const paginationFeature = usePaginationFeature({
     pagination,
+    initialPaginationState: initialTableState?.pagination,
     enableVirtualization,
     dataLength: data.length,
     isServerSidePagination,
+  });
+
+  useStatePersistence({
+    statePersistence: statePersistenceFeature,
+    paginationState: paginationFeature.paginationState,
+    searchValue: globalFilter,
+    columnFilters,
+    sorting,
   });
 
   const tableRef = useRef(null);
@@ -580,6 +599,8 @@ const TanstackTable = ({
   const paginationSectionFeature = getPaginationSectionFeature({
     paginationFeature,
     table,
+    pagination,
+    isServerSidePagination,
   });
 
   const columnCustomizationPanelProps = getColumnCustomizationPanelProps({

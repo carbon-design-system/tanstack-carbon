@@ -1205,3 +1205,100 @@ describe('Filter Side Panel Tests', () => {
     ).not.toBeInTheDocument();
   });
 });
+
+describe('State Persistence Tests', () => {
+  it('should initialize with initialState and restore filters, search, and pagination', () => {
+    const onStateChange = vi.fn();
+
+    render(
+      <TanstackTable
+        data={mockData}
+        columns={mockColumns}
+        toolbar={[{ type: 'filter' }, { type: 'search' }]}
+        features={{
+          pagination: {
+            pageSizeOptions: [2, 5, 10],
+          },
+          sideFilterPanel: true,
+          statePersistence: {
+            initialState: {
+              filters: [{ id: 'name', value: 'John' }],
+              search: 'John',
+              pagination: { pageIndex: 0, pageSize: 2 },
+            },
+            onStateChange,
+          },
+        }}
+      />
+    );
+
+    // Initial state restored: Search input contains 'John', only 'John Doe' is rendered
+    expect(
+      screen.getByPlaceholderText(DEFAULT_LABELS.toolbarSearchPlaceholder)
+    ).toHaveValue('John');
+    expect(screen.getByText(mockData[0].name)).toBeInTheDocument();
+    expect(screen.queryByText(mockData[1].name)).not.toBeInTheDocument();
+    expect(onStateChange).not.toHaveBeenCalled();
+  });
+
+  it('should trigger onStateChange when search changes', async () => {
+    const user = userEvent.setup();
+    const onStateChange = vi.fn();
+
+    render(
+      <TanstackTable
+        data={mockData}
+        columns={mockColumns}
+        toolbar={[{ type: 'search' }]}
+        features={{
+          statePersistence: {
+            onStateChange,
+          },
+        }}
+      />
+    );
+
+    const searchInput = screen.getByPlaceholderText(
+      DEFAULT_LABELS.toolbarSearchPlaceholder
+    );
+    await user.type(searchInput, 'Jane');
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: 'Jane',
+        })
+      );
+    });
+  });
+
+  it('should restore sorting from initialState and report sorting changes', async () => {
+    const user = userEvent.setup();
+    const onStateChange = vi.fn();
+
+    render(
+      <TanstackTable
+        data={mockData}
+        columns={mockColumns}
+        features={{
+          statePersistence: {
+            initialState: { sorting: [{ id: 'age', desc: true }] },
+            onStateChange,
+          },
+        }}
+      />
+    );
+
+    // Initial sorting restored (age desc: 35 first) without reporting a change
+    expect(screen.getAllByRole('row')[1]).toHaveTextContent('35');
+    expect(onStateChange).not.toHaveBeenCalled();
+
+    await user.click(screen.getByText('Age'));
+
+    await waitFor(() => {
+      expect(onStateChange).toHaveBeenCalledWith(
+        expect.objectContaining({ sorting: [] })
+      );
+    });
+  });
+});

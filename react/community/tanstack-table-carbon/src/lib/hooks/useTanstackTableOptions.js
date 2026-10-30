@@ -110,7 +110,6 @@ export const getTanstackTableManualOptions = ({
   manualPagination,
   manualSorting: isServerSideSorting,
   manualFiltering: isServerSideFiltering || isServerSideSearch,
-  pageCount: isServerSidePagination ? pagination?.pageCount ?? -1 : undefined,
   rowCount: isServerSidePagination ? pagination?.rowCount ?? 0 : undefined,
   enableSortingRemoval: true,
   sortDescFirst: false,

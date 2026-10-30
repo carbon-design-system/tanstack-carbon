@@ -22,9 +22,10 @@ const mockPagination = vi.fn(
       data-page={String(page)}
       data-page-size={String(pageSize)}
       data-page-sizes={pageSizes.join(',')}
-      data-total-items={String(totalItems)}
-    >
-      <button type="button" onClick={() => onChange({ page: 4, pageSize: '25' })}>
+      data-total-items={String(totalItems)}>
+      <button
+        type="button"
+        onClick={() => onChange({ page: 4, pageSize: '25' })}>
         Trigger Pagination Change
       </button>
     </div>
@@ -37,8 +38,7 @@ vi.mock('@carbon/react', () => ({
 
 describe('PaginationSection', () => {
   const table = {
-    setPageSize: vi.fn(),
-    setPageIndex: vi.fn(),
+    setPagination: vi.fn(),
   };
 
   beforeEach(() => {
@@ -74,18 +74,33 @@ describe('PaginationSection', () => {
       'data-backward-text',
       'Previous page'
     );
-    expect(screen.getByTestId('mock-pagination')).toHaveAttribute('data-forward-text', 'Next page');
+    expect(screen.getByTestId('mock-pagination')).toHaveAttribute(
+      'data-forward-text',
+      'Next page'
+    );
     expect(screen.getByTestId('mock-pagination')).toHaveAttribute(
       'data-items-per-page-text',
       'Items per page:'
     );
-    expect(screen.getByTestId('mock-pagination')).toHaveAttribute('data-page', '2');
-    expect(screen.getByTestId('mock-pagination')).toHaveAttribute('data-page-size', '10');
-    expect(screen.getByTestId('mock-pagination')).toHaveAttribute('data-page-sizes', '10,25,50');
-    expect(screen.getByTestId('mock-pagination')).toHaveAttribute('data-total-items', '150');
+    expect(screen.getByTestId('mock-pagination')).toHaveAttribute(
+      'data-page',
+      '2'
+    );
+    expect(screen.getByTestId('mock-pagination')).toHaveAttribute(
+      'data-page-size',
+      '10'
+    );
+    expect(screen.getByTestId('mock-pagination')).toHaveAttribute(
+      'data-page-sizes',
+      '10,25,50'
+    );
+    expect(screen.getByTestId('mock-pagination')).toHaveAttribute(
+      'data-total-items',
+      '150'
+    );
   });
 
-  it('updates table page size and zero-based page index on change', () => {
+  it('updates table pagination with page size and zero-based page index in a single call', () => {
     render(
       <PaginationSection
         feature={{
@@ -101,9 +116,14 @@ describe('PaginationSection', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Trigger Pagination Change' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Trigger Pagination Change' })
+    );
 
-    expect(table.setPageSize).toHaveBeenCalledWith(25);
-    expect(table.setPageIndex).toHaveBeenCalledWith(3);
+    expect(table.setPagination).toHaveBeenCalledTimes(1);
+    expect(table.setPagination).toHaveBeenCalledWith({
+      pageIndex: 3,
+      pageSize: 25,
+    });
   });
 });
