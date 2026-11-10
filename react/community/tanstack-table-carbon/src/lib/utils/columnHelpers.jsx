@@ -219,6 +219,20 @@ export const enhanceColumnsWithSmartFiltering = (columns) => {
       };
     }
 
+    // NOTE: Radio / select filter — filterValue is one exact option from the column's unique
+    // values. The default string filter uses "includes", so "Male" would also match "Female".
+    if (filterVariant === 'radio' || filterVariant === 'select') {
+      return {
+        ...column,
+        filterFn: (row, columnId, filterValue) => {
+          if (filterValue === '' || filterValue === undefined || filterValue === null) {
+            return true;
+          }
+          return String(row.getValue(columnId)) === String(filterValue);
+        },
+      };
+    }
+
     // NOTE: Time filter — filterValue is a string like "09:30 AM".
     // Raw column value is typically "09:30" (HH:MM, no period).
     // Match if the raw value is contained within the filter string or vice-versa.

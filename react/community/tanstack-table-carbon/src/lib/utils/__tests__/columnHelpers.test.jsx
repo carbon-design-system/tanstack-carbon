@@ -331,6 +331,33 @@ describe('enhanceColumnsWithSmartFiltering', () => {
     });
   });
 
+  describe('radio filterFn', () => {
+    const col = { id: 'gender', meta: { filterVariant: 'radio' } };
+    const [enhanced] = enhanceColumnsWithSmartFiltering([col]);
+
+    it('matches exact value only, not substrings', () => {
+      const maleRow = { getValue: () => 'Male' };
+      const femaleRow = { getValue: () => 'Female' };
+      expect(enhanced.filterFn(maleRow, 'gender', '')).toBe(true);
+      expect(enhanced.filterFn(maleRow, 'gender', 'Male')).toBe(true);
+      expect(enhanced.filterFn(femaleRow, 'gender', 'Male')).toBe(false);
+      expect(enhanced.filterFn(femaleRow, 'gender', 'Female')).toBe(true);
+    });
+  });
+
+  describe('select filterFn', () => {
+    const col = { id: 'location', meta: { filterVariant: 'select' } };
+    const [enhanced] = enhanceColumnsWithSmartFiltering([col]);
+
+    it('matches exact value only, not substrings', () => {
+      const newYorkRow = { getValue: () => 'New York' };
+      const yorkRow = { getValue: () => 'York' };
+      expect(enhanced.filterFn(newYorkRow, 'location', null)).toBe(true);
+      expect(enhanced.filterFn(newYorkRow, 'location', 'York')).toBe(false);
+      expect(enhanced.filterFn(yorkRow, 'location', 'York')).toBe(true);
+    });
+  });
+
   describe('time filterFn', () => {
     const col = { id: 'time', meta: { filterVariant: 'time' } };
     const [enhanced] = enhanceColumnsWithSmartFiltering([col]);

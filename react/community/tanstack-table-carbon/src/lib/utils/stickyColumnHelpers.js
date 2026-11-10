@@ -20,7 +20,6 @@ export const getCommonPinningStyles = (column, isHeader = false) => {
       : 0,
     left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
     right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
-    opacity: isPinned ? 0.95 : 1,
     position: isPinned ? 'sticky' : 'relative',
     /* NOTE: Pinned (sticky) columns always need an explicit width and min-width so that:
       1. The cell does not grow/shrink with its content — sticky cells must be fixed-size.
