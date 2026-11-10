@@ -23,7 +23,6 @@ describe('stickyColumnHelpers', () => {
       borderLeft: 0,
       left: '24px',
       right: undefined,
-      opacity: 0.95,
       position: 'sticky',
       width: '180px',
       minWidth: '180px',
@@ -50,7 +49,6 @@ describe('stickyColumnHelpers', () => {
       borderLeft: '1px solid var(--cds-border-subtle)',
       left: undefined,
       right: '36px',
-      opacity: 0.95,
       position: 'sticky',
       width: '120px',
       minWidth: '120px',
@@ -75,7 +73,6 @@ describe('stickyColumnHelpers', () => {
       borderLeft: 0,
       left: undefined,
       right: undefined,
-      opacity: 1,
       position: 'relative',
       zIndex: 0,
     });
