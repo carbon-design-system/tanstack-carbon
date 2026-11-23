@@ -30,6 +30,27 @@ The keyboard sensor lets you reorder without a pointer:
 4. Press <kbd>Space</kbd> or <kbd>Enter</kbd> to drop it, or <kbd>Esc</kbd> to
    cancel.
 
+## Motion
+
+Row transitions and the drop animation use Carbon motion tokens from
+`@carbon/motion`. They are turned off when the user prefers reduced motion.
+
+## Project structure
+
+```text
+src/Example/
+├── DraggableRows.tsx           # table setup, state, drag handlers, layout
+├── constants.ts                # page size, row count, motion tokens
+├── utils.ts                    # pinned column class name
+├── hooks/
+│   └── usePrefersReducedMotion.ts
+└── components/
+    ├── RowActions.tsx          # overflow menu
+    ├── DraggableRow.tsx        # sortable row and its cells
+    ├── MoveToPositionModal.tsx # custom position dialog
+    └── RowDragOverlay.tsx      # row copy that follows the pointer
+```
+
 ## Typings for `@carbon/motion`
 
 `@carbon/motion` does not ship type declarations, so `src/carbon-motion.d.ts`
