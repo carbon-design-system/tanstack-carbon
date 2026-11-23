@@ -1,0 +1,141 @@
+@use '@carbon/react/scss/theme' as *;
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/utilities';
+
+.page-grid {
+  margin-top: 4rem;
+}
+
+.tanstack-example {
+  padding-bottom: 2rem;
+}
+
+.draggable-row {
+  position: relative;
+  background: inherit;
+}
+
+.draggable-rows__menu-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-03;
+  inline-size: 100%;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+// Only the cell with the drag icon is the drag handle.
+.draggable-row__handle {
+  outline: none;
+  cursor: grab;
+
+  &:focus {
+    svg {
+      @include utilities.focus-outline('outline');
+
+      outline-offset: 2px;
+    }
+  }
+}
+
+// The original row stays in the list as a dashed drop zone with hidden content.
+.draggable-row--dragging {
+  outline: 2px dashed $focus;
+  outline-offset: -2px;
+
+  td {
+    color: transparent;
+    outline: none;
+
+    * {
+      visibility: hidden;
+    }
+  }
+}
+
+// Fill only when the row moved away from its original position.
+.draggable-row--drop-zone td {
+  background-color: $highlight;
+}
+
+// Copy of the row that follows the pointer.
+.draggable-rows-overlay__viewport {
+  @include utilities.focus-outline('outline');
+
+  outline-offset: 0;
+  cursor: grabbing;
+
+  .cds--data-table-content {
+    overflow: hidden;
+  }
+}
+
+// Fixed layout keeps the overlay column widths the same as the table.
+.draggable-rows-example,
+.draggable-rows-overlay {
+  table-layout: fixed;
+
+  th:first-child,
+  td:first-child {
+    inline-size: 1.5rem;
+    padding-inline: $spacing-03 0;
+    padding-block-start: $spacing-02;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    inline-size: 2.25rem;
+    padding-inline-end: 0;
+  }
+}
+
+.draggable-rows-overlay {
+  inline-size: var(--draggable-rows-table-width, 100%);
+}
+
+// Scrolls horizontally on small screens.
+.draggable-rows-example {
+  min-inline-size: 48rem;
+}
+
+// Sticky action column; inherits the row background.
+td.draggable-rows__pinned-right {
+  position: sticky;
+  z-index: 1;
+  background-color: inherit;
+  border-inline-start: 1px solid $border-subtle;
+  inline-size: 3rem;
+  inset-inline-end: 0;
+  padding-inline: $spacing-03;
+}
+
+th.draggable-rows__pinned-right,
+th:last-of-type.draggable-rows__pinned-right {
+  inline-size: 3rem;
+}
+
+// Keeps the sticky cell from covering the dashed outline while dragging.
+.draggable-row--dragging td.draggable-rows__pinned-right {
+  position: static;
+}
+
+.draggable-row--drop-zone td.draggable-rows__pinned-right {
+  background-color: $highlight;
+}
+
+// Wider than the default so the longest item fits next to its icon.
+.draggable-rows__menu {
+  inline-size: 14rem;
+
+  .cds--overflow-menu-options__btn {
+    max-inline-size: none;
+  }
+}
+
+.draggable-rows__menu-item-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
