@@ -1,44 +1,21 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 
 import {
-  Column,
   ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   PaginationState,
-  Row,
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
-import {
-  Checkbox,
-  DataTable,
-  Modal,
-  NumberInput,
-  OverflowMenu,
-  OverflowMenuItem,
-  Pagination,
-  TableContainer,
-} from '@carbon/react';
-import {
-  ArrowDown,
-  ArrowsVertical,
-  ArrowUp,
-  Download,
-  Draggable,
-  Save,
-  TrashCan,
-  type CarbonIconType,
-} from '@carbon/react/icons';
-import { durationModerate01, motion } from '@carbon/motion';
-import cx from 'classnames';
+import { Checkbox, DataTable, Pagination, TableContainer } from '@carbon/react';
+import { Download, Draggable, Save, TrashCan } from '@carbon/react/icons';
 
 import {
   closestCenter,
   DndContext,
   DragEndEvent,
-  DragOverlay,
   DragStartEvent,
   KeyboardSensor,
   MouseSensor,
@@ -56,214 +33,27 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+
+import { DraggableRow } from './components/DraggableRow';
+import { MoveToPositionModal } from './components/MoveToPositionModal';
+import { RowActions } from './components/RowActions';
+import { RowDragOverlay, TableViewport } from './components/RowDragOverlay';
+import { PAGE_SIZE, TOTAL_ITEMS } from './constants';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
+import { makeData, Resource } from './makeData';
+import { getPinnedClassName } from './utils';
 
 const {
   Table,
   TableBatchAction,
   TableBatchActions,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
   TableToolbar,
 } = DataTable;
-
-import { makeData, Resource } from './makeData';
-
-const TOTAL_ITEMS = 25;
-const PAGE_SIZE = 10;
-
-// Carbon motion tokens; dnd-kit expects the duration in milliseconds.
-const MOTION_DURATION = parseInt(durationModerate01, 10);
-const MOTION_EASING = motion('standard', 'productive');
-
-// Turns animations off when the user prefers reduced motion.
-const usePrefersReducedMotion = () => {
-  const query = '(prefers-reduced-motion: reduce)';
-  const [reduced, setReduced] = React.useState(
-    () => window.matchMedia(query).matches
-  );
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia(query);
-    const onChange = (event: MediaQueryListEvent) => setReduced(event.matches);
-    mediaQuery.addEventListener('change', onChange);
-    return () => mediaQuery.removeEventListener('change', onChange);
-  }, []);
-
-  return reduced;
-};
-
-// Visible part of the table (scroll container) and the full table width.
-type TableViewport = {
-  left: number;
-  width: number;
-  scrollLeft: number;
-  tableWidth: number;
-};
-
-// Sticky styles for the right pinned column are in example.scss.
-const getPinnedClassName = (column: Column<Resource>) =>
-  column.getIsPinned() === 'right' ? 'draggable-rows__pinned-right' : undefined;
-
-// Overflow menu item label with a decorative icon.
-const MenuItemLabel = ({
-  icon: Icon,
-  children,
-}: {
-  icon: CarbonIconType;
-  children: string;
-}) => (
-  <span className="draggable-rows__menu-item">
-    <Icon size={16} aria-hidden />
-    <span className="draggable-rows__menu-item-text">{children}</span>
-  </span>
-);
-
-// `index` is the position in the whole list, not on the current page.
-const RowActions = ({
-  resource,
-  index,
-  total,
-  onMove,
-  onMoveToPosition,
-}: {
-  resource: Resource;
-  index: number;
-  total: number;
-  onMove: (id: string, newIndex: number) => void;
-  onMoveToPosition: (resource: Resource, index: number) => void;
-}) => (
-  <OverflowMenu
-    size="sm"
-    flipped
-    autoAlign
-    menuOptionsClass="draggable-rows__menu"
-    aria-label={`Actions for ${resource.name}`}
-    iconDescription={`Actions for ${resource.name}`}>
-    <OverflowMenuItem
-      itemText={<MenuItemLabel icon={ArrowUp}>Move up</MenuItemLabel>}
-      disabled={index === 0}
-      onClick={() => onMove(resource.id, index - 1)}
-    />
-    <OverflowMenuItem
-      itemText={<MenuItemLabel icon={ArrowDown}>Move down</MenuItemLabel>}
-      disabled={index === total - 1}
-      onClick={() => onMove(resource.id, index + 1)}
-    />
-    <OverflowMenuItem
-      itemText={
-        <MenuItemLabel icon={ArrowsVertical}>
-          Move to custom position
-        </MenuItemLabel>
-      }
-      onClick={() => onMoveToPosition(resource, index)}
-    />
-  </OverflowMenu>
-);
-
-// Props that dnd-kit needs on the drag handle.
-type HandleProps = {
-  setActivatorNodeRef: (element: HTMLElement | null) => void;
-  attributes: ReturnType<typeof useSortable>['attributes'];
-  listeners: ReturnType<typeof useSortable>['listeners'];
-};
-
-// The overlay copy gets its own checkbox, because ids must be unique.
-const RowCells = ({
-  row,
-  overlay = false,
-  handleProps,
-}: {
-  row: Row<Resource>;
-  overlay?: boolean;
-  handleProps?: HandleProps;
-}) => (
-  <>
-    {row.getVisibleCells().map((cell) => {
-      if (cell.column.id === 'drag-icon' && handleProps) {
-        return (
-          <TableCell
-            key={cell.id}
-            ref={handleProps.setActivatorNodeRef}
-            className="draggable-row__handle"
-            {...handleProps.attributes}
-            {...handleProps.listeners}>
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </TableCell>
-        );
-      }
-      return (
-        <TableCell key={cell.id} className={getPinnedClassName(cell.column)}>
-          {overlay && cell.column.id === 'select' ? (
-            <Checkbox
-              id={`select-row__${row.id}--overlay`}
-              labelText="Select row"
-              hideLabel
-              checked={row.getIsSelected()}
-              readOnly
-              tabIndex={-1}
-            />
-          ) : (
-            flexRender(cell.column.columnDef.cell, cell.getContext())
-          )}
-        </TableCell>
-      );
-    })}
-  </>
-);
-
-// Only the drag icon cell is the drag handle.
-const DraggableRow = ({
-  row,
-  reducedMotion,
-}: {
-  row: Row<Resource>;
-  reducedMotion: boolean;
-}) => {
-  const {
-    attributes,
-    listeners,
-    transform,
-    transition,
-    setNodeRef,
-    setActivatorNodeRef,
-    isDragging,
-    over,
-  } = useSortable({
-    id: row.original.id,
-    // Keeps the cell semantics of the table (the default role is "button").
-    attributes: { role: 'cell' },
-    transition: reducedMotion
-      ? null
-      : { duration: MOTION_DURATION, easing: MOTION_EASING },
-  });
-
-  // The dragged row is over another row, so its slot moved.
-  const isDropZone = isDragging && !!over && over.id !== row.original.id;
-
-  return (
-    <TableRow
-      ref={setNodeRef}
-      isSelected={row.getIsSelected()}
-      aria-selected={row.getIsSelected()}
-      className={cx('draggable-row', {
-        'draggable-row--dragging': isDragging,
-        'draggable-row--drop-zone': isDropZone,
-      })}
-      // dnd-kit computes these on every frame while dragging.
-      style={{ transform: CSS.Translate.toString(transform), transition }}>
-      <RowCells
-        row={row}
-        handleProps={{ setActivatorNodeRef, attributes, listeners }}
-      />
-    </TableRow>
-  );
-};
 
 export const DraggableRows = () => {
   const reducedMotion = usePrefersReducedMotion();
@@ -544,83 +334,21 @@ export const DraggableRows = () => {
           onChange={({ page }) => table.setPageIndex(page - 1)}
         />
       </TableContainer>
-      <Modal
+      <MoveToPositionModal
         open={moveTarget !== null}
-        size="xs"
-        modalHeading="Move to custom position"
-        primaryButtonText="Move"
-        secondaryButtonText="Cancel"
-        primaryButtonDisabled={!isTargetPositionValid}
-        onRequestClose={closeMoveDialog}
-        onRequestSubmit={submitMoveDialog}>
-        <NumberInput
-          id="move-to-position"
-          label={`Position of ${moveTarget?.resource.name ?? 'row'}`}
-          helperText={`Enter a position from 1 to ${data.length}.`}
-          invalidText={`Enter a whole number from 1 to ${data.length}.`}
-          min={1}
-          max={data.length}
-          step={1}
-          value={targetPosition}
-          invalid={!isTargetPositionValid}
-          allowEmpty
-          onChange={(_event, { value }) =>
-            setTargetPosition(value === '' ? NaN : Number(value))
-          }
-        />
-      </Modal>
-      <DragOverlay
-        // Keeps the overlay inside the visible part of the table.
-        style={viewport ? { left: viewport.left, width: viewport.width } : {}}
-        dropAnimation={
-          reducedMotion
-            ? null
-            : {
-                duration: MOTION_DURATION,
-                easing: MOTION_EASING,
-                // Only the vertical movement is animated.
-                keyframes: ({ transform }) => [
-                  { transform: CSS.Transform.toString(transform.initial) },
-                  {
-                    transform: CSS.Transform.toString({
-                      ...transform.final,
-                      x: transform.initial.x,
-                      scaleX: transform.initial.scaleX,
-                      scaleY: transform.initial.scaleY,
-                    }),
-                  },
-                ],
-              }
-        }>
-        {activeRow ? (
-          <div
-            className="draggable-rows-overlay__viewport"
-            style={
-              viewport
-                ? ({
-                    '--draggable-rows-table-width': `${viewport.tableWidth}px`,
-                  } as CSSProperties)
-                : {}
-            }
-            ref={(element) => {
-              // Same scroll position as the table in the page.
-              const scroller = element?.querySelector(
-                '.cds--data-table-content'
-              );
-              if (scroller && viewport) {
-                scroller.scrollLeft = viewport.scrollLeft;
-              }
-            }}>
-            <Table className="draggable-rows-overlay">
-              <TableBody>
-                <TableRow className="draggable-row">
-                  <RowCells row={activeRow} overlay />
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
-        ) : null}
-      </DragOverlay>
+        resourceName={moveTarget?.resource.name}
+        total={data.length}
+        position={targetPosition}
+        isValid={isTargetPositionValid}
+        onPositionChange={setTargetPosition}
+        onClose={closeMoveDialog}
+        onSubmit={submitMoveDialog}
+      />
+      <RowDragOverlay
+        activeRow={activeRow}
+        viewport={viewport}
+        reducedMotion={reducedMotion}
+      />
     </DndContext>
   );
 };
