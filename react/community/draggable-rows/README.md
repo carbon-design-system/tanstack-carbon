@@ -60,7 +60,7 @@ file too.
 ## Run locally
 
 ```bash
-cd react/draggable-rows
+cd react/community/draggable-rows
 yarn install
 yarn dev
 ```
