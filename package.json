@@ -104,7 +104,6 @@
   },
   "workspaces": [
     "react/*",
-    "react/community/draggable-rows",
     "web-components/*"
   ]
 }
